@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>roslyn-diff Report: Calculator.cs</title>
+    <style>
+        :root {
+            --bg-color: #1e1e1e;
+            --text-color: #d4d4d4;
+            --border-color: #3c3c3c;
+            --added-bg: #1e3a1e;
+            --added-border: #2d5a2d;
+            --removed-bg: #3a1e1e;
+            --removed-border: #5a2d2d;
+            --modified-bg: #3a3a1e;
+            --header-bg: #252526;
+            --keyword-color: #569cd6;
+            --type-color: #4ec9b0;
+            --string-color: #ce9178;
+            --comment-color: #6a9955;
+            --number-color: #b5cea8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #fff;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--header-bg);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .stat-card.additions .number { color: #4caf50; }
+        .stat-card.deletions .number { color: #f44336; }
+        .stat-card.modifications .number { color: #ff9800; }
+        .stat-card.total .number { color: #2196f3; }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .change-section {
+            background-color: var(--header-bg);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .change-header {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge.added {
+            background-color: #4caf50;
+            color: #fff;
+        }
+
+        .badge.removed {
+            background-color: #f44336;
+            color: #fff;
+        }
+
+        .badge.modified {
+            background-color: #ff9800;
+            color: #fff;
+        }
+
+        .badge.kind {
+            background-color: var(--border-color);
+            color: var(--text-color);
+        }
+
+        .change-name {
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-weight: 600;
+        }
+
+        .location {
+            font-size: 12px;
+            color: #888;
+            margin-left: auto;
+        }
+
+        .diff-view {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .diff-side {
+            overflow-x: auto;
+        }
+
+        .diff-side-header {
+            padding: 8px 15px;
+            background-color: rgba(0, 0, 0, 0.2);
+            font-size: 12px;
+            color: #888;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .diff-side.old .diff-side-header {
+            border-right: 1px solid var(--border-color);
+        }
+
+        pre {
+            margin: 0;
+            padding: 15px;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        .diff-side.old {
+            background-color: var(--removed-bg);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .diff-side.new {
+            background-color: var(--added-bg);
+        }
+
+        .keyword { color: var(--keyword-color); }
+        .type { color: var(--type-color); }
+        .string { color: var(--string-color); }
+        .comment { color: var(--comment-color); }
+        .number { color: var(--number-color); }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>roslyn-diff Report</h1>
+            <div class="subtitle">
+                Comparing <code>samples/before/Calculator.cs</code> to <code>samples/after/Calculator.cs</code>
+            </div>
+        </header>
+
+        <div class="summary">
+            <div class="stat-card total">
+                <div class="number">4</div>
+                <div class="label">Total Changes</div>
+            </div>
+            <div class="stat-card additions">
+                <div class="number">2</div>
+                <div class="label">Additions</div>
+            </div>
+            <div class="stat-card deletions">
+                <div class="number">0</div>
+                <div class="label">Deletions</div>
+            </div>
+            <div class="stat-card modifications">
+                <div class="number">2</div>
+                <div class="label">Modifications</div>
+            </div>
+        </div>
+
+        <h2>Changes</h2>
+
+        <div class="change-section">
+            <div class="change-header">
+                <span class="badge modified">Modified</span>
+                <span class="badge kind">Method</span>
+                <span class="change-name">Add</span>
+                <span class="location">Lines 11-14 → 14-17</span>
+            </div>
+            <div class="diff-view">
+                <div class="diff-side old">
+                    <div class="diff-side-header">Before</div>
+                    <pre><span class="comment">/// &lt;summary&gt;
+/// Adds two numbers together.
+/// &lt;/summary&gt;</span>
+<span class="keyword">public</span> <span class="keyword">int</span> <span class="type">Add</span>(<span class="keyword">int</span> a, <span class="keyword">int</span> b)
+{
+    <span class="keyword">return</span> a + b;
+}</pre>
+                </div>
+                <div class="diff-side new">
+                    <div class="diff-side-header">After</div>
+                    <pre><span class="comment">/// &lt;summary&gt;
+/// Adds two numbers together.
+/// &lt;/summary&gt;
+/// &lt;param name="a"&gt;The first number.&lt;/param&gt;
+/// &lt;param name="b"&gt;The second number.&lt;/param&gt;
+/// &lt;returns&gt;The sum of a and b.&lt;/returns&gt;</span>
+<span class="keyword">public</span> <span class="keyword">int</span> <span class="type">Add</span>(<span class="keyword">int</span> a, <span class="keyword">int</span> b)
+{
+    <span class="keyword">return</span> a + b;
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="change-section">
+            <div class="change-header">
+                <span class="badge added">Added</span>
+                <span class="badge kind">Method</span>
+                <span class="change-name">Multiply</span>
+                <span class="location">Lines 36-39</span>
+            </div>
+            <div class="diff-view">
+                <div class="diff-side old">
+                    <div class="diff-side-header">Before</div>
+                    <pre><span style="color: #666; font-style: italic;">(not present)</span></pre>
+                </div>
+                <div class="diff-side new">
+                    <div class="diff-side-header">After</div>
+                    <pre><span class="comment">/// &lt;summary&gt;
+/// Multiplies two numbers.
+/// &lt;/summary&gt;
+/// &lt;param name="a"&gt;The first number.&lt;/param&gt;
+/// &lt;param name="b"&gt;The second number.&lt;/param&gt;
+/// &lt;returns&gt;The product of a and b.&lt;/returns&gt;</span>
+<span class="keyword">public</span> <span class="keyword">int</span> <span class="type">Multiply</span>(<span class="keyword">int</span> a, <span class="keyword">int</span> b)
+{
+    <span class="keyword">return</span> a * b;
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="change-section">
+            <div class="change-header">
+                <span class="badge added">Added</span>
+                <span class="badge kind">Method</span>
+                <span class="change-name">Divide</span>
+                <span class="location">Lines 48-56</span>
+            </div>
+            <div class="diff-view">
+                <div class="diff-side old">
+                    <div class="diff-side-header">Before</div>
+                    <pre><span style="color: #666; font-style: italic;">(not present)</span></pre>
+                </div>
+                <div class="diff-side new">
+                    <div class="diff-side-header">After</div>
+                    <pre><span class="comment">/// &lt;summary&gt;
+/// Divides the first number by the second.
+/// &lt;/summary&gt;
+/// &lt;param name="a"&gt;The dividend.&lt;/param&gt;
+/// &lt;param name="b"&gt;The divisor.&lt;/param&gt;
+/// &lt;returns&gt;The quotient of a divided by b.&lt;/returns&gt;
+/// &lt;exception cref="DivideByZeroException"&gt;Thrown when b is zero.&lt;/exception&gt;</span>
+<span class="keyword">public</span> <span class="keyword">int</span> <span class="type">Divide</span>(<span class="keyword">int</span> a, <span class="keyword">int</span> b)
+{
+    <span class="keyword">if</span> (b == <span class="number">0</span>)
+    {
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">DivideByZeroException</span>(<span class="string">"Cannot divide by zero."</span>);
+    }
+    <span class="keyword">return</span> a / b;
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Generated by roslyn-diff v1.0.0<br>
+            Mode: Roslyn (semantic diff)
+        </footer>
+    </div>
+</body>
+</html>

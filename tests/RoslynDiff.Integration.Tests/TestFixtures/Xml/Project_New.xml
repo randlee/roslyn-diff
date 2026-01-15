@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <Name>Sample Project</Name>
+  <Version>2.0</Version>
+  <Dependencies>
+    <Dependency name="Library1" version="1.5.0" />
+    <Dependency name="Library2" version="2.0.0" />
+    <Dependency name="Library3" version="1.0.0" />
+  </Dependencies>
+  <Settings>
+    <EnableLogging>true</EnableLogging>
+  </Settings>
+</Project>

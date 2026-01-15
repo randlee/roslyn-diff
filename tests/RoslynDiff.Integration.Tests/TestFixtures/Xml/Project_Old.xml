@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <Name>Sample Project</Name>
+  <Version>1.0</Version>
+  <Dependencies>
+    <Dependency name="Library1" version="1.0.0" />
+    <Dependency name="Library2" version="2.0.0" />
+  </Dependencies>
+</Project>

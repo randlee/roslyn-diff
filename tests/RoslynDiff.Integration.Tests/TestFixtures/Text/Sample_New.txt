@@ -1,0 +1,6 @@
+This is the first line.
+Second line of text.
+Third line remains the same.
+Fourth line was modified!
+Sixth line stays.
+New seventh line was added.
