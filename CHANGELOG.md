@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Git integration (compare commits, branches)
 - F# support via FSharp.Compiler.Service
 
-## [1.0.0] - 2025-XX-XX
+## [0.5.0] - 2026-01-15
 
 ### Added
 
@@ -93,7 +93,7 @@ This project follows [Semantic Versioning](https://semver.org/):
 
 | Phase | Version | Features |
 |-------|---------|----------|
-| Phase 1 | v1.0.0 | Core CLI (current) |
+| Phase 1 | v0.5.0 | Core CLI (current) |
 | Phase 2 | v1.x | MCP Server integration |
 | Phase 3 | v2.0 | Folder/project/git support |
 | Phase 4 | v3.0 | Solution-level comparison |

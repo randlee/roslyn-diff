@@ -1,12 +1,19 @@
+using System.Reflection;
 using RoslynDiff.Cli.Commands;
 using Spectre.Console.Cli;
 
 var app = new CommandApp();
 
+// Get version from assembly (set in Directory.Build.props)
+var version = Assembly.GetExecutingAssembly()
+    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+    ?? Assembly.GetExecutingAssembly().GetName().Version?.ToString()
+    ?? "0.0.0";
+
 app.Configure(config =>
 {
     config.SetApplicationName("roslyn-diff");
-    config.SetApplicationVersion("0.1.0");
+    config.SetApplicationVersion(version);
 
     config.AddCommand<DiffCommand>("diff")
         .WithDescription("Compare two files or directories and display the differences")
