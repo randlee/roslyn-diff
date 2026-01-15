@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <!-- Override Directory.Build.props settings for benchmark project -->
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- Disable certain warnings that don't apply to benchmarks -->
+    <NoWarn>$(NoWarn);CA1822;CA2201</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\RoslynDiff.Core\RoslynDiff.Core.csproj" />
+    <ProjectReference Include="..\..\src\RoslynDiff.Output\RoslynDiff.Output.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
+  </ItemGroup>
+
+</Project>

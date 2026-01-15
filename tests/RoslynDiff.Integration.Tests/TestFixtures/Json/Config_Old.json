@@ -1,0 +1,9 @@
+{
+  "name": "MyApp",
+  "version": "1.0.0",
+  "settings": {
+    "debug": true,
+    "timeout": 30
+  },
+  "features": ["auth", "logging"]
+}

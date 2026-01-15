@@ -1,0 +1,106 @@
+{
+  "$schema": "roslyn-diff-output-v1",
+  "metadata": {
+    "tool": "roslyn-diff",
+    "version": "1.0.0",
+    "timestamp": "2025-01-14T20:00:00Z",
+    "mode": "roslyn",
+    "oldPath": "samples/before/Calculator.cs",
+    "newPath": "samples/after/Calculator.cs"
+  },
+  "summary": {
+    "totalChanges": 4,
+    "additions": 2,
+    "deletions": 0,
+    "modifications": 2,
+    "moves": 0,
+    "renames": 0
+  },
+  "fileChanges": [
+    {
+      "path": "samples/after/Calculator.cs",
+      "changes": [
+        {
+          "type": "Modified",
+          "kind": "Method",
+          "name": "Add",
+          "oldName": null,
+          "oldLocation": {
+            "file": "samples/before/Calculator.cs",
+            "startLine": 11,
+            "endLine": 14,
+            "startColumn": 5,
+            "endColumn": 6
+          },
+          "newLocation": {
+            "file": "samples/after/Calculator.cs",
+            "startLine": 14,
+            "endLine": 17,
+            "startColumn": 5,
+            "endColumn": 6
+          },
+          "oldContent": "    public int Add(int a, int b)\n    {\n        return a + b;\n    }",
+          "newContent": "    /// <summary>\n    /// Adds two numbers together.\n    /// </summary>\n    /// <param name=\"a\">The first number.</param>\n    /// <param name=\"b\">The second number.</param>\n    /// <returns>The sum of a and b.</returns>\n    public int Add(int a, int b)\n    {\n        return a + b;\n    }",
+          "children": []
+        },
+        {
+          "type": "Modified",
+          "kind": "Method",
+          "name": "Subtract",
+          "oldName": null,
+          "oldLocation": {
+            "file": "samples/before/Calculator.cs",
+            "startLine": 19,
+            "endLine": 22,
+            "startColumn": 5,
+            "endColumn": 6
+          },
+          "newLocation": {
+            "file": "samples/after/Calculator.cs",
+            "startLine": 25,
+            "endLine": 28,
+            "startColumn": 5,
+            "endColumn": 6
+          },
+          "oldContent": "    public int Subtract(int a, int b)\n    {\n        return a - b;\n    }",
+          "newContent": "    /// <summary>\n    /// Subtracts the second number from the first.\n    /// </summary>\n    /// <param name=\"a\">The first number.</param>\n    /// <param name=\"b\">The second number.</param>\n    /// <returns>The difference of a and b.</returns>\n    public int Subtract(int a, int b)\n    {\n        return a - b;\n    }",
+          "children": []
+        },
+        {
+          "type": "Added",
+          "kind": "Method",
+          "name": "Multiply",
+          "oldName": null,
+          "oldLocation": null,
+          "newLocation": {
+            "file": "samples/after/Calculator.cs",
+            "startLine": 36,
+            "endLine": 39,
+            "startColumn": 5,
+            "endColumn": 6
+          },
+          "oldContent": null,
+          "newContent": "    /// <summary>\n    /// Multiplies two numbers.\n    /// </summary>\n    /// <param name=\"a\">The first number.</param>\n    /// <param name=\"b\">The second number.</param>\n    /// <returns>The product of a and b.</returns>\n    public int Multiply(int a, int b)\n    {\n        return a * b;\n    }",
+          "children": []
+        },
+        {
+          "type": "Added",
+          "kind": "Method",
+          "name": "Divide",
+          "oldName": null,
+          "oldLocation": null,
+          "newLocation": {
+            "file": "samples/after/Calculator.cs",
+            "startLine": 48,
+            "endLine": 56,
+            "startColumn": 5,
+            "endColumn": 6
+          },
+          "oldContent": null,
+          "newContent": "    /// <summary>\n    /// Divides the first number by the second.\n    /// </summary>\n    /// <param name=\"a\">The dividend.</param>\n    /// <param name=\"b\">The divisor.</param>\n    /// <returns>The quotient of a divided by b.</returns>\n    /// <exception cref=\"DivideByZeroException\">Thrown when b is zero.</exception>\n    public int Divide(int a, int b)\n    {\n        if (b == 0)\n        {\n            throw new DivideByZeroException(\"Cannot divide by zero.\");\n        }\n        return a / b;\n    }",
+          "children": []
+        }
+      ]
+    }
+  ]
+}
