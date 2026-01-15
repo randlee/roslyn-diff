@@ -1,0 +1,5 @@
+Line 1: No whitespace change
+Line 2: Has trailing spaces
+Line 3:    Spaces at start
+Line 4: Two spaces here
+Line 5: Normal line

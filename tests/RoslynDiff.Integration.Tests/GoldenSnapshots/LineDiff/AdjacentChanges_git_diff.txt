@@ -1,0 +1,13 @@
+diff --git a/AdjacentChanges_old.txt b/AdjacentChanges_new.txt
+index 4b63e00..fb43810 100644
+--- a/AdjacentChanges_old.txt
++++ b/AdjacentChanges_new.txt
+@@ -1,5 +1,5 @@
+ Line 1: First line unchanged
+-Line 2: Original line A
+-Line 3: Original line B
+-Line 4: Original line C
++Line 2: Modified line A
++Line 3: Modified line B
++Line 4: Modified line C
+ Line 5: Last line unchanged

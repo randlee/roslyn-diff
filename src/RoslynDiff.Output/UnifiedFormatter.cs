@@ -39,10 +39,9 @@ public sealed class UnifiedFormatter : IOutputFormatter
     {
         var useColor = options?.UseColor ?? false;
 
-        // Write header
+        // Write header (no blank line after, matching standard diff -u format)
         writer.WriteLine($"--- {result.OldPath ?? "/dev/null"}");
         writer.WriteLine($"+++ {result.NewPath ?? "/dev/null"}");
-        writer.WriteLine();
 
         foreach (var fileChange in result.FileChanges)
         {
@@ -60,22 +59,44 @@ public sealed class UnifiedFormatter : IOutputFormatter
             }
         }
 
-        // Write summary
-        writer.WriteLine();
-        WriteSummary(writer, result.Stats, useColor);
+        // Note: Standard unified diff format does not include a summary line
+        // Removed to match diff -u and git diff output
     }
 
     private static List<List<Change>> GroupChangesIntoHunks(IReadOnlyList<Change> changes)
     {
         var hunks = new List<List<Change>>();
-        var currentHunk = new List<Change>();
-
-        foreach (var change in changes)
+        if (changes.Count == 0)
         {
-            currentHunk.Add(change);
+            return hunks;
+        }
 
-            // Start a new hunk if we encounter a gap (in a real implementation,
-            // we would track line numbers and detect gaps)
+        var currentHunk = new List<Change> { changes[0] };
+
+        for (var i = 1; i < changes.Count; i++)
+        {
+            var prevChange = changes[i - 1];
+            var currChange = changes[i];
+
+            // Get line numbers for both changes
+            var prevOldLine = prevChange.OldLocation?.EndLine ?? 0;
+            var prevNewLine = prevChange.NewLocation?.EndLine ?? 0;
+            var currOldLine = currChange.OldLocation?.StartLine ?? 0;
+            var currNewLine = currChange.NewLocation?.StartLine ?? 0;
+
+            // Check for gaps in line numbers (indicates new hunk)
+            // A gap exists if the current line doesn't immediately follow the previous
+            var oldGap = prevOldLine > 0 && currOldLine > 0 && currOldLine > prevOldLine + 1;
+            var newGap = prevNewLine > 0 && currNewLine > 0 && currNewLine > prevNewLine + 1;
+
+            if (oldGap || newGap)
+            {
+                // Start a new hunk
+                hunks.Add(currentHunk);
+                currentHunk = new List<Change>();
+            }
+
+            currentHunk.Add(currChange);
         }
 
         if (currentHunk.Count > 0)
@@ -93,13 +114,75 @@ public sealed class UnifiedFormatter : IOutputFormatter
             return;
         }
 
-        // Calculate hunk header
-        var firstChange = hunk.FirstOrDefault(c => c.OldLocation != null || c.NewLocation != null);
-        var startOld = firstChange?.OldLocation?.StartLine ?? firstChange?.NewLocation?.StartLine ?? 1;
-        var startNew = firstChange?.NewLocation?.StartLine ?? firstChange?.OldLocation?.StartLine ?? 1;
+        // Calculate hunk header by tracking line numbers separately for old and new files
+        // In unified diff: @@ -startOld,oldCount +startNew,newCount @@
+        // - oldCount = number of lines from old file (unchanged + removed)
+        // - newCount = number of lines in new file (unchanged + added)
 
-        var oldCount = hunk.Count(c => c.Type != ChangeType.Added);
-        var newCount = hunk.Count(c => c.Type != ChangeType.Removed);
+        var startOld = 0;
+        var startNew = 0;
+        var oldCount = 0;
+        var newCount = 0;
+
+        // Find the starting line numbers and count lines
+        foreach (var change in hunk)
+        {
+            switch (change.Type)
+            {
+                case ChangeType.Added:
+                    if (startNew == 0 && change.NewLocation?.StartLine > 0)
+                    {
+                        startNew = change.NewLocation.StartLine;
+                    }
+                    newCount++;
+                    break;
+
+                case ChangeType.Removed:
+                    if (startOld == 0 && change.OldLocation?.StartLine > 0)
+                    {
+                        startOld = change.OldLocation.StartLine;
+                    }
+                    oldCount++;
+                    break;
+
+                case ChangeType.Unchanged:
+                case ChangeType.Modified:
+                default:
+                    // Context lines and modified lines exist in both files
+                    if (startOld == 0 && change.OldLocation?.StartLine > 0)
+                    {
+                        startOld = change.OldLocation.StartLine;
+                    }
+                    if (startNew == 0 && change.NewLocation?.StartLine > 0)
+                    {
+                        startNew = change.NewLocation.StartLine;
+                    }
+                    oldCount++;
+                    newCount++;
+                    break;
+            }
+        }
+
+        // Handle edge cases for empty files
+        // For empty old file going to content: start at 0,0 for old
+        // For content going to empty new file: start at 0,0 for new
+        if (startOld == 0 && oldCount == 0)
+        {
+            startOld = 0;
+        }
+        else if (startOld == 0)
+        {
+            startOld = 1;
+        }
+
+        if (startNew == 0 && newCount == 0)
+        {
+            startNew = 0;
+        }
+        else if (startNew == 0)
+        {
+            startNew = 1;
+        }
 
         writer.WriteLine($"@@ -{startOld},{oldCount} +{startNew},{newCount} @@");
 
@@ -137,19 +220,4 @@ public sealed class UnifiedFormatter : IOutputFormatter
         }
     }
 
-    private static void WriteSummary(TextWriter writer, DiffStats stats, bool useColor)
-    {
-        var addColor = useColor ? "\x1b[32m" : "";
-        var delColor = useColor ? "\x1b[31m" : "";
-        var reset = useColor ? "\x1b[0m" : "";
-
-        if (stats.TotalChanges == 0)
-        {
-            writer.WriteLine("No differences found.");
-        }
-        else
-        {
-            writer.WriteLine($"{stats.TotalChanges} change(s): {addColor}+{stats.Additions}{reset}, {delColor}-{stats.Deletions}{reset}, ~{stats.Modifications}");
-        }
-    }
 }

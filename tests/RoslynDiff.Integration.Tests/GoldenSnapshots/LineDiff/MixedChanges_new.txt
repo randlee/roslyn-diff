@@ -1,0 +1,11 @@
+Line 01: Header (unchanged)
+Line 03: Modified content now
+Line 05: Unchanged context
+Line 06: Unchanged context
+Line 06a: New line inserted
+Line 06b: Another new line
+Line 07: More unchanged
+Line 08: Has been modified
+Line 09: Unchanged at end
+Line 10: Final unchanged line
+Line 11: Appended line at end

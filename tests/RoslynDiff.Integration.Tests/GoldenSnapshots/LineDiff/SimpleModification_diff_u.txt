@@ -1,0 +1,10 @@
+--- SimpleModification_old.txt	2026-01-15 09:48:17
++++ SimpleModification_new.txt	2026-01-15 09:48:17
+@@ -1,5 +1,5 @@
+ Line 1: First line
+-Line 2: Original content here
++Line 2: Modified content here
+ Line 3: Third line
+-Line 4: More original content
++Line 4: Changed content instead
+ Line 5: Fifth line

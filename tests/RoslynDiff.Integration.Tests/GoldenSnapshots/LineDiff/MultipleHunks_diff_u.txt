@@ -1,0 +1,16 @@
+--- MultipleHunks_old.txt	2026-01-15 09:48:33
++++ MultipleHunks_new.txt	2026-01-15 09:48:33
+@@ -1,5 +1,5 @@
+ Line 01: Header section
+-Line 02: Original header line
++Line 02: Modified header line
+ Line 03: End of header
+ Line 04: ---
+ Line 05: Middle section starts
+@@ -9,5 +9,5 @@
+ Line 09: Middle section ends
+ Line 10: ---
+ Line 11: Footer section
+-Line 12: Original footer line
++Line 12: Modified footer line
+ Line 13: End of footer

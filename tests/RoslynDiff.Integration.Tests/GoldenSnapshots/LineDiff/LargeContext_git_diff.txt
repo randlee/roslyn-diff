@@ -1,0 +1,13 @@
+diff --git a/LargeContext_old.txt b/LargeContext_new.txt
+index 00cf951..babaa58 100644
+--- a/LargeContext_old.txt
++++ b/LargeContext_new.txt
+@@ -8,7 +8,7 @@ Line 07: Context line
+ Line 08: Context line
+ Line 09: Context line
+ Line 10: Context line
+-Line 11: Original line to change
++Line 11: Modified line in middle
+ Line 12: Context line
+ Line 13: Context line
+ Line 14: Context line

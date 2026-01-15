@@ -1,0 +1,10 @@
+diff --git a/SimpleDeletion_old.txt b/SimpleDeletion_new.txt
+index 0da15cb..0126e39 100644
+--- a/SimpleDeletion_old.txt
++++ b/SimpleDeletion_new.txt
+@@ -1,5 +1,3 @@
+ Line 1: First line
+-Line 2: Second line (will be deleted)
+-Line 3: Third line (will be deleted)
+ Line 4: Fourth line
+ Line 5: Fifth line

@@ -1,0 +1,18 @@
+--- MixedChanges_old.txt	2026-01-15 09:50:11
++++ MixedChanges_new.txt	2026-01-15 09:50:12
+@@ -1,10 +1,11 @@
+ Line 01: Header (unchanged)
+-Line 02: Line to be deleted
+-Line 03: Line to be modified
+-Line 04: Another line to delete
++Line 03: Modified content now
+ Line 05: Unchanged context
+ Line 06: Unchanged context
++Line 06a: New line inserted
++Line 06b: Another new line
+ Line 07: More unchanged
+-Line 08: Will be modified here
++Line 08: Has been modified
+ Line 09: Unchanged at end
+ Line 10: Final unchanged line
++Line 11: Appended line at end

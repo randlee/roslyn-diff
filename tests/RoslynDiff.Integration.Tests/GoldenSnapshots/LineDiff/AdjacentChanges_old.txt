@@ -1,0 +1,5 @@
+Line 1: First line unchanged
+Line 2: Original line A
+Line 3: Original line B
+Line 4: Original line C
+Line 5: Last line unchanged

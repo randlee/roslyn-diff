@@ -1,0 +1,5 @@
+Line 1: First line
+Line 2: Second line (will be deleted)
+Line 3: Third line (will be deleted)
+Line 4: Fourth line
+Line 5: Fifth line

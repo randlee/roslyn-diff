@@ -1,0 +1,12 @@
+diff --git a/SimpleModification_old.txt b/SimpleModification_new.txt
+index c78c0fe..dde47ad 100644
+--- a/SimpleModification_old.txt
++++ b/SimpleModification_new.txt
+@@ -1,5 +1,5 @@
+ Line 1: First line
+-Line 2: Original content here
++Line 2: Modified content here
+ Line 3: Third line
+-Line 4: More original content
++Line 4: Changed content instead
+ Line 5: Fifth line
