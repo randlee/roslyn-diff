@@ -42,7 +42,7 @@ roslyn-diff diff old.cs new.cs -o json --out-file diff.json
   "$schema": "roslyn-diff-output-v1",
   "metadata": {
     "tool": "roslyn-diff",
-    "version": "1.0.0",
+    "version": "0.5.0",
     "timestamp": "2025-01-14T20:00:00Z",
     "mode": "roslyn",
     "oldPath": "old/Service.cs",

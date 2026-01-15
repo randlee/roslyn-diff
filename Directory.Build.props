@@ -13,6 +13,13 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
+  <!-- Version: Single source of truth for all assemblies and NuGet packages -->
+  <PropertyGroup>
+    <Version>0.5.0</Version>
+    <AssemblyVersion>0.5.0.0</AssemblyVersion>
+    <FileVersion>0.5.0.0</FileVersion>
+  </PropertyGroup>
+
   <PropertyGroup>
     <Authors>RoslynDiff Contributors</Authors>
     <Company>RoslynDiff</Company>

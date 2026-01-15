@@ -1,4 +1,4 @@
-# roslyn-diff v1.0.0 Release Notes
+# roslyn-diff v0.5.0 Release Notes
 
 **Release Date:** January 15, 2026
 

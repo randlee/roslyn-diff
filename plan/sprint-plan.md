@@ -13,8 +13,8 @@
 | Sprint 7 | ✅ Complete | 650 | NuGet package config, Release artifacts, Final testing |
 
 ### Current State
-- **Branch**: release/v1.0.0
-- **Open PR**: #3 (release/v1.0.0 → main) - Contains Sprint 7
+- **Branch**: release/v0.5.0
+- **Open PR**: #4 (release/v0.5.0 → main) - Contains Sprint 7
 - **Total Tests**: 650 passing (321 Core + 130 Output + 84 CLI + 115 Integration)
 - **Documentation**: Complete (README, docs/, samples/, CHANGELOG, RELEASE_NOTES)
 - **Package**: Configured and tested (ready for NuGet publish)
