@@ -8,9 +8,14 @@ using RoslynDiff.Core.Models;
 public interface IOutputFormatter
 {
     /// <summary>
-    /// Gets the name of the output format (e.g., "json", "unified", "html").
+    /// Gets the format identifier (e.g., "json", "html", "text").
     /// </summary>
-    string FormatName { get; }
+    string Format { get; }
+
+    /// <summary>
+    /// Gets the MIME content type for this format (e.g., "application/json", "text/html", "text/plain").
+    /// </summary>
+    string ContentType { get; }
 
     /// <summary>
     /// Formats the diff result into a string representation.
@@ -18,7 +23,7 @@ public interface IOutputFormatter
     /// <param name="result">The diff result to format.</param>
     /// <param name="options">Options controlling the output format.</param>
     /// <returns>A formatted string representation of the diff result.</returns>
-    string Format(DiffResult result, OutputOptions? options = null);
+    string FormatResult(DiffResult result, OutputOptions? options = null);
 
     /// <summary>
     /// Formats the diff result and writes it to the specified writer.
@@ -26,5 +31,5 @@ public interface IOutputFormatter
     /// <param name="result">The diff result to format.</param>
     /// <param name="writer">The text writer to write the output to.</param>
     /// <param name="options">Options controlling the output format.</param>
-    Task FormatAsync(DiffResult result, TextWriter writer, OutputOptions? options = null);
+    Task FormatResultAsync(DiffResult result, TextWriter writer, OutputOptions? options = null);
 }

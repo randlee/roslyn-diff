@@ -25,8 +25,18 @@ public record Change
     /// <remarks>
     /// This is populated for semantic diffs where the changed element has a name (e.g., class, method, property).
     /// For line-based diffs, this may be <c>null</c>.
+    /// For renamed elements, this is the new name.
     /// </remarks>
     public string? Name { get; init; }
+
+    /// <summary>
+    /// Gets the original name of the symbol before it was renamed.
+    /// </summary>
+    /// <remarks>
+    /// This is only populated for <see cref="ChangeType.Renamed"/> changes.
+    /// For all other change types, this will be <c>null</c>.
+    /// </remarks>
+    public string? OldName { get; init; }
 
     /// <summary>
     /// Gets the location of this element in the old (original) content.
