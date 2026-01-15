@@ -6,14 +6,28 @@ namespace RoslynDiff.Output;
 public record OutputOptions
 {
     /// <summary>
-    /// Gets or sets a value indicating whether to use colored output.
+    /// Gets or sets a value indicating whether to include the content of changed elements.
     /// </summary>
-    public bool UseColor { get; init; }
+    /// <remarks>
+    /// When <c>true</c>, the output will include the source code content for each change.
+    /// When <c>false</c>, only metadata (type, kind, name, location) will be included.
+    /// </remarks>
+    public bool IncludeContent { get; init; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to pretty-print JSON output (with indentation).
+    /// </summary>
+    public bool PrettyPrint { get; init; } = true;
 
     /// <summary>
     /// Gets or sets the number of context lines to show around changes.
     /// </summary>
     public int ContextLines { get; init; } = 3;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to use colored output.
+    /// </summary>
+    public bool UseColor { get; init; }
 
     /// <summary>
     /// Gets or sets a value indicating whether to include statistics in the output.
@@ -28,5 +42,6 @@ public record OutputOptions
     /// <summary>
     /// Gets or sets a value indicating whether JSON output should be indented.
     /// </summary>
-    public bool IndentJson { get; init; } = true;
+    [Obsolete("Use PrettyPrint instead.")]
+    public bool IndentJson { get => PrettyPrint; init => PrettyPrint = value; }
 }

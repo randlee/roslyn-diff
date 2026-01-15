@@ -137,16 +137,19 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             var result = differ.Compare(oldContent, newContent, options);
 
             // Get the formatter
-            var formatter = GetFormatter(settings.Format);
+            var formatterFactory = new OutputFormatterFactory();
+            var formatter = formatterFactory.IsFormatSupported(settings.Format)
+                ? formatterFactory.GetFormatter(settings.Format)
+                : GetLegacyFormatter(settings.Format);
 
             // Format output
             var outputOptions = new OutputOptions
             {
                 UseColor = settings.UseColor,
-                IndentJson = true
+                PrettyPrint = true
             };
 
-            var output = formatter.Format(result, outputOptions);
+            var output = formatter.FormatResult(result, outputOptions);
 
             // Write output
             if (!string.IsNullOrEmpty(settings.OutputFile))
@@ -168,14 +171,15 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
         }
     }
 
-    private static IOutputFormatter GetFormatter(string format)
+    private static IOutputFormatter GetLegacyFormatter(string format)
     {
         return format.ToLowerInvariant() switch
         {
-            "json" => new JsonOutputFormatter(),
-            "unified" or "text" or "plain" => new UnifiedFormatter(),
-            // "html" => new HtmlFormatter(), // Future implementation
-            _ => throw new ArgumentException($"Unknown format: {format}. Supported formats: unified, json")
+            "unified" => new UnifiedFormatter(),
+            "html" => new HtmlFormatter(),
+            "plain" => new PlainTextFormatter(),
+            "terminal" => new SpectreConsoleFormatter(),
+            _ => throw new ArgumentException($"Unknown format: {format}. Supported formats: json, text, unified, html, plain, terminal")
         };
     }
 }

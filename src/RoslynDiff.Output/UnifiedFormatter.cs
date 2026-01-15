@@ -9,10 +9,13 @@ using RoslynDiff.Core.Models;
 public sealed class UnifiedFormatter : IOutputFormatter
 {
     /// <inheritdoc/>
-    public string FormatName => "unified";
+    public string Format => "text";
 
     /// <inheritdoc/>
-    public string Format(DiffResult result, OutputOptions? options = null)
+    public string ContentType => "text/plain";
+
+    /// <inheritdoc/>
+    public string FormatResult(DiffResult result, OutputOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(result);
 
@@ -23,7 +26,7 @@ public sealed class UnifiedFormatter : IOutputFormatter
     }
 
     /// <inheritdoc/>
-    public Task FormatAsync(DiffResult result, TextWriter writer, OutputOptions? options = null)
+    public Task FormatResultAsync(DiffResult result, TextWriter writer, OutputOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(result);
         ArgumentNullException.ThrowIfNull(writer);

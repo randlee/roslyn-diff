@@ -9,8 +9,7 @@ public sealed class DifferFactory
 {
     private readonly LineDiffer _lineDiffer;
     private readonly CSharpDiffer _csharpDiffer;
-    // Future: Add VisualBasicDiffer
-    // private readonly VisualBasicDiffer _vbDiffer;
+    private readonly VisualBasicDiffer _vbDiffer;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DifferFactory"/> class.
@@ -19,8 +18,7 @@ public sealed class DifferFactory
     {
         _lineDiffer = new LineDiffer();
         _csharpDiffer = new CSharpDiffer();
-        // Future: Initialize VB differ
-        // _vbDiffer = new VisualBasicDiffer();
+        _vbDiffer = new VisualBasicDiffer();
     }
 
     /// <summary>
@@ -49,7 +47,7 @@ public sealed class DifferFactory
             return extension switch
             {
                 ".cs" => _csharpDiffer,
-                ".vb" => throw new NotImplementedException("VisualBasicDiffer not yet implemented"),
+                ".vb" => _vbDiffer,
                 _ => throw new NotSupportedException($"Roslyn mode is not supported for '{extension}' files. Only .cs and .vb files are supported.")
             };
         }
@@ -58,7 +56,7 @@ public sealed class DifferFactory
         return extension switch
         {
             ".cs" => _csharpDiffer,
-            ".vb" => _lineDiffer, // Future: return _vbDiffer when implemented
+            ".vb" => _vbDiffer,
             _ => _lineDiffer
         };
     }
@@ -99,7 +97,7 @@ public sealed class DifferFactory
     public IReadOnlyList<IDiffer> RegisteredDiffers =>
     [
         _csharpDiffer,
+        _vbDiffer,
         _lineDiffer
-        // Future: _vbDiffer
     ];
 }
