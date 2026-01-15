@@ -16,7 +16,7 @@
   <PropertyGroup>
     <Authors>RoslynDiff Contributors</Authors>
     <Company>RoslynDiff</Company>
-    <Copyright>Copyright (c) 2025 RoslynDiff Contributors</Copyright>
+    <Copyright>Copyright (c) 2025-2026 RoslynDiff Contributors</Copyright>
     <RepositoryUrl>https://github.com/randlee/roslyn-diff</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>

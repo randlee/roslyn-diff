@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Git integration (compare commits, branches)
 - F# support via FSharp.Compiler.Service
 
-## [1.0.0] - 2025-XX-XX
+## [1.0.0] - 2026-01-15
 
 ### Added
 
