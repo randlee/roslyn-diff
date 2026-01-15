@@ -5,6 +5,12 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
+  <!-- Exclude test fixtures from compilation - they are read as text for testing -->
+  <ItemGroup>
+    <Compile Remove="TestFixtures\**\*.cs" />
+    <None Include="TestFixtures\**\*.cs" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\RoslynDiff.Core\RoslynDiff.Core.csproj" />
   </ItemGroup>

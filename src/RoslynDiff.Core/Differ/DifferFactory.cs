@@ -8,9 +8,8 @@ using RoslynDiff.Core.Models;
 public sealed class DifferFactory
 {
     private readonly LineDiffer _lineDiffer;
-
-    // Future: Add CSharpDiffer and VisualBasicDiffer
-    // private readonly CSharpDiffer _csharpDiffer;
+    private readonly CSharpDiffer _csharpDiffer;
+    // Future: Add VisualBasicDiffer
     // private readonly VisualBasicDiffer _vbDiffer;
 
     /// <summary>
@@ -19,8 +18,8 @@ public sealed class DifferFactory
     public DifferFactory()
     {
         _lineDiffer = new LineDiffer();
-        // Future: Initialize Roslyn differs
-        // _csharpDiffer = new CSharpDiffer();
+        _csharpDiffer = new CSharpDiffer();
+        // Future: Initialize VB differ
         // _vbDiffer = new VisualBasicDiffer();
     }
 
@@ -49,7 +48,7 @@ public sealed class DifferFactory
         {
             return extension switch
             {
-                ".cs" => throw new NotImplementedException("CSharpDiffer not yet implemented"),
+                ".cs" => _csharpDiffer,
                 ".vb" => throw new NotImplementedException("VisualBasicDiffer not yet implemented"),
                 _ => throw new NotSupportedException($"Roslyn mode is not supported for '{extension}' files. Only .cs and .vb files are supported.")
             };
@@ -58,7 +57,7 @@ public sealed class DifferFactory
         // Auto mode: select based on file extension
         return extension switch
         {
-            ".cs" => _lineDiffer, // Future: return _csharpDiffer when implemented
+            ".cs" => _csharpDiffer,
             ".vb" => _lineDiffer, // Future: return _vbDiffer when implemented
             _ => _lineDiffer
         };
@@ -99,7 +98,8 @@ public sealed class DifferFactory
     /// </summary>
     public IReadOnlyList<IDiffer> RegisteredDiffers =>
     [
+        _csharpDiffer,
         _lineDiffer
-        // Future: _csharpDiffer, _vbDiffer
+        // Future: _vbDiffer
     ];
 }
