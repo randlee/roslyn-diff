@@ -1,0 +1,11 @@
+--- AdjacentChanges_old.txt	2026-01-15 09:49:54
++++ AdjacentChanges_new.txt	2026-01-15 09:49:54
+@@ -1,5 +1,5 @@
+ Line 1: First line unchanged
+-Line 2: Original line A
+-Line 3: Original line B
+-Line 4: Original line C
++Line 2: Modified line A
++Line 3: Modified line B
++Line 4: Modified line C
+ Line 5: Last line unchanged

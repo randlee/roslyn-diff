@@ -1,0 +1,11 @@
+--- LargeContext_old.txt	2026-01-15 09:49:39
++++ LargeContext_new.txt	2026-01-15 09:49:39
+@@ -8,7 +8,7 @@
+ Line 08: Context line
+ Line 09: Context line
+ Line 10: Context line
+-Line 11: Original line to change
++Line 11: Modified line in middle
+ Line 12: Context line
+ Line 13: Context line
+ Line 14: Context line

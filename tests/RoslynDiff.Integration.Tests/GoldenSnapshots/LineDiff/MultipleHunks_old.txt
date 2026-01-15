@@ -1,0 +1,13 @@
+Line 01: Header section
+Line 02: Original header line
+Line 03: End of header
+Line 04: ---
+Line 05: Middle section starts
+Line 06: Content line A
+Line 07: Content line B
+Line 08: Content line C
+Line 09: Middle section ends
+Line 10: ---
+Line 11: Footer section
+Line 12: Original footer line
+Line 13: End of footer

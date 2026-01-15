@@ -1,0 +1,6 @@
+--- ContentToEmpty_old.txt	2026-01-15 09:49:21
++++ ContentToEmpty_new.txt	2026-01-15 09:49:21
+@@ -1,3 +0,0 @@
+-Line 1: Content that will be removed
+-Line 2: More content to remove
+-Line 3: Last line to be removed

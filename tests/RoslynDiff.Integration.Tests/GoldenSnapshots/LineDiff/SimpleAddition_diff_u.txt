@@ -1,0 +1,8 @@
+--- SimpleAddition_old.txt	2026-01-15 09:47:44
++++ SimpleAddition_new.txt	2026-01-15 09:47:44
+@@ -1,3 +1,5 @@
+ Line 1: First line
+ Line 2: Second line
+ Line 3: Third line
++Line 4: Fourth line (added)
++Line 5: Fifth line (added)

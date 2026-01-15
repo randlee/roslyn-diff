@@ -1,0 +1,10 @@
+Line 01: Header (unchanged)
+Line 02: Line to be deleted
+Line 03: Line to be modified
+Line 04: Another line to delete
+Line 05: Unchanged context
+Line 06: Unchanged context
+Line 07: More unchanged
+Line 08: Will be modified here
+Line 09: Unchanged at end
+Line 10: Final unchanged line

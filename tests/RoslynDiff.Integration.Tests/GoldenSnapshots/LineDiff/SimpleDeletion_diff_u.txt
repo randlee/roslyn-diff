@@ -1,0 +1,8 @@
+--- SimpleDeletion_old.txt	2026-01-15 09:48:01
++++ SimpleDeletion_new.txt	2026-01-15 09:48:01
+@@ -1,5 +1,3 @@
+ Line 1: First line
+-Line 2: Second line (will be deleted)
+-Line 3: Third line (will be deleted)
+ Line 4: Fourth line
+ Line 5: Fifth line

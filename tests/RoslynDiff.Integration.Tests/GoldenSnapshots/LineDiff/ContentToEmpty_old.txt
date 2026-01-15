@@ -1,0 +1,3 @@
+Line 1: Content that will be removed
+Line 2: More content to remove
+Line 3: Last line to be removed
