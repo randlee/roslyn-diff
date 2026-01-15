@@ -25,29 +25,50 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
     /// <summary>
     /// Settings for the diff command.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Usage: roslyn-diff diff &lt;old-file&gt; &lt;new-file&gt; [options]
+    /// </para>
+    /// <para>
+    /// Examples:
+    /// <list type="bullet">
+    /// <item>roslyn-diff diff old.cs new.cs</item>
+    /// <item>roslyn-diff diff old.cs new.cs --output json</item>
+    /// <item>roslyn-diff diff old.cs new.cs -w -c --mode roslyn</item>
+    /// <item>roslyn-diff diff old.txt new.txt --mode line</item>
+    /// </list>
+    /// </para>
+    /// </remarks>
     public sealed class Settings : CommandSettings
     {
         /// <summary>
         /// Gets or sets the path to the original (old) file.
         /// </summary>
-        [CommandArgument(0, "<OLD>")]
-        [Description("Path to the original (old) file")]
+        [CommandArgument(0, "<old-file>")]
+        [Description("Path to the original file")]
         public string OldPath { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the path to the new file.
         /// </summary>
-        [CommandArgument(1, "<NEW>")]
-        [Description("Path to the new file")]
+        [CommandArgument(1, "<new-file>")]
+        [Description("Path to the modified file")]
         public string NewPath { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the output format.
+        /// Gets or sets the diff mode.
         /// </summary>
-        [CommandOption("-f|--format <FORMAT>")]
-        [Description("Output format: unified, json, or html")]
-        [DefaultValue("unified")]
-        public string Format { get; set; } = "unified";
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item>auto: Use Roslyn for .cs/.vb, line diff for others</item>
+        /// <item>roslyn: Force semantic diff (requires .cs or .vb)</item>
+        /// <item>line: Force line-by-line diff</item>
+        /// </list>
+        /// </remarks>
+        [CommandOption("-m|--mode <mode>")]
+        [Description("Diff mode: auto, roslyn, or line [default: auto]")]
+        [DefaultValue("auto")]
+        public string Mode { get; set; } = "auto";
 
         /// <summary>
         /// Gets or sets a value indicating whether to ignore whitespace differences.
@@ -60,41 +81,53 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
         /// <summary>
         /// Gets or sets a value indicating whether to ignore comments.
         /// </summary>
-        [CommandOption("--ignore-comments")]
-        [Description("Ignore comment differences (semantic mode only)")]
+        /// <remarks>
+        /// This option is only effective when using Roslyn semantic diff mode.
+        /// </remarks>
+        [CommandOption("-c|--ignore-comments")]
+        [Description("Ignore comment differences (Roslyn mode only)")]
         [DefaultValue(false)]
         public bool IgnoreComments { get; set; }
 
         /// <summary>
         /// Gets or sets the number of context lines.
         /// </summary>
-        [CommandOption("-c|--context <LINES>")]
-        [Description("Number of context lines to show")]
+        [CommandOption("-C|--context <lines>")]
+        [Description("Lines of context to show [default: 3]")]
         [DefaultValue(3)]
         public int ContextLines { get; set; } = 3;
 
         /// <summary>
-        /// Gets or sets a value indicating whether to force line-based diff mode.
+        /// Gets or sets the output format.
         /// </summary>
-        [CommandOption("--line-mode")]
-        [Description("Force line-based diff mode instead of semantic")]
-        [DefaultValue(false)]
-        public bool LineMode { get; set; }
+        /// <remarks>
+        /// Supported formats: json, html, text, terminal.
+        /// </remarks>
+        [CommandOption("-o|--output <format>")]
+        [Description("Output format: json, html, text, terminal [default: text]")]
+        [DefaultValue("text")]
+        public string OutputFormat { get; set; } = "text";
 
         /// <summary>
         /// Gets or sets the output file path.
         /// </summary>
-        [CommandOption("-o|--output <FILE>")]
-        [Description("Write output to a file instead of stdout")]
+        /// <remarks>
+        /// If not specified, output is written to stdout.
+        /// </remarks>
+        [CommandOption("--out-file <path>")]
+        [Description("Write output to file instead of stdout")]
         public string? OutputFile { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to use colored output.
+        /// Gets or sets a value indicating whether to use rich terminal output.
         /// </summary>
-        [CommandOption("--color")]
-        [Description("Use colored output")]
+        /// <remarks>
+        /// Uses Spectre.Console for enhanced formatting with colors and styling.
+        /// </remarks>
+        [CommandOption("-r|--rich")]
+        [Description("Use rich terminal output with colors and formatting")]
         [DefaultValue(false)]
-        public bool UseColor { get; set; }
+        public bool RichOutput { get; set; }
     }
 
     /// <inheritdoc/>
@@ -113,6 +146,15 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             return 1;
         }
 
+        // Parse and validate mode
+        DiffMode? diffMode = settings.Mode.ToLowerInvariant() switch
+        {
+            "auto" => null,
+            "roslyn" => DiffMode.Roslyn,
+            "line" => DiffMode.Line,
+            _ => throw new ArgumentException($"Invalid mode: '{settings.Mode}'. Valid modes: auto, roslyn, line")
+        };
+
         try
         {
             // Read file contents
@@ -122,7 +164,7 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             // Create diff options
             var options = new DiffOptions
             {
-                Mode = settings.LineMode ? DiffMode.Line : null,
+                Mode = diffMode,
                 IgnoreWhitespace = settings.IgnoreWhitespace,
                 IgnoreComments = settings.IgnoreComments,
                 ContextLines = settings.ContextLines,
@@ -136,16 +178,19 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             // Perform diff
             var result = differ.Compare(oldContent, newContent, options);
 
+            // Determine output format (use terminal format if rich output is requested)
+            var formatName = settings.RichOutput ? "terminal" : settings.OutputFormat;
+
             // Get the formatter
             var formatterFactory = new OutputFormatterFactory();
-            var formatter = formatterFactory.IsFormatSupported(settings.Format)
-                ? formatterFactory.GetFormatter(settings.Format)
-                : GetLegacyFormatter(settings.Format);
+            var formatter = formatterFactory.IsFormatSupported(formatName)
+                ? formatterFactory.GetFormatter(formatName)
+                : GetLegacyFormatter(formatName);
 
             // Format output
             var outputOptions = new OutputOptions
             {
-                UseColor = settings.UseColor,
+                UseColor = settings.RichOutput,
                 PrettyPrint = true
             };
 
@@ -163,6 +208,11 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             }
 
             return 0;
+        }
+        catch (ArgumentException ex)
+        {
+            AnsiConsole.MarkupLine($"[red]Error: {ex.Message}[/]");
+            return 1;
         }
         catch (Exception ex)
         {
