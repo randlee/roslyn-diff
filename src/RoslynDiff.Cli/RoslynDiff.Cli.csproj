@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <Description>Command-line interface for Roslyn-based semantic code diffing</Description>
+    <PackageId>RoslynDiff.Cli</PackageId>
+    <AssemblyName>roslyn-diff</AssemblyName>
+    <ToolCommandName>roslyn-diff</ToolCommandName>
+    <PackAsTool>true</PackAsTool>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RoslynDiff.Core\RoslynDiff.Core.csproj" />
+    <ProjectReference Include="..\RoslynDiff.Output\RoslynDiff.Output.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageReference Include="Spectre.Console" Version="0.49.1" />
+    <PackageReference Include="Spectre.Console.Cli" Version="0.49.1" />
+  </ItemGroup>
+
+</Project>

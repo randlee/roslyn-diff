@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Output formatters and renderers for RoslynDiff results</Description>
+    <PackageId>RoslynDiff.Output</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RoslynDiff.Core\RoslynDiff.Core.csproj" />
+  </ItemGroup>
+
+  <!-- System.Text.Json is included in .NET 10.0 runtime -->
+
+</Project>
