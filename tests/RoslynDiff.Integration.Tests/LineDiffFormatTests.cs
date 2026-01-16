@@ -205,6 +205,10 @@ public partial class LineDiffFormatTests : IDisposable
             throw new TimeoutException("roslyn-diff process timed out after 30 seconds");
         }
 
+        // Important: WaitForExit() with timeout may return before all async output is read.
+        // Call WaitForExit() again without timeout to ensure all output handlers have completed.
+        process.WaitForExit();
+
         var error = errorBuilder.ToString();
         if (!string.IsNullOrWhiteSpace(error) && process.ExitCode != 0)
         {
