@@ -20,12 +20,15 @@
     <FileVersion>0.5.0.0</FileVersion>
   </PropertyGroup>
 
+  <!-- NuGet Package Common Properties -->
   <PropertyGroup>
-    <Authors>RoslynDiff Contributors</Authors>
+    <Authors>Rand Lee</Authors>
     <Company>RoslynDiff</Company>
-    <Copyright>Copyright (c) 2025-2026 RoslynDiff Contributors</Copyright>
+    <Copyright>Copyright (c) 2025-2026 Rand Lee</Copyright>
     <RepositoryUrl>https://github.com/randlee/roslyn-diff</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/randlee/roslyn-diff</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">

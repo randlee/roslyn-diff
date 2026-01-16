@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- This project is NOT packaged separately - it's bundled into the CLI tool package -->
   <PropertyGroup>
-    <Description>Output formatters and renderers for RoslynDiff results</Description>
-    <PackageId>RoslynDiff.Output</PackageId>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

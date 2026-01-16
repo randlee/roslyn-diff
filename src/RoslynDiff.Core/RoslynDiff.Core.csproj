@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- This project is NOT packaged separately - it's bundled into the CLI tool package -->
   <PropertyGroup>
-    <Description>Core library for Roslyn-based semantic code diffing</Description>
-    <PackageId>RoslynDiff.Core</PackageId>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

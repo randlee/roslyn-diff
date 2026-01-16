@@ -5,13 +5,11 @@
     <AssemblyName>roslyn-diff</AssemblyName>
   </PropertyGroup>
 
-  <!-- NuGet Package Metadata (Version inherited from Directory.Build.props) -->
+  <!-- NuGet Package Metadata (common properties inherited from Directory.Build.props) -->
   <PropertyGroup>
-    <PackageId>RoslynDiff</PackageId>
-    <Description>A semantic diff tool for .NET source code using Roslyn. Unlike traditional line-by-line diff tools, roslyn-diff understands code structure, detecting and reporting changes at the semantic level (classes, methods, properties, etc.).</Description>
-    <PackageTags>roslyn;diff;semantic-diff;code-analysis;csharp;vb;dotnet;cli;tool</PackageTags>
-    <PackageProjectUrl>https://github.com/randlee/roslyn-diff</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageId>roslyn-diff</PackageId>
+    <Description>Roslyn-based semantic diff tool for C# and VB.NET code comparison</Description>
+    <PackageTags>diff;roslyn;csharp;vbnet;code-comparison;cli</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReleaseNotes>Initial release of roslyn-diff with semantic diff capabilities for C# and VB.NET files.</PackageReleaseNotes>
