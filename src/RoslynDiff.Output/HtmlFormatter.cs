@@ -115,7 +115,31 @@ public partial class HtmlFormatter : IOutputFormatter
         h1 {
             font-size: 24px;
             font-weight: 600;
-            margin: 0 0 16px 0;
+            margin: 0;
+        }
+
+        .header-title-row {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .header-stats {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #57606a;
+        }
+
+        .header-stats .stat-inline {
+            font-weight: 400;
+        }
+
+        .header-stats .stat-separator {
+            color: #d0d7de;
         }
 
         h2 {
@@ -407,6 +431,73 @@ public partial class HtmlFormatter : IOutputFormatter
             transform: rotate(-90deg);
         }
 
+        /* Top diff section header styling */
+        .top-diff-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: var(--color-header-bg);
+            border: 1px solid var(--color-border);
+            border-bottom: none;
+            cursor: pointer;
+        }
+
+        .top-diff-header:hover {
+            background-color: #f3f4f6;
+        }
+
+        .top-diff-header .expand-icon {
+            font-size: 12px;
+            margin-right: 8px;
+        }
+
+        .top-diff-header.collapsed .expand-icon {
+            transform: rotate(-90deg);
+        }
+
+        .top-diff-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-diff-header-stats {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .top-diff-header-stats .stat-inline {
+            color: #57606a;
+        }
+
+        .top-diff-header-stats .stat-added {
+            color: var(--color-added-border);
+            font-weight: 500;
+        }
+
+        .top-diff-header-stats .stat-removed {
+            color: var(--color-removed-border);
+            font-weight: 500;
+        }
+
+        .top-diff-header-stats .stat-mode {
+            color: #57606a;
+            padding-left: 8px;
+            border-left: 1px solid var(--color-border);
+        }
+
+        .top-diff-header-buttons {
+            display: flex;
+            gap: 4px;
+        }
+
+        .top-diff-content.collapsed {
+            display: none;
+        }
+
         .no-changes {
             padding: 40px;
             text-align: center;
@@ -454,32 +545,53 @@ public partial class HtmlFormatter : IOutputFormatter
 
         /* File info section */
         .file-info {
-            margin: 8px 0 16px 0;
-            padding: 12px 16px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .file-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 8px 12px;
             background-color: var(--color-header-bg);
-            border-radius: 6px;
             border: 1px solid var(--color-border);
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+
+        .file-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .file-row-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .file-path-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #57606a;
+            white-space: nowrap;
         }
 
         .file-path {
             font-family: var(--font-mono);
             font-size: 12px;
             color: #24292f;
-            margin-bottom: 8px;
             word-break: break-all;
-        }
-
-        .file-path-label {
-            font-size: 11px;
-            color: #57606a;
-            margin-bottom: 2px;
+            min-width: 0;
         }
 
         .file-actions {
             display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 8px;
+            gap: 4px;
+            flex-shrink: 0;
         }
 
         .action-btn {
@@ -709,44 +821,62 @@ public partial class HtmlFormatter : IOutputFormatter
         var stats = result.Stats;
 
         sb.AppendLine("    <header>");
-        sb.AppendLine("        <h1>Diff Report</h1>");
+
+        // Title row with inline stats
+        sb.AppendLine("        <div class=\"header-title-row\">");
+        sb.AppendLine("            <h1>Diff Report</h1>");
 
         if (options.IncludeStats)
         {
-            sb.AppendLine("        <div class=\"summary\">");
-            sb.AppendLine($"            <span class=\"stat stat-total\">{stats.TotalChanges} changes</span>");
+            sb.AppendLine("            <div class=\"header-stats\">");
 
+            // Total changes
+            sb.AppendLine($"                <span class=\"stat-inline\">{stats.TotalChanges} changes</span>");
+
+            // Additions
             if (stats.Additions > 0)
             {
-                sb.AppendLine($"            <span class=\"stat stat-additions\">+{stats.Additions} added</span>");
+                sb.AppendLine("                <span class=\"stat-separator\">|</span>");
+                sb.AppendLine($"                <span class=\"stat-inline\" style=\"color: var(--color-added-border);\">+{stats.Additions} added</span>");
             }
 
+            // Deletions
             if (stats.Deletions > 0)
             {
-                sb.AppendLine($"            <span class=\"stat stat-deletions\">-{stats.Deletions} deleted</span>");
+                sb.AppendLine("                <span class=\"stat-separator\">|</span>");
+                sb.AppendLine($"                <span class=\"stat-inline\" style=\"color: var(--color-removed-border);\">-{stats.Deletions} deleted</span>");
             }
 
+            // Modifications
             if (stats.Modifications > 0)
             {
-                sb.AppendLine($"            <span class=\"stat stat-modifications\">~{stats.Modifications} modified</span>");
+                sb.AppendLine("                <span class=\"stat-separator\">|</span>");
+                sb.AppendLine($"                <span class=\"stat-inline\" style=\"color: var(--color-modified-border);\">~{stats.Modifications} modified</span>");
             }
 
+            // Moves
             if (stats.Moves > 0)
             {
-                sb.AppendLine($"            <span class=\"stat stat-moves\">\u21c4{stats.Moves} moved</span>");
+                sb.AppendLine("                <span class=\"stat-separator\">|</span>");
+                sb.AppendLine($"                <span class=\"stat-inline\" style=\"color: var(--color-moved-border);\">\u21c4{stats.Moves} moved</span>");
             }
 
+            // Renames
             if (stats.Renames > 0)
             {
-                sb.AppendLine($"            <span class=\"stat stat-renames\">\u270e{stats.Renames} renamed</span>");
+                sb.AppendLine("                <span class=\"stat-separator\">|</span>");
+                sb.AppendLine($"                <span class=\"stat-inline\" style=\"color: var(--color-renamed-border);\">\u270e{stats.Renames} renamed</span>");
             }
 
-            // Add diff mode indicator
+            // Mode indicator
             var modeText = result.Mode == DiffMode.Roslyn ? "Roslyn Semantic" : "Line-by-Line";
-            sb.AppendLine($"            <span class=\"stat stat-mode\">Mode: {modeText}</span>");
+            sb.AppendLine("                <span class=\"stat-separator\">|</span>");
+            sb.AppendLine($"                <span class=\"stat-inline\">Mode: {modeText}</span>");
 
-            sb.AppendLine("        </div>");
+            sb.AppendLine("            </div>");
         }
+
+        sb.AppendLine("        </div>");
 
         // Add file paths section
         AppendFilePaths(sb, result, options);
@@ -766,20 +896,24 @@ public partial class HtmlFormatter : IOutputFormatter
 
         if (result.OldPath != null)
         {
-            sb.AppendLine("            <div class=\"file-path-label\">Old file:</div>");
-            sb.AppendLine($"            <div class=\"file-path\" id=\"old-path\" data-path=\"{HtmlEncode(result.OldPath)}\">{HtmlEncode(result.OldPath)}</div>");
+            sb.AppendLine("            <div class=\"file-row\">");
+            sb.AppendLine("                <div class=\"file-row-left\">");
+            sb.AppendLine("                    <span class=\"file-path-label\">Old file:</span>");
+            sb.AppendLine($"                    <span class=\"file-path\" id=\"old-path\" data-path=\"{HtmlEncode(result.OldPath)}\">{HtmlEncode(result.OldPath)}</span>");
+            sb.AppendLine("                </div>");
             AppendFileActions(sb, result.OldPath, "old", options.AvailableEditors);
+            sb.AppendLine("            </div>");
         }
 
         if (result.NewPath != null)
         {
-            if (result.OldPath != null)
-            {
-                sb.AppendLine("            <div style=\"margin-top: 12px;\"></div>");
-            }
-            sb.AppendLine("            <div class=\"file-path-label\">New file:</div>");
-            sb.AppendLine($"            <div class=\"file-path\" id=\"new-path\" data-path=\"{HtmlEncode(result.NewPath)}\">{HtmlEncode(result.NewPath)}</div>");
+            sb.AppendLine("            <div class=\"file-row\">");
+            sb.AppendLine("                <div class=\"file-row-left\">");
+            sb.AppendLine("                    <span class=\"file-path-label\">New file:</span>");
+            sb.AppendLine($"                    <span class=\"file-path\" id=\"new-path\" data-path=\"{HtmlEncode(result.NewPath)}\">{HtmlEncode(result.NewPath)}</span>");
+            sb.AppendLine("                </div>");
             AppendFileActions(sb, result.NewPath, "new", options.AvailableEditors);
+            sb.AppendLine("            </div>");
         }
 
         sb.AppendLine("        </div>");
@@ -796,54 +930,54 @@ public partial class HtmlFormatter : IOutputFormatter
             or ".h" or ".hpp" or ".json" or ".xml" or ".yaml" or ".yml" or ".md" or ".txt" or ".html"
             or ".css" or ".scss" or ".less" or ".sql" or ".sh" or ".ps1" or ".bat" or ".cmd";
 
-        sb.AppendLine("            <div class=\"file-actions\">");
+        sb.AppendLine("                <div class=\"file-actions\">");
 
         // Copy file path button (clipboard icon)
-        sb.AppendLine($"                <button class=\"action-btn icon-only\" onclick=\"copyPathWithNotification(this, '{HtmlEncodeJs(filePath)}')\" title=\"Copy full path to clipboard\">");
-        sb.AppendLine("                    <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z\"/><path d=\"M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z\"/></svg>");
-        sb.AppendLine("                </button>");
+        sb.AppendLine($"                    <button class=\"action-btn icon-only\" onclick=\"copyPathWithNotification(this, '{HtmlEncodeJs(filePath)}')\" title=\"Copy full path to clipboard\">");
+        sb.AppendLine("                        <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z\"/><path d=\"M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z\"/></svg>");
+        sb.AppendLine("                    </button>");
 
         // Copy folder path button (folder icon)
-        sb.AppendLine($"                <button class=\"action-btn icon-only\" onclick=\"copyPathWithNotification(this, '{HtmlEncodeJs(directory)}')\" title=\"Copy folder path to clipboard\">");
-        sb.AppendLine("                    <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M1.75 2h5.5c.551 0 1.064.278 1.365.737l.43.645A.25.25 0 009.25 3.5h5A1.75 1.75 0 0116 5.25v8A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V3.75C0 2.784.784 2 1.75 2zm0 1.5a.25.25 0 00-.25.25v9.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25v-8a.25.25 0 00-.25-.25H9.25a1.75 1.75 0 01-1.458-.79l-.429-.644a.25.25 0 00-.208-.11z\"/></svg>");
-        sb.AppendLine("                </button>");
+        sb.AppendLine($"                    <button class=\"action-btn icon-only\" onclick=\"copyPathWithNotification(this, '{HtmlEncodeJs(directory)}')\" title=\"Copy folder path to clipboard\">");
+        sb.AppendLine("                        <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M1.75 2h5.5c.551 0 1.064.278 1.365.737l.43.645A.25.25 0 009.25 3.5h5A1.75 1.75 0 0116 5.25v8A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V3.75C0 2.784.784 2 1.75 2zm0 1.5a.25.25 0 00-.25.25v9.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25v-8a.25.25 0 00-.25-.25H9.25a1.75 1.75 0 01-1.458-.79l-.429-.644a.25.25 0 00-.208-.11z\"/></svg>");
+        sb.AppendLine("                    </button>");
 
         if (isCodeFile)
         {
             // VS Code button (only if available)
             if (availableEditors.Contains("vscode"))
             {
-                sb.AppendLine($"                <button class=\"action-btn editor-btn icon-only\" data-editor=\"vscode\" onclick=\"openInEditor('{HtmlEncodeJs(filePath)}', 'vscode')\" title=\"Open file in VS Code\">");
-                sb.AppendLine("                    <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M14.25 1a.74.74 0 00-.218.033L10.7 2.252l-4.5 4-3.5-2.8a.75.75 0 00-.946.086l-.75.75a.75.75 0 00.033 1.09L4.5 8l-3.463 2.622a.75.75 0 00-.033 1.09l.75.75a.75.75 0 00.946.086l3.5-2.8 4.5 4 3.332 1.22A.74.74 0 0015 14.25V1.75a.75.75 0 00-.75-.75zM11 12.12L7.28 8 11 3.88v8.24z\"/></svg>");
-                sb.AppendLine("                </button>");
+                sb.AppendLine($"                    <button class=\"action-btn editor-btn icon-only\" data-editor=\"vscode\" onclick=\"openInEditor('{HtmlEncodeJs(filePath)}', 'vscode')\" title=\"Open file in VS Code\">");
+                sb.AppendLine("                        <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M14.25 1a.74.74 0 00-.218.033L10.7 2.252l-4.5 4-3.5-2.8a.75.75 0 00-.946.086l-.75.75a.75.75 0 00.033 1.09L4.5 8l-3.463 2.622a.75.75 0 00-.033 1.09l.75.75a.75.75 0 00.946.086l3.5-2.8 4.5 4 3.332 1.22A.74.74 0 0015 14.25V1.75a.75.75 0 00-.75-.75zM11 12.12L7.28 8 11 3.88v8.24z\"/></svg>");
+                sb.AppendLine("                    </button>");
             }
 
             // Rider button (only if available)
             if (availableEditors.Contains("rider"))
             {
-                sb.AppendLine($"                <button class=\"action-btn editor-btn icon-only\" data-editor=\"rider\" onclick=\"openInEditor('{HtmlEncodeJs(filePath)}', 'rider')\" title=\"Open file in Rider\">");
-                sb.AppendLine("                    <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M0 0v16h16V0H0zm13.2 2.8c.4.5.6 1 .6 1.7 0 .5-.1.9-.3 1.3-.2.4-.6.7-1 .9l1.6 2.5h-2.2l-1.4-2.2H8.8v2.2H7V2.1h3.7c.6 0 1.1.1 1.5.3.4.2.8.3 1 .4zM7 12h6v1.2H7V12z\"/><path d=\"M8.8 3.6v2h1.3c.3 0 .6-.1.8-.3.2-.2.3-.4.3-.7s-.1-.5-.3-.7c-.2-.2-.5-.3-.8-.3H8.8z\"/></svg>");
-                sb.AppendLine("                </button>");
+                sb.AppendLine($"                    <button class=\"action-btn editor-btn icon-only\" data-editor=\"rider\" onclick=\"openInEditor('{HtmlEncodeJs(filePath)}', 'rider')\" title=\"Open file in Rider\">");
+                sb.AppendLine("                        <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M0 0v16h16V0H0zm13.2 2.8c.4.5.6 1 .6 1.7 0 .5-.1.9-.3 1.3-.2.4-.6.7-1 .9l1.6 2.5h-2.2l-1.4-2.2H8.8v2.2H7V2.1h3.7c.6 0 1.1.1 1.5.3.4.2.8.3 1 .4zM7 12h6v1.2H7V12z\"/><path d=\"M8.8 3.6v2h1.3c.3 0 .6-.1.8-.3.2-.2.3-.4.3-.7s-.1-.5-.3-.7c-.2-.2-.5-.3-.8-.3H8.8z\"/></svg>");
+                sb.AppendLine("                    </button>");
             }
 
             // PyCharm button (only if available)
             if (availableEditors.Contains("pycharm"))
             {
-                sb.AppendLine($"                <button class=\"action-btn editor-btn icon-only\" data-editor=\"pycharm\" onclick=\"openInEditor('{HtmlEncodeJs(filePath)}', 'pycharm')\" title=\"Open file in PyCharm\">");
-                sb.AppendLine("                    <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M0 0v16h16V0H0zm2 13h5v1H2v-1zm6.3-5.5c-.1.4-.4.7-.8.9l1.2 1.8h-1.5l-1-1.5H5v1.5H3.5V4.5h2.8c.5 0 .9.1 1.2.3.3.2.5.4.7.7.1.3.2.6.2 1 0 .4-.1.7-.1 1zm-.9-1c0-.2-.1-.4-.2-.5-.1-.2-.3-.2-.5-.2H5v1.5h1.7c.2 0 .4-.1.5-.2.1-.2.2-.4.2-.6z\"/></svg>");
-                sb.AppendLine("                </button>");
+                sb.AppendLine($"                    <button class=\"action-btn editor-btn icon-only\" data-editor=\"pycharm\" onclick=\"openInEditor('{HtmlEncodeJs(filePath)}', 'pycharm')\" title=\"Open file in PyCharm\">");
+                sb.AppendLine("                        <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M0 0v16h16V0H0zm2 13h5v1H2v-1zm6.3-5.5c-.1.4-.4.7-.8.9l1.2 1.8h-1.5l-1-1.5H5v1.5H3.5V4.5h2.8c.5 0 .9.1 1.2.3.3.2.5.4.7.7.1.3.2.6.2 1 0 .4-.1.7-.1 1zm-.9-1c0-.2-.1-.4-.2-.5-.1-.2-.3-.2-.5-.2H5v1.5h1.7c.2 0 .4-.1.5-.2.1-.2.2-.4.2-.6z\"/></svg>");
+                sb.AppendLine("                    </button>");
             }
 
             // Zed button (only if available)
             if (availableEditors.Contains("zed"))
             {
-                sb.AppendLine($"                <button class=\"action-btn editor-btn icon-only\" data-editor=\"zed\" onclick=\"openInEditor('{HtmlEncodeJs(filePath)}', 'zed')\" title=\"Open file in Zed\">");
-                sb.AppendLine("                    <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M2.5 1L13 1L15 3.5L15 14.5L13 16L3 16L1 13.5L1 2.5L2.5 1ZM3.5 3L3 3.5L3 12.5L4 14L12 14L13 12.5L13 4L12 3L3.5 3ZM5 5L11 5L11 6.5L7.5 11L11 11L11 13L5 13L5 11.5L8.5 7L5 7L5 5Z\"/></svg>");
-                sb.AppendLine("                </button>");
+                sb.AppendLine($"                    <button class=\"action-btn editor-btn icon-only\" data-editor=\"zed\" onclick=\"openInEditor('{HtmlEncodeJs(filePath)}', 'zed')\" title=\"Open file in Zed\">");
+                sb.AppendLine("                        <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M2.5 1L13 1L15 3.5L15 14.5L13 16L3 16L1 13.5L1 2.5L2.5 1ZM3.5 3L3 3.5L3 12.5L4 14L12 14L13 12.5L13 4L12 3L3.5 3ZM5 5L11 5L11 6.5L7.5 11L11 11L11 13L5 13L5 11.5L8.5 7L5 7L5 5Z\"/></svg>");
+                sb.AppendLine("                    </button>");
             }
         }
 
-        sb.AppendLine("            </div>");
+        sb.AppendLine("                </div>");
     }
 
     private static string HtmlEncodeJs(string text)
@@ -893,11 +1027,41 @@ public partial class HtmlFormatter : IOutputFormatter
         sb.AppendLine($"                    <button class=\"copy-btn\" onclick=\"copyFileAsDiff(this)\" title=\"Copy entire file diff in unified diff format\">Diff</button>");
         sb.AppendLine("                </div>");
         sb.AppendLine("            </div>");
-        sb.AppendLine($"            <div class=\"diff-container\" id=\"{fileId}-content\">");
+
+        // Top diff header with stats and copy buttons
+        var topDiffId = $"{fileId}-top-diff";
+        var stats = result.Stats;
+        var modeText = result.Mode == DiffMode.Roslyn ? "Roslyn Semantic" : "Line-by-Line";
+
+        sb.AppendLine($"            <div class=\"top-diff-header\" onclick=\"toggleTopDiff('{topDiffId}')\" data-file-json=\"{HtmlEncode(fileJson)}\" data-file-diff=\"{HtmlEncode(fileDiff)}\">");
+        sb.AppendLine("                <div class=\"top-diff-header-left\">");
+        sb.AppendLine("                    <span class=\"expand-icon\">\u25bc</span>");
+        sb.AppendLine("                    <div class=\"top-diff-header-stats\">");
+        sb.AppendLine($"                        <span class=\"stat-inline\">{stats.TotalChanges} changes</span>");
+        if (stats.Additions > 0)
+        {
+            sb.AppendLine($"                        <span class=\"stat-added\">+{stats.Additions} added</span>");
+        }
+        if (stats.Deletions > 0)
+        {
+            sb.AppendLine($"                        <span class=\"stat-removed\">-{stats.Deletions} deleted</span>");
+        }
+        sb.AppendLine($"                        <span class=\"stat-mode\">Mode: {modeText}</span>");
+        sb.AppendLine("                    </div>");
+        sb.AppendLine("                </div>");
+        sb.AppendLine("                <div class=\"top-diff-header-buttons\" onclick=\"event.stopPropagation()\">");
+        sb.AppendLine($"                    <button class=\"copy-btn\" onclick=\"copyTopDiffAsJson(this)\" title=\"Copy entire diff as JSON\">JSON</button>");
+        sb.AppendLine($"                    <button class=\"copy-btn\" onclick=\"copyTopDiffAsDiff(this)\" title=\"Copy entire diff in unified format\">Diff</button>");
+        sb.AppendLine("                </div>");
+        sb.AppendLine("            </div>");
+
+        sb.AppendLine($"            <div class=\"top-diff-content\" id=\"{topDiffId}\">");
+        sb.AppendLine($"                <div class=\"diff-container\" id=\"{fileId}-content\">");
 
         // Side-by-side view
         AppendSideBySideView(sb, fileChange, result, options);
 
+        sb.AppendLine("                </div>");
         sb.AppendLine("            </div>");
 
         // Individual changes - only render root-level changes (those not nested as children)
@@ -1223,6 +1387,33 @@ public partial class HtmlFormatter : IOutputFormatter
         sb.AppendLine("            header.classList.toggle('collapsed');");
         sb.AppendLine("        }");
         sb.AppendLine("");
+        sb.AppendLine("        // Toggle top diff section visibility");
+        sb.AppendLine("        function toggleTopDiff(topDiffId) {");
+        sb.AppendLine("            const content = document.getElementById(topDiffId);");
+        sb.AppendLine("            const header = content.previousElementSibling;");
+        sb.AppendLine("            content.classList.toggle('collapsed');");
+        sb.AppendLine("            header.classList.toggle('collapsed');");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        // Copy top diff as JSON");
+        sb.AppendLine("        function copyTopDiffAsJson(btn) {");
+        sb.AppendLine("            const header = btn.closest('.top-diff-header');");
+        sb.AppendLine("            const jsonData = decodeHtmlEntities(header.dataset.fileJson);");
+        sb.AppendLine("            try {");
+        sb.AppendLine("                const parsed = JSON.parse(jsonData);");
+        sb.AppendLine("                copyToClipboard(JSON.stringify(parsed, null, 2), btn);");
+        sb.AppendLine("            } catch (e) {");
+        sb.AppendLine("                copyToClipboard(jsonData, btn);");
+        sb.AppendLine("            }");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        // Copy top diff in unified diff format");
+        sb.AppendLine("        function copyTopDiffAsDiff(btn) {");
+        sb.AppendLine("            const header = btn.closest('.top-diff-header');");
+        sb.AppendLine("            const diffData = decodeHtmlEntities(header.dataset.fileDiff);");
+        sb.AppendLine("            copyToClipboard(diffData, btn);");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
         sb.AppendLine("        function scrollToTop() {");
         sb.AppendLine("            window.scrollTo({ top: 0, behavior: 'smooth' });");
         sb.AppendLine("        }");
@@ -1250,11 +1441,15 @@ public partial class HtmlFormatter : IOutputFormatter
         sb.AppendLine("        function expandAll() {");
         sb.AppendLine("            document.querySelectorAll('.change-body').forEach(el => el.classList.remove('collapsed'));");
         sb.AppendLine("            document.querySelectorAll('.change-header').forEach(el => el.classList.remove('collapsed'));");
+        sb.AppendLine("            document.querySelectorAll('.top-diff-content').forEach(el => el.classList.remove('collapsed'));");
+        sb.AppendLine("            document.querySelectorAll('.top-diff-header').forEach(el => el.classList.remove('collapsed'));");
         sb.AppendLine("        }");
         sb.AppendLine("");
         sb.AppendLine("        function collapseAll() {");
         sb.AppendLine("            document.querySelectorAll('.change-body').forEach(el => el.classList.add('collapsed'));");
         sb.AppendLine("            document.querySelectorAll('.change-header').forEach(el => el.classList.add('collapsed'));");
+        sb.AppendLine("            document.querySelectorAll('.top-diff-content').forEach(el => el.classList.add('collapsed'));");
+        sb.AppendLine("            document.querySelectorAll('.top-diff-header').forEach(el => el.classList.add('collapsed'));");
         sb.AppendLine("        }");
         sb.AppendLine("");
         sb.AppendLine("        // Copy as JSON format (for AI/Claude)");
