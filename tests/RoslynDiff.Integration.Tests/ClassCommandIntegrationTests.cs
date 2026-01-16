@@ -305,7 +305,7 @@ public class ClassCommandIntegrationTests
         var doc = JsonDocument.Parse(json);
         doc.RootElement.GetProperty("metadata").Should().NotBeNull();
         doc.RootElement.GetProperty("summary").GetProperty("additions").GetInt32().Should().Be(1);
-        doc.RootElement.GetProperty("files").GetArrayLength().Should().BeGreaterOrEqualTo(1);
+        doc.RootElement.GetProperty("files").GetArrayLength().Should().BeGreaterThanOrEqualTo(1);
     }
 
     [Fact]

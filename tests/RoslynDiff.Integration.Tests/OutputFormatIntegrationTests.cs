@@ -147,7 +147,7 @@ public partial class OutputFormatIntegrationTests
 
         // Assert
         doc.RootElement.TryGetProperty("files", out var files).Should().BeTrue();
-        files.GetArrayLength().Should().BeGreaterOrEqualTo(1);
+        files.GetArrayLength().Should().BeGreaterThanOrEqualTo(1);
 
         var firstFile = files[0];
         firstFile.TryGetProperty("changes", out var changes).Should().BeTrue();

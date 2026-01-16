@@ -271,7 +271,7 @@ public class ClassMatcherTests
         // Assert
         result.Should().NotBeNull();
         result!.MatchedBy.Should().Be(ClassMatchStrategy.Similarity);
-        result.Similarity.Should().BeGreaterOrEqualTo(0.8);
+        result.Similarity.Should().BeGreaterThanOrEqualTo(0.8);
     }
 
     [Fact]
