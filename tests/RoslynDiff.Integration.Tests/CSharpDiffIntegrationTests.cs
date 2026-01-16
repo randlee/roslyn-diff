@@ -86,7 +86,7 @@ public class CSharpDiffIntegrationTests
 
         // Verify files section
         var files = doc.RootElement.GetProperty("files");
-        files.GetArrayLength().Should().BeGreaterOrEqualTo(1);
+        files.GetArrayLength().Should().BeGreaterThanOrEqualTo(1);
 
         // Verify Calculator class was detected as added
         var changes = files[0].GetProperty("changes");
