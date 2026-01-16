@@ -124,9 +124,11 @@ public sealed class UnifiedFormatter : IOutputFormatter
         var oldCount = 0;
         var newCount = 0;
 
-        // Find the starting line numbers and count lines
+        // Find the starting line numbers and count actual lines in content
         foreach (var change in hunk)
         {
+            var contentLineCount = CountContentLines(change);
+
             switch (change.Type)
             {
                 case ChangeType.Added:
@@ -134,7 +136,7 @@ public sealed class UnifiedFormatter : IOutputFormatter
                     {
                         startNew = change.NewLocation.StartLine;
                     }
-                    newCount++;
+                    newCount += contentLineCount;
                     break;
 
                 case ChangeType.Removed:
@@ -142,7 +144,7 @@ public sealed class UnifiedFormatter : IOutputFormatter
                     {
                         startOld = change.OldLocation.StartLine;
                     }
-                    oldCount++;
+                    oldCount += contentLineCount;
                     break;
 
                 case ChangeType.Unchanged:
@@ -157,8 +159,8 @@ public sealed class UnifiedFormatter : IOutputFormatter
                     {
                         startNew = change.NewLocation.StartLine;
                     }
-                    oldCount++;
-                    newCount++;
+                    oldCount += contentLineCount;
+                    newCount += contentLineCount;
                     break;
             }
         }
@@ -202,22 +204,70 @@ public sealed class UnifiedFormatter : IOutputFormatter
                 _ => change.OldContent ?? change.NewContent ?? ""
             };
 
-            if (useColor)
+            // Split content into lines and prefix each line appropriately
+            var lines = content.Split('\n');
+            for (var i = 0; i < lines.Length; i++)
             {
-                var color = change.Type switch
+                // Remove trailing \r if present (for Windows line endings)
+                var line = lines[i].TrimEnd('\r');
+
+                // Skip empty trailing line that results from trailing newline
+                if (i == lines.Length - 1 && string.IsNullOrEmpty(line))
                 {
-                    ChangeType.Added => "\x1b[32m",    // Green
-                    ChangeType.Removed => "\x1b[31m", // Red
-                    _ => ""
-                };
-                var reset = change.Type != ChangeType.Unchanged ? "\x1b[0m" : "";
-                writer.WriteLine($"{color}{prefix}{content}{reset}");
-            }
-            else
-            {
-                writer.WriteLine($"{prefix}{content}");
+                    continue;
+                }
+
+                if (useColor)
+                {
+                    var color = change.Type switch
+                    {
+                        ChangeType.Added => "\x1b[32m",    // Green
+                        ChangeType.Removed => "\x1b[31m", // Red
+                        _ => ""
+                    };
+                    var reset = change.Type != ChangeType.Unchanged ? "\x1b[0m" : "";
+                    writer.WriteLine($"{color}{prefix}{line}{reset}");
+                }
+                else
+                {
+                    writer.WriteLine($"{prefix}{line}");
+                }
             }
         }
+    }
+
+    /// <summary>
+    /// Counts the number of actual lines in a change's content.
+    /// </summary>
+    private static int CountContentLines(Change change)
+    {
+        var content = change.Type switch
+        {
+            ChangeType.Added => change.NewContent ?? "",
+            ChangeType.Removed => change.OldContent ?? "",
+            _ => change.OldContent ?? change.NewContent ?? ""
+        };
+
+        if (string.IsNullOrEmpty(content))
+        {
+            return 1; // Fallback to 1 line for empty content
+        }
+
+        // Count non-empty lines (same logic as the line-splitting in WriteHunk)
+        var lines = content.Split('\n');
+        var count = 0;
+        for (var i = 0; i < lines.Length; i++)
+        {
+            var line = lines[i].TrimEnd('\r');
+            // Skip empty trailing line that results from trailing newline
+            if (i == lines.Length - 1 && string.IsNullOrEmpty(line))
+            {
+                continue;
+            }
+            count++;
+        }
+
+        return Math.Max(count, 1); // At least 1 line
     }
 
 }

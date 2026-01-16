@@ -168,8 +168,8 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
                 IgnoreWhitespace = settings.IgnoreWhitespace,
                 IgnoreComments = settings.IgnoreComments,
                 ContextLines = settings.ContextLines,
-                OldPath = settings.OldPath,
-                NewPath = settings.NewPath
+                OldPath = Path.GetFullPath(settings.OldPath),
+                NewPath = Path.GetFullPath(settings.NewPath)
             };
 
             // Get the appropriate differ
@@ -191,7 +191,8 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             var outputOptions = new OutputOptions
             {
                 UseColor = settings.RichOutput,
-                PrettyPrint = true
+                PrettyPrint = true,
+                AvailableEditors = EditorDetector.DetectAvailableEditors()
             };
 
             var output = formatter.FormatResult(result, outputOptions);

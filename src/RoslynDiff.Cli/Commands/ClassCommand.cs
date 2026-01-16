@@ -79,9 +79,11 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
     {
         try
         {
-            // Parse class specifications
-            var (oldFilePath, oldClassName) = ClassSpecParser.Parse(settings.OldSpec);
-            var (newFilePath, newClassName) = ClassSpecParser.Parse(settings.NewSpec);
+            // Parse class specifications and convert to absolute paths
+            var (oldFilePathRaw, oldClassName) = ClassSpecParser.Parse(settings.OldSpec);
+            var (newFilePathRaw, newClassName) = ClassSpecParser.Parse(settings.NewSpec);
+            var oldFilePath = Path.GetFullPath(oldFilePathRaw);
+            var newFilePath = Path.GetFullPath(newFilePathRaw);
 
             // Validate files exist
             if (!File.Exists(oldFilePath))
@@ -203,7 +205,8 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
             var outputOptions = new OutputOptions
             {
                 UseColor = string.IsNullOrEmpty(settings.OutFile), // Color for stdout only
-                PrettyPrint = true
+                PrettyPrint = true,
+                AvailableEditors = EditorDetector.DetectAvailableEditors()
             };
 
             var formattedOutput = formatter.FormatResult(result, outputOptions);
@@ -285,33 +288,40 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
 
         if (oldClass is null && newClass is not null)
         {
-            // Entire class is new
+            // Entire class is new - use NormalizeWhitespace() for consistent formatting
             changes.Add(new Change
             {
                 Type = ChangeType.Added,
                 Kind = ChangeKind.Class,
                 Name = newClass.Identifier.Text,
-                NewContent = newClass.ToFullString(),
+                NewContent = newClass.NormalizeWhitespace().ToString(),
                 NewLocation = NodeMatcher.CreateLocation(newClass, newFilePath)
             });
         }
         else if (oldClass is not null && newClass is null)
         {
-            // Entire class was removed
+            // Entire class was removed - use NormalizeWhitespace() for consistent formatting
             changes.Add(new Change
             {
                 Type = ChangeType.Removed,
                 Kind = ChangeKind.Class,
                 Name = oldClass.Identifier.Text,
-                OldContent = oldClass.ToFullString(),
+                OldContent = oldClass.NormalizeWhitespace().ToString(),
                 OldLocation = NodeMatcher.CreateLocation(oldClass, oldFilePath)
             });
         }
         else if (oldClass is not null && newClass is not null)
         {
-            // Compare class contents
-            var oldNodes = nodeMatcher.ExtractStructuralNodes(oldClass);
-            var newNodes = nodeMatcher.ExtractStructuralNodes(newClass);
+            // Compare class contents - extract only MEMBER-level nodes (not the class itself)
+            // to avoid duplicate reporting of both class and member changes.
+            // When comparing two classes, we want to show individual member changes,
+            // not the entire class as "Modified" alongside those member changes.
+            var oldNodes = nodeMatcher.ExtractStructuralNodes(oldClass)
+                .Where(n => n.Node != oldClass)  // Exclude the class itself
+                .ToList();
+            var newNodes = nodeMatcher.ExtractStructuralNodes(newClass)
+                .Where(n => n.Node != newClass)  // Exclude the class itself
+                .ToList();
 
             var matchResult = nodeMatcher.MatchNodes(oldNodes, newNodes);
 
@@ -332,12 +342,14 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
             }
 
             // Process matched pairs for modifications
+            // Use NormalizeWhitespace() for consistent formatting in diff output
             foreach (var (oldNode, newNode) in matchResult.MatchedPairs)
             {
-                var oldText = oldNode.ToFullString();
-                var newText = newNode.ToFullString();
+                // Compare normalized text to detect semantic changes (ignoring whitespace differences)
+                var oldNormalized = oldNode.NormalizeWhitespace().ToString();
+                var newNormalized = newNode.NormalizeWhitespace().ToString();
 
-                if (oldText != newText)
+                if (oldNormalized != newNormalized)
                 {
                     var name = NodeMatcher.GetNodeName(oldNode) ?? "unknown";
                     changes.Add(new Change
@@ -345,8 +357,8 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
                         Type = ChangeType.Modified,
                         Kind = NodeMatcher.GetChangeKind(oldNode),
                         Name = name,
-                        OldContent = oldText,
-                        NewContent = newText,
+                        OldContent = oldNormalized,
+                        NewContent = newNormalized,
                         OldLocation = NodeMatcher.CreateLocation(oldNode, oldFilePath),
                         NewLocation = NodeMatcher.CreateLocation(newNode, newFilePath)
                     });
@@ -362,7 +374,7 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
                     Type = ChangeType.Removed,
                     Kind = NodeMatcher.GetChangeKind(removed),
                     Name = name,
-                    OldContent = removed.ToFullString(),
+                    OldContent = removed.NormalizeWhitespace().ToString(),
                     OldLocation = NodeMatcher.CreateLocation(removed, oldFilePath)
                 });
             }
@@ -376,7 +388,7 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
                     Type = ChangeType.Added,
                     Kind = NodeMatcher.GetChangeKind(added),
                     Name = name,
-                    NewContent = added.ToFullString(),
+                    NewContent = added.NormalizeWhitespace().ToString(),
                     NewLocation = NodeMatcher.CreateLocation(added, newFilePath)
                 });
             }
