@@ -79,9 +79,11 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
     {
         try
         {
-            // Parse class specifications
-            var (oldFilePath, oldClassName) = ClassSpecParser.Parse(settings.OldSpec);
-            var (newFilePath, newClassName) = ClassSpecParser.Parse(settings.NewSpec);
+            // Parse class specifications and convert to absolute paths
+            var (oldFilePathRaw, oldClassName) = ClassSpecParser.Parse(settings.OldSpec);
+            var (newFilePathRaw, newClassName) = ClassSpecParser.Parse(settings.NewSpec);
+            var oldFilePath = Path.GetFullPath(oldFilePathRaw);
+            var newFilePath = Path.GetFullPath(newFilePathRaw);
 
             // Validate files exist
             if (!File.Exists(oldFilePath))
@@ -203,7 +205,8 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
             var outputOptions = new OutputOptions
             {
                 UseColor = string.IsNullOrEmpty(settings.OutFile), // Color for stdout only
-                PrettyPrint = true
+                PrettyPrint = true,
+                AvailableEditors = EditorDetector.DetectAvailableEditors()
             };
 
             var formattedOutput = formatter.FormatResult(result, outputOptions);

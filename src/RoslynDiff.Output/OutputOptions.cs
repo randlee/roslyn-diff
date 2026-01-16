@@ -44,4 +44,10 @@ public record OutputOptions
     /// </summary>
     [Obsolete("Use PrettyPrint instead.")]
     public bool IndentJson { get => PrettyPrint; init => PrettyPrint = value; }
+
+    /// <summary>
+    /// Gets or sets the list of available editors detected on the system.
+    /// Used by HTML formatter to conditionally show editor buttons.
+    /// </summary>
+    public IReadOnlyList<string> AvailableEditors { get; init; } = Array.Empty<string>();
 }

@@ -23,7 +23,7 @@ public partial class HtmlFormatter : IOutputFormatter
         var sb = new StringBuilder();
 
         AppendHtmlHeader(sb, result);
-        AppendSummarySection(sb, result.Stats, options);
+        AppendSummarySection(sb, result, options);
         AppendDiffContent(sb, result, options);
         AppendHtmlFooter(sb);
 
@@ -182,7 +182,7 @@ public partial class HtmlFormatter : IOutputFormatter
         main {
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 16px;
         }
 
         .file-diff {
@@ -228,10 +228,10 @@ public partial class HtmlFormatter : IOutputFormatter
         }
 
         .diff-side-header {
-            padding: 8px 16px;
+            padding: 4px 12px;
             background-color: var(--color-header-bg);
             border-bottom: 1px solid var(--color-border);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
             color: #57606a;
         }
@@ -247,30 +247,29 @@ public partial class HtmlFormatter : IOutputFormatter
         .diff-content {
             font-family: var(--font-mono);
             font-size: 12px;
-            line-height: 20px;
-            white-space: pre;
             overflow-x: auto;
         }
 
         .diff-line {
             display: flex;
-            min-height: 20px;
+            line-height: 1.2;
         }
 
         .line-number {
             flex-shrink: 0;
-            width: 50px;
-            padding: 0 8px;
+            width: 40px;
+            padding: 0 6px;
             text-align: right;
             color: var(--color-line-number);
             background-color: var(--color-code-bg);
             border-right: 1px solid var(--color-border);
             user-select: none;
+            white-space: pre;
         }
 
         .line-content {
             flex: 1;
-            padding: 0 8px;
+            padding: 0 6px;
             white-space: pre;
             overflow-x: auto;
         }
@@ -300,7 +299,7 @@ public partial class HtmlFormatter : IOutputFormatter
         }
 
         .change-section {
-            margin-bottom: 16px;
+            margin-bottom: 8px;
             border: 1px solid var(--color-border);
             border-radius: 6px;
             overflow: hidden;
@@ -310,7 +309,7 @@ public partial class HtmlFormatter : IOutputFormatter
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 16px;
+            padding: 6px 12px;
             background-color: var(--color-header-bg);
             border-bottom: 1px solid var(--color-border);
             cursor: pointer;
@@ -408,6 +407,124 @@ public partial class HtmlFormatter : IOutputFormatter
         .number { color: #0550ae; }
         .preprocessor { color: #6e7781; }
 
+        /* Copy buttons */
+        .copy-buttons {
+            display: flex;
+            gap: 4px;
+            margin-left: auto;
+        }
+
+        .copy-btn {
+            background: none;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 11px;
+            color: #57606a;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--color-header-bg);
+            color: #24292f;
+        }
+
+        .copy-btn.copied {
+            background-color: var(--color-added-bg);
+            border-color: var(--color-added-border);
+            color: var(--color-added-border);
+        }
+
+        /* File info section */
+        .file-info {
+            margin: 8px 0 16px 0;
+            padding: 12px 16px;
+            background-color: var(--color-header-bg);
+            border-radius: 6px;
+            border: 1px solid var(--color-border);
+        }
+
+        .file-path {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: #24292f;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+
+        .file-path-label {
+            font-size: 11px;
+            color: #57606a;
+            margin-bottom: 2px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .action-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            font-size: 11px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            background: white;
+            color: #24292f;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+
+        .action-btn:hover {
+            background-color: var(--color-header-bg);
+            border-color: #57606a;
+        }
+
+        .action-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .action-btn.icon-only {
+            padding: 6px;
+            gap: 0;
+        }
+
+        .action-btn.icon-only svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Notification popup */
+        .notification {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            padding: 6px 10px;
+            font-size: 11px;
+            background: #1f2328;
+            color: white;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: opacity 0.15s, transform 0.15s;
+            pointer-events: none;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* Navigation */
         .nav-container {
             position: fixed;
@@ -496,8 +613,10 @@ public partial class HtmlFormatter : IOutputFormatter
         sb.AppendLine("    </style>");
     }
 
-    private static void AppendSummarySection(StringBuilder sb, DiffStats stats, OutputOptions options)
+    private static void AppendSummarySection(StringBuilder sb, DiffResult result, OutputOptions options)
     {
+        var stats = result.Stats;
+
         sb.AppendLine("    <header>");
         sb.AppendLine("        <h1>Diff Report</h1>");
 
@@ -534,7 +653,108 @@ public partial class HtmlFormatter : IOutputFormatter
             sb.AppendLine("        </div>");
         }
 
+        // Add file paths section
+        AppendFilePaths(sb, result, options);
+
         sb.AppendLine("    </header>");
+    }
+
+    private static void AppendFilePaths(StringBuilder sb, DiffResult result, OutputOptions options)
+    {
+        // Show file paths if available
+        if (result.OldPath == null && result.NewPath == null)
+        {
+            return;
+        }
+
+        sb.AppendLine("        <div class=\"file-info\">");
+
+        if (result.OldPath != null)
+        {
+            sb.AppendLine("            <div class=\"file-path-label\">Old file:</div>");
+            sb.AppendLine($"            <div class=\"file-path\" id=\"old-path\" data-path=\"{HtmlEncode(result.OldPath)}\">{HtmlEncode(result.OldPath)}</div>");
+            AppendFileActions(sb, result.OldPath, "old", options.AvailableEditors);
+        }
+
+        if (result.NewPath != null)
+        {
+            if (result.OldPath != null)
+            {
+                sb.AppendLine("            <div style=\"margin-top: 12px;\"></div>");
+            }
+            sb.AppendLine("            <div class=\"file-path-label\">New file:</div>");
+            sb.AppendLine($"            <div class=\"file-path\" id=\"new-path\" data-path=\"{HtmlEncode(result.NewPath)}\">{HtmlEncode(result.NewPath)}</div>");
+            AppendFileActions(sb, result.NewPath, "new", options.AvailableEditors);
+        }
+
+        sb.AppendLine("        </div>");
+    }
+
+    private static void AppendFileActions(StringBuilder sb, string filePath, string prefix, IReadOnlyList<string> availableEditors)
+    {
+        var directory = Path.GetDirectoryName(filePath) ?? "";
+        var extension = Path.GetExtension(filePath)?.ToLowerInvariant() ?? "";
+
+        // Check if this is a code file that editors can open
+        var isCodeFile = extension is ".cs" or ".vb" or ".fs" or ".js" or ".ts" or ".jsx" or ".tsx"
+            or ".py" or ".rb" or ".go" or ".rs" or ".java" or ".kt" or ".swift" or ".c" or ".cpp"
+            or ".h" or ".hpp" or ".json" or ".xml" or ".yaml" or ".yml" or ".md" or ".txt" or ".html"
+            or ".css" or ".scss" or ".less" or ".sql" or ".sh" or ".ps1" or ".bat" or ".cmd";
+
+        sb.AppendLine("            <div class=\"file-actions\">");
+
+        // Copy file path button (clipboard icon)
+        sb.AppendLine($"                <button class=\"action-btn icon-only\" onclick=\"copyPathWithNotification(this, '{HtmlEncodeJs(filePath)}')\" title=\"Copy full path to clipboard\">");
+        sb.AppendLine("                    <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z\"/><path d=\"M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z\"/></svg>");
+        sb.AppendLine("                </button>");
+
+        // Copy folder path button (folder icon)
+        sb.AppendLine($"                <button class=\"action-btn icon-only\" onclick=\"copyPathWithNotification(this, '{HtmlEncodeJs(directory)}')\" title=\"Copy folder path to clipboard\">");
+        sb.AppendLine("                    <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M1.75 2h5.5c.551 0 1.064.278 1.365.737l.43.645A.25.25 0 009.25 3.5h5A1.75 1.75 0 0116 5.25v8A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V3.75C0 2.784.784 2 1.75 2zm0 1.5a.25.25 0 00-.25.25v9.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25v-8a.25.25 0 00-.25-.25H9.25a1.75 1.75 0 01-1.458-.79l-.429-.644a.25.25 0 00-.208-.11z\"/></svg>");
+        sb.AppendLine("                </button>");
+
+        if (isCodeFile)
+        {
+            // VS Code button (only if available)
+            if (availableEditors.Contains("vscode"))
+            {
+                sb.AppendLine($"                <button class=\"action-btn editor-btn icon-only\" data-editor=\"vscode\" onclick=\"openInEditor('{HtmlEncodeJs(filePath)}', 'vscode')\" title=\"Open file in VS Code\">");
+                sb.AppendLine("                    <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M14.25 1a.74.74 0 00-.218.033L10.7 2.252l-4.5 4-3.5-2.8a.75.75 0 00-.946.086l-.75.75a.75.75 0 00.033 1.09L4.5 8l-3.463 2.622a.75.75 0 00-.033 1.09l.75.75a.75.75 0 00.946.086l3.5-2.8 4.5 4 3.332 1.22A.74.74 0 0015 14.25V1.75a.75.75 0 00-.75-.75zM11 12.12L7.28 8 11 3.88v8.24z\"/></svg>");
+                sb.AppendLine("                </button>");
+            }
+
+            // Rider button (only if available)
+            if (availableEditors.Contains("rider"))
+            {
+                sb.AppendLine($"                <button class=\"action-btn editor-btn icon-only\" data-editor=\"rider\" onclick=\"openInEditor('{HtmlEncodeJs(filePath)}', 'rider')\" title=\"Open file in Rider\">");
+                sb.AppendLine("                    <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M0 0v16h16V0H0zm13.2 2.8c.4.5.6 1 .6 1.7 0 .5-.1.9-.3 1.3-.2.4-.6.7-1 .9l1.6 2.5h-2.2l-1.4-2.2H8.8v2.2H7V2.1h3.7c.6 0 1.1.1 1.5.3.4.2.8.3 1 .4zM7 12h6v1.2H7V12z\"/><path d=\"M8.8 3.6v2h1.3c.3 0 .6-.1.8-.3.2-.2.3-.4.3-.7s-.1-.5-.3-.7c-.2-.2-.5-.3-.8-.3H8.8z\"/></svg>");
+                sb.AppendLine("                </button>");
+            }
+
+            // PyCharm button (only if available)
+            if (availableEditors.Contains("pycharm"))
+            {
+                sb.AppendLine($"                <button class=\"action-btn editor-btn icon-only\" data-editor=\"pycharm\" onclick=\"openInEditor('{HtmlEncodeJs(filePath)}', 'pycharm')\" title=\"Open file in PyCharm\">");
+                sb.AppendLine("                    <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M0 0v16h16V0H0zm2 13h5v1H2v-1zm6.3-5.5c-.1.4-.4.7-.8.9l1.2 1.8h-1.5l-1-1.5H5v1.5H3.5V4.5h2.8c.5 0 .9.1 1.2.3.3.2.5.4.7.7.1.3.2.6.2 1 0 .4-.1.7-.1 1zm-.9-1c0-.2-.1-.4-.2-.5-.1-.2-.3-.2-.5-.2H5v1.5h1.7c.2 0 .4-.1.5-.2.1-.2.2-.4.2-.6z\"/></svg>");
+                sb.AppendLine("                </button>");
+            }
+
+            // Zed button (only if available)
+            if (availableEditors.Contains("zed"))
+            {
+                sb.AppendLine($"                <button class=\"action-btn editor-btn icon-only\" data-editor=\"zed\" onclick=\"openInEditor('{HtmlEncodeJs(filePath)}', 'zed')\" title=\"Open file in Zed\">");
+                sb.AppendLine("                    <svg viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M2.5 1L13 1L15 3.5L15 14.5L13 16L3 16L1 13.5L1 2.5L2.5 1ZM3.5 3L3 3.5L3 12.5L4 14L12 14L13 12.5L13 4L12 3L3.5 3ZM5 5L11 5L11 6.5L7.5 11L11 11L11 13L5 13L5 11.5L8.5 7L5 7L5 5Z\"/></svg>");
+                sb.AppendLine("                </button>");
+            }
+        }
+
+        sb.AppendLine("            </div>");
+    }
+
+    private static string HtmlEncodeJs(string text)
+    {
+        // Encode for use in JavaScript strings within HTML attributes
+        return HtmlEncode(text.Replace("\\", "\\\\").Replace("'", "\\'"));
     }
 
     private static void AppendDiffContent(StringBuilder sb, DiffResult result, OutputOptions options)
@@ -577,15 +797,34 @@ public partial class HtmlFormatter : IOutputFormatter
 
         sb.AppendLine("            </div>");
 
-        // Individual changes
+        // Individual changes - only render root-level changes (those not nested as children)
         if (fileChange.Changes.Count > 0)
         {
-            sb.AppendLine("            <div class=\"changes-list\">");
+            // Build a set of all child changes to identify root-level changes
+            var childChanges = new HashSet<Change>();
             foreach (var change in fileChange.Changes)
             {
-                AppendChange(sb, change, 0);
+                if (change.Children != null)
+                {
+                    foreach (var child in change.Children)
+                    {
+                        childChanges.Add(child);
+                    }
+                }
             }
-            sb.AppendLine("            </div>");
+
+            // Only render changes that are not children of another change
+            var rootChanges = fileChange.Changes.Where(c => !childChanges.Contains(c)).ToList();
+
+            if (rootChanges.Count > 0)
+            {
+                sb.AppendLine("            <div class=\"changes-list\">");
+                foreach (var change in rootChanges)
+                {
+                    AppendChange(sb, change, 0);
+                }
+                sb.AppendLine("            </div>");
+            }
         }
 
         sb.AppendLine("        </section>");
@@ -613,7 +852,24 @@ public partial class HtmlFormatter : IOutputFormatter
     private static void AppendSideContent(StringBuilder sb, FileChange fileChange, bool isOld, DiffMode mode)
     {
         var lineNumber = 1;
-        var relevantChanges = fileChange.Changes.Where(c =>
+
+        // Build a set of all child changes to identify root-level changes
+        var childChanges = new HashSet<Change>();
+        foreach (var change in fileChange.Changes)
+        {
+            if (change.Children != null)
+            {
+                foreach (var child in change.Children)
+                {
+                    childChanges.Add(child);
+                }
+            }
+        }
+
+        // Only process root-level changes (those not nested as children)
+        var rootChanges = fileChange.Changes.Where(c => !childChanges.Contains(c)).ToList();
+
+        var relevantChanges = rootChanges.Where(c =>
             (isOld && c.OldContent != null) || (!isOld && c.NewContent != null)).ToList();
 
         if (relevantChanges.Count == 0)
@@ -625,7 +881,7 @@ public partial class HtmlFormatter : IOutputFormatter
             return;
         }
 
-        foreach (var change in fileChange.Changes)
+        foreach (var change in rootChanges)
         {
             var content = isOld ? change.OldContent : change.NewContent;
             var location = isOld ? change.OldLocation : change.NewLocation;
@@ -699,8 +955,8 @@ public partial class HtmlFormatter : IOutputFormatter
         var locationText = FormatLocation(change);
 
         sb.AppendLine($"                <div class=\"change-section\" style=\"margin-left: {depth * 20}px\">");
-        sb.AppendLine($"                    <div class=\"change-header\" onclick=\"toggleChange('{changeId}')\">");
-        sb.AppendLine("                        <div class=\"change-title\">");
+        sb.AppendLine($"                    <div class=\"change-header\">");
+        sb.AppendLine($"                        <div class=\"change-title\" onclick=\"toggleChange('{changeId}')\">");
         sb.AppendLine($"                            <span class=\"expand-icon\">\u25bc</span>");
         sb.AppendLine($"                            <span class=\"change-badge {badgeClass}\">{badgeText}</span>");
         sb.AppendLine($"                            <span class=\"change-kind\">{kindText}</span>");
@@ -712,8 +968,18 @@ public partial class HtmlFormatter : IOutputFormatter
         }
 
         sb.AppendLine("                        </div>");
+        sb.AppendLine("                        <div class=\"copy-buttons\" onclick=\"event.stopPropagation()\">");
+        sb.AppendLine($"                            <button class=\"copy-btn\" onclick=\"copyAsJson('{changeId}')\" title=\"Copy as JSON\">JSON</button>");
+        sb.AppendLine($"                            <button class=\"copy-btn\" onclick=\"copyAsDiff('{changeId}')\" title=\"Copy as diff\">Diff</button>");
+        sb.AppendLine("                        </div>");
         sb.AppendLine("                    </div>");
-        sb.AppendLine($"                    <div class=\"change-body\" id=\"{changeId}\">");
+
+        // Store change data for copy buttons (JSON-encoded in data attributes)
+        var oldContentEscaped = HtmlEncode(change.OldContent ?? "");
+        var newContentEscaped = HtmlEncode(change.NewContent ?? "");
+        var changeMetadata = $"data-type=\"{change.Type}\" data-kind=\"{change.Kind}\" data-name=\"{HtmlEncode(change.Name ?? "")}\" data-old-line=\"{change.OldLocation?.StartLine}\" data-new-line=\"{change.NewLocation?.StartLine}\" data-old-content=\"{oldContentEscaped}\" data-new-content=\"{newContentEscaped}\"";
+
+        sb.AppendLine($"                    <div class=\"change-body\" id=\"{changeId}\" {changeMetadata}>");
 
         // Show old and new content if available
         if (change.OldContent != null || change.NewContent != null)
@@ -832,76 +1098,202 @@ public partial class HtmlFormatter : IOutputFormatter
     private static void AppendHtmlFooter(StringBuilder sb)
     {
         sb.AppendLine("    <script>");
-        sb.AppendLine(@"        let changeIndex = -1;
-        const changes = document.querySelectorAll('.change-section');
-
-        function toggleFile(fileId) {
-            const content = document.getElementById(fileId + '-content');
-            const btn = content.previousElementSibling.querySelector('.toggle-btn');
-            if (content.style.display === 'none') {
-                content.style.display = 'flex';
-                btn.textContent = 'Collapse';
-            } else {
-                content.style.display = 'none';
-                btn.textContent = 'Expand';
-            }
-        }
-
-        function toggleChange(changeId) {
-            const body = document.getElementById(changeId);
-            const header = body.previousElementSibling;
-            body.classList.toggle('collapsed');
-            header.classList.toggle('collapsed');
-        }
-
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function prevChange() {
-            if (changes.length === 0) return;
-            changeIndex = Math.max(0, changeIndex - 1);
-            changes[changeIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            highlightChange(changeIndex);
-        }
-
-        function nextChange() {
-            if (changes.length === 0) return;
-            changeIndex = Math.min(changes.length - 1, changeIndex + 1);
-            changes[changeIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            highlightChange(changeIndex);
-        }
-
-        function highlightChange(index) {
-            changes.forEach((c, i) => {
-                c.style.outline = i === index ? '2px solid #0969da' : 'none';
-            });
-        }
-
-        function expandAll() {
-            document.querySelectorAll('.change-body').forEach(el => el.classList.remove('collapsed'));
-            document.querySelectorAll('.change-header').forEach(el => el.classList.remove('collapsed'));
-        }
-
-        function collapseAll() {
-            document.querySelectorAll('.change-body').forEach(el => el.classList.add('collapsed'));
-            document.querySelectorAll('.change-header').forEach(el => el.classList.add('collapsed'));
-        }
-
-        // Keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'j' || e.key === 'ArrowDown') {
-                if (e.ctrlKey || e.metaKey) {
-                    nextChange();
-                    e.preventDefault();
-                }
-            } else if (e.key === 'k' || e.key === 'ArrowUp') {
-                if (e.ctrlKey || e.metaKey) {
-                    prevChange();
-                    e.preventDefault();
-                }
-            }
-        });");
+        sb.AppendLine("        let changeIndex = -1;");
+        sb.AppendLine("        const changes = document.querySelectorAll('.change-section');");
+        sb.AppendLine("");
+        sb.AppendLine("        function toggleFile(fileId) {");
+        sb.AppendLine("            const content = document.getElementById(fileId + '-content');");
+        sb.AppendLine("            const btn = content.previousElementSibling.querySelector('.toggle-btn');");
+        sb.AppendLine("            if (content.style.display === 'none') {");
+        sb.AppendLine("                content.style.display = 'flex';");
+        sb.AppendLine("                btn.textContent = 'Collapse';");
+        sb.AppendLine("            } else {");
+        sb.AppendLine("                content.style.display = 'none';");
+        sb.AppendLine("                btn.textContent = 'Expand';");
+        sb.AppendLine("            }");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        function toggleChange(changeId) {");
+        sb.AppendLine("            const body = document.getElementById(changeId);");
+        sb.AppendLine("            const header = body.previousElementSibling;");
+        sb.AppendLine("            body.classList.toggle('collapsed');");
+        sb.AppendLine("            header.classList.toggle('collapsed');");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        function scrollToTop() {");
+        sb.AppendLine("            window.scrollTo({ top: 0, behavior: 'smooth' });");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        function prevChange() {");
+        sb.AppendLine("            if (changes.length === 0) return;");
+        sb.AppendLine("            changeIndex = Math.max(0, changeIndex - 1);");
+        sb.AppendLine("            changes[changeIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });");
+        sb.AppendLine("            highlightChange(changeIndex);");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        function nextChange() {");
+        sb.AppendLine("            if (changes.length === 0) return;");
+        sb.AppendLine("            changeIndex = Math.min(changes.length - 1, changeIndex + 1);");
+        sb.AppendLine("            changes[changeIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });");
+        sb.AppendLine("            highlightChange(changeIndex);");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        function highlightChange(index) {");
+        sb.AppendLine("            changes.forEach((c, i) => {");
+        sb.AppendLine("                c.style.outline = i === index ? '2px solid #0969da' : 'none';");
+        sb.AppendLine("            });");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        function expandAll() {");
+        sb.AppendLine("            document.querySelectorAll('.change-body').forEach(el => el.classList.remove('collapsed'));");
+        sb.AppendLine("            document.querySelectorAll('.change-header').forEach(el => el.classList.remove('collapsed'));");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        function collapseAll() {");
+        sb.AppendLine("            document.querySelectorAll('.change-body').forEach(el => el.classList.add('collapsed'));");
+        sb.AppendLine("            document.querySelectorAll('.change-header').forEach(el => el.classList.add('collapsed'));");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        // Copy as JSON format (for AI/Claude)");
+        sb.AppendLine("        function copyAsJson(changeId) {");
+        sb.AppendLine("            const body = document.getElementById(changeId);");
+        sb.AppendLine("            const data = {");
+        sb.AppendLine("                type: body.dataset.type,");
+        sb.AppendLine("                kind: body.dataset.kind,");
+        sb.AppendLine("                name: body.dataset.name || null,");
+        sb.AppendLine("                oldLine: body.dataset.oldLine ? parseInt(body.dataset.oldLine) : null,");
+        sb.AppendLine("                newLine: body.dataset.newLine ? parseInt(body.dataset.newLine) : null,");
+        sb.AppendLine("                oldContent: decodeHtmlEntities(body.dataset.oldContent) || null,");
+        sb.AppendLine("                newContent: decodeHtmlEntities(body.dataset.newContent) || null");
+        sb.AppendLine("            };");
+        sb.AppendLine("            copyToClipboard(JSON.stringify(data, null, 2), event.target);");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        // Copy as diff format");
+        sb.AppendLine("        function copyAsDiff(changeId) {");
+        sb.AppendLine("            const body = document.getElementById(changeId);");
+        sb.AppendLine("            const oldContent = decodeHtmlEntities(body.dataset.oldContent);");
+        sb.AppendLine("            const newContent = decodeHtmlEntities(body.dataset.newContent);");
+        sb.AppendLine("            const name = body.dataset.name;");
+        sb.AppendLine("            let diff = '--- ' + (name || 'a') + '\\n+++ ' + (name || 'b') + '\\n';");
+        sb.AppendLine("            if (oldContent) {");
+        sb.AppendLine("                oldContent.split('\\n').forEach(line => { diff += '- ' + line + '\\n'; });");
+        sb.AppendLine("            }");
+        sb.AppendLine("            if (newContent) {");
+        sb.AppendLine("                newContent.split('\\n').forEach(line => { diff += '+ ' + line + '\\n'; });");
+        sb.AppendLine("            }");
+        sb.AppendLine("            copyToClipboard(diff, event.target);");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        function decodeHtmlEntities(text) {");
+        sb.AppendLine("            if (!text) return '';");
+        sb.AppendLine("            const textarea = document.createElement('textarea');");
+        sb.AppendLine("            textarea.innerHTML = text;");
+        sb.AppendLine("            return textarea.value;");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        async function copyToClipboard(text, btn) {");
+        sb.AppendLine("            try {");
+        sb.AppendLine("                await navigator.clipboard.writeText(text);");
+        sb.AppendLine("                btn.classList.add('copied');");
+        sb.AppendLine("                const original = btn.textContent;");
+        sb.AppendLine("                btn.textContent = 'Copied!';");
+        sb.AppendLine("                setTimeout(() => {");
+        sb.AppendLine("                    btn.classList.remove('copied');");
+        sb.AppendLine("                    btn.textContent = original;");
+        sb.AppendLine("                }, 1500);");
+        sb.AppendLine("            } catch (err) {");
+        sb.AppendLine("                console.error('Failed to copy:', err);");
+        sb.AppendLine("                alert('Failed to copy to clipboard');");
+        sb.AppendLine("            }");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        // Check if path is absolute");
+        sb.AppendLine("        function isAbsolutePath(path) {");
+        sb.AppendLine("            return path.startsWith('/') || /^[A-Za-z]:[\\\\/]/.test(path);");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        // Copy path to clipboard");
+        sb.AppendLine("        async function copyPath(path) {");
+        sb.AppendLine("            try {");
+        sb.AppendLine("                await navigator.clipboard.writeText(path);");
+        sb.AppendLine("                return true;");
+        sb.AppendLine("            } catch (e) { return false; }");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        // Copy path with notification popup");
+        sb.AppendLine("        async function copyPathWithNotification(button, path) {");
+        sb.AppendLine("            const success = await copyPath(path);");
+        sb.AppendLine("            showNotification(button, success ? 'Copied!' : 'Failed to copy');");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        // Show notification below button");
+        sb.AppendLine("        function showNotification(button, message) {");
+        sb.AppendLine("            // Remove any existing notification");
+        sb.AppendLine("            const existing = button.querySelector('.notification');");
+        sb.AppendLine("            if (existing) existing.remove();");
+        sb.AppendLine("            // Create notification element");
+        sb.AppendLine("            const notif = document.createElement('div');");
+        sb.AppendLine("            notif.className = 'notification';");
+        sb.AppendLine("            notif.textContent = message;");
+        sb.AppendLine("            button.appendChild(notif);");
+        sb.AppendLine("            // Trigger animation");
+        sb.AppendLine("            requestAnimationFrame(() => {");
+        sb.AppendLine("                notif.classList.add('show');");
+        sb.AppendLine("                setTimeout(() => {");
+        sb.AppendLine("                    notif.classList.remove('show');");
+        sb.AppendLine("                    setTimeout(() => notif.remove(), 150);");
+        sb.AppendLine("                }, 1500);");
+        sb.AppendLine("            });");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        // Editor integration");
+        sb.AppendLine("        function openInEditor(path, editor) {");
+        sb.AppendLine("            const cmds = { vscode: 'code', rider: 'rider', pycharm: 'pycharm', zed: 'zed' };");
+        sb.AppendLine("            if (!isAbsolutePath(path)) {");
+        sb.AppendLine("                copyPath(path);");
+        sb.AppendLine("                alert('Path is relative. Copied to clipboard.\\n\\nTo open, run:\\n' + (cmds[editor] || editor) + ' \"' + path + '\"');");
+        sb.AppendLine("                return;");
+        sb.AppendLine("            }");
+        sb.AppendLine("            // VS Code: use vscode:// URL scheme");
+        sb.AppendLine("            if (editor === 'vscode') {");
+        sb.AppendLine("                window.location.href = 'vscode://file/' + path;");
+        sb.AppendLine("                return;");
+        sb.AppendLine("            }");
+        sb.AppendLine("            // Zed: use zed:// URL scheme");
+        sb.AppendLine("            if (editor === 'zed') {");
+        sb.AppendLine("                window.location.href = 'zed://file/' + path;");
+        sb.AppendLine("                return;");
+        sb.AppendLine("            }");
+        sb.AppendLine("            // Rider via JetBrains Toolbox: use jetbrains:// URL scheme");
+        sb.AppendLine("            if (editor === 'rider') {");
+        sb.AppendLine("                window.location.href = 'jetbrains://open?url=file://' + encodeURIComponent(path);");
+        sb.AppendLine("                return;");
+        sb.AppendLine("            }");
+        sb.AppendLine("            // PyCharm: use pycharm:// URL scheme");
+        sb.AppendLine("            if (editor === 'pycharm') {");
+        sb.AppendLine("                window.location.href = 'pycharm://open?file=' + encodeURIComponent(path);");
+        sb.AppendLine("                return;");
+        sb.AppendLine("            }");
+        sb.AppendLine("            // Fallback: copy path and show CLI command");
+        sb.AppendLine("            copyPath(path);");
+        sb.AppendLine("            alert('Path copied to clipboard.\\n\\nRun: ' + (cmds[editor] || editor) + ' \"' + path + '\"');");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        // Keyboard navigation");
+        sb.AppendLine("        document.addEventListener('keydown', function(e) {");
+        sb.AppendLine("            if (e.key === 'j' || e.key === 'ArrowDown') {");
+        sb.AppendLine("                if (e.ctrlKey || e.metaKey) {");
+        sb.AppendLine("                    nextChange();");
+        sb.AppendLine("                    e.preventDefault();");
+        sb.AppendLine("                }");
+        sb.AppendLine("            } else if (e.key === 'k' || e.key === 'ArrowUp') {");
+        sb.AppendLine("                if (e.ctrlKey || e.metaKey) {");
+        sb.AppendLine("                    prevChange();");
+        sb.AppendLine("                    e.preventDefault();");
+        sb.AppendLine("                }");
+        sb.AppendLine("            }");
+        sb.AppendLine("        });");
         sb.AppendLine("    </script>");
         sb.AppendLine("</body>");
         sb.AppendLine("</html>");
