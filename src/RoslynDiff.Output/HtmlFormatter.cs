@@ -226,29 +226,6 @@ public partial class HtmlFormatter : IOutputFormatter
             align-items: center;
         }
 
-        .file-header-buttons {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .file-header .toggle-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 4px 8px;
-            font-size: 12px;
-            color: #0969da;
-        }
-
-        .file-header .toggle-btn:hover {
-            text-decoration: underline;
-        }
-
-        .file-header .copy-btn {
-            position: relative;
-        }
-
         .diff-container {
             display: flex;
             border: 1px solid var(--color-border);
@@ -1019,13 +996,8 @@ public partial class HtmlFormatter : IOutputFormatter
         var fileDiff = GenerateFileDiff(fileChange, result);
 
         sb.AppendLine($"        <section class=\"file-diff\" id=\"{fileId}\">");
-        sb.AppendLine($"            <div class=\"file-header\" data-file-json=\"{HtmlEncode(fileJson)}\" data-file-diff=\"{HtmlEncode(fileDiff)}\">");
+        sb.AppendLine($"            <div class=\"file-header\">");
         sb.AppendLine($"                <h2>{HtmlEncode(displayName)}</h2>");
-        sb.AppendLine("                <div class=\"file-header-buttons\">");
-        sb.AppendLine($"                    <button class=\"toggle-btn\" onclick=\"toggleFile('{fileId}')\">Collapse</button>");
-        sb.AppendLine($"                    <button class=\"copy-btn\" onclick=\"copyFileAsJson(this)\" title=\"Copy entire file diff as JSON\">JSON</button>");
-        sb.AppendLine($"                    <button class=\"copy-btn\" onclick=\"copyFileAsDiff(this)\" title=\"Copy entire file diff in unified diff format\">Diff</button>");
-        sb.AppendLine("                </div>");
         sb.AppendLine("            </div>");
 
         // Top diff header with stats and copy buttons
@@ -1368,18 +1340,6 @@ public partial class HtmlFormatter : IOutputFormatter
         sb.AppendLine("        let changeIndex = -1;");
         sb.AppendLine("        const changes = document.querySelectorAll('.change-section');");
         sb.AppendLine("");
-        sb.AppendLine("        function toggleFile(fileId) {");
-        sb.AppendLine("            const content = document.getElementById(fileId + '-content');");
-        sb.AppendLine("            const btn = content.previousElementSibling.querySelector('.toggle-btn');");
-        sb.AppendLine("            if (content.style.display === 'none') {");
-        sb.AppendLine("                content.style.display = 'flex';");
-        sb.AppendLine("                btn.textContent = 'Collapse';");
-        sb.AppendLine("            } else {");
-        sb.AppendLine("                content.style.display = 'none';");
-        sb.AppendLine("                btn.textContent = 'Expand';");
-        sb.AppendLine("            }");
-        sb.AppendLine("        }");
-        sb.AppendLine("");
         sb.AppendLine("        function toggleChange(changeId) {");
         sb.AppendLine("            const body = document.getElementById(changeId);");
         sb.AppendLine("            const header = body.previousElementSibling;");
@@ -1481,25 +1441,6 @@ public partial class HtmlFormatter : IOutputFormatter
         sb.AppendLine("                newContent.split('\\n').forEach(line => { diff += '+ ' + line + '\\n'; });");
         sb.AppendLine("            }");
         sb.AppendLine("            copyToClipboard(diff, event.target);");
-        sb.AppendLine("        }");
-        sb.AppendLine("");
-        sb.AppendLine("        // Copy entire file diff as JSON");
-        sb.AppendLine("        function copyFileAsJson(btn) {");
-        sb.AppendLine("            const header = btn.closest('.file-header');");
-        sb.AppendLine("            const jsonData = decodeHtmlEntities(header.dataset.fileJson);");
-        sb.AppendLine("            try {");
-        sb.AppendLine("                const parsed = JSON.parse(jsonData);");
-        sb.AppendLine("                copyToClipboard(JSON.stringify(parsed, null, 2), btn);");
-        sb.AppendLine("            } catch (e) {");
-        sb.AppendLine("                copyToClipboard(jsonData, btn);");
-        sb.AppendLine("            }");
-        sb.AppendLine("        }");
-        sb.AppendLine("");
-        sb.AppendLine("        // Copy entire file diff in unified diff format");
-        sb.AppendLine("        function copyFileAsDiff(btn) {");
-        sb.AppendLine("            const header = btn.closest('.file-header');");
-        sb.AppendLine("            const diffData = decodeHtmlEntities(header.dataset.fileDiff);");
-        sb.AppendLine("            copyToClipboard(diffData, btn);");
         sb.AppendLine("        }");
         sb.AppendLine("");
         sb.AppendLine("        function decodeHtmlEntities(text) {");

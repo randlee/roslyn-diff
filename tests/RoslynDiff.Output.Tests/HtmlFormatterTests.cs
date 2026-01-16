@@ -150,7 +150,7 @@ public class HtmlFormatterTests
         // Assert
         html.Should().Contain("<script>");
         html.Should().Contain("</script>");
-        html.Should().Contain("toggleFile");
+        html.Should().Contain("toggleTopDiff");
         html.Should().Contain("toggleChange");
     }
 
@@ -459,8 +459,8 @@ public class HtmlFormatterTests
         var html = _formatter.FormatResult(result);
 
         // Assert
-        html.Should().Contain("toggle-btn");
-        html.Should().Contain("Collapse");
+        html.Should().Contain("top-diff-header");
+        html.Should().Contain("expand-icon");
         html.Should().Contain("change-header");
         html.Should().Contain("change-body");
     }
