@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diff: ClassRemoved_Old.cs → ClassRemoved_New.cs</title>
+    <style>
+        :root {
+            --color-added-bg: #e6ffec;
+            --color-added-border: #2da44e;
+            --color-removed-bg: #ffebe9;
+            --color-removed-border: #cf222e;
+            --color-modified-bg: #fff3cd;
+            --color-modified-border: #bf8700;
+            --color-moved-bg: #ddf4ff;
+            --color-moved-border: #218bff;
+            --color-renamed-bg: #f5e8ff;
+            --color-renamed-border: #8250df;
+            --color-line-number: #57606a;
+            --color-border: #d0d7de;
+            --color-header-bg: #f6f8fa;
+            --color-code-bg: #f6f8fa;
+            --font-mono: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            color: #24292f;
+            margin: 0;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+
+        header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 16px 0;
+        }
+
+        h2 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+            padding: 12px 16px;
+            background-color: var(--color-header-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 6px 6px 0 0;
+        }
+
+        .summary {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .stat-additions {
+            background-color: var(--color-added-bg);
+            color: var(--color-added-border);
+        }
+
+        .stat-deletions {
+            background-color: var(--color-removed-bg);
+            color: var(--color-removed-border);
+        }
+
+        .stat-modifications {
+            background-color: var(--color-modified-bg);
+            color: var(--color-modified-border);
+        }
+
+        .stat-moves {
+            background-color: var(--color-moved-bg);
+            color: var(--color-moved-border);
+        }
+
+        .stat-renames {
+            background-color: var(--color-renamed-bg);
+            color: var(--color-renamed-border);
+        }
+
+        .stat-total {
+            background-color: var(--color-header-bg);
+            color: #57606a;
+        }
+
+        .diff-mode {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #57606a;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .file-diff {
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .file-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-header .toggle-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 12px;
+            color: #0969da;
+        }
+
+        .file-header .toggle-btn:hover {
+            text-decoration: underline;
+        }
+
+        .diff-container {
+            display: flex;
+            border: 1px solid var(--color-border);
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            overflow: hidden;
+        }
+
+        .diff-side {
+            flex: 1;
+            min-width: 0;
+            overflow-x: auto;
+        }
+
+        .diff-old {
+            border-right: 1px solid var(--color-border);
+        }
+
+        .diff-side-header {
+            padding: 4px 12px;
+            background-color: var(--color-header-bg);
+            border-bottom: 1px solid var(--color-border);
+            font-size: 11px;
+            font-weight: 500;
+            color: #57606a;
+        }
+
+        .diff-old .diff-side-header {
+            background-color: rgba(255, 235, 233, 0.5);
+        }
+
+        .diff-new .diff-side-header {
+            background-color: rgba(230, 255, 236, 0.5);
+        }
+
+        .diff-content {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            overflow-x: auto;
+        }
+
+        .diff-line {
+            display: flex;
+            line-height: 1.2;
+        }
+
+        .line-number {
+            flex-shrink: 0;
+            width: 40px;
+            padding: 0 6px;
+            text-align: right;
+            color: var(--color-line-number);
+            background-color: var(--color-code-bg);
+            border-right: 1px solid var(--color-border);
+            user-select: none;
+            white-space: pre;
+        }
+
+        .line-content {
+            flex: 1;
+            padding: 0 6px;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .line-added {
+            background-color: var(--color-added-bg);
+        }
+
+        .line-added .line-number {
+            background-color: rgba(46, 160, 67, 0.2);
+        }
+
+        .line-removed {
+            background-color: var(--color-removed-bg);
+        }
+
+        .line-removed .line-number {
+            background-color: rgba(207, 34, 46, 0.2);
+        }
+
+        .line-modified {
+            background-color: var(--color-modified-bg);
+        }
+
+        .line-modified .line-number {
+            background-color: rgba(191, 135, 0, 0.2);
+        }
+
+        .change-section {
+            margin-bottom: 8px;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .change-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 12px;
+            background-color: var(--color-header-bg);
+            border-bottom: 1px solid var(--color-border);
+            cursor: pointer;
+        }
+
+        .change-header:hover {
+            background-color: #f3f4f6;
+        }
+
+        .change-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .change-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .badge-added {
+            background-color: var(--color-added-bg);
+            color: var(--color-added-border);
+        }
+
+        .badge-removed {
+            background-color: var(--color-removed-bg);
+            color: var(--color-removed-border);
+        }
+
+        .badge-modified {
+            background-color: var(--color-modified-bg);
+            color: var(--color-modified-border);
+        }
+
+        .badge-moved {
+            background-color: var(--color-moved-bg);
+            color: var(--color-moved-border);
+        }
+
+        .badge-renamed {
+            background-color: var(--color-renamed-bg);
+            color: var(--color-renamed-border);
+        }
+
+        .change-kind {
+            font-size: 12px;
+            color: #57606a;
+        }
+
+        .change-name {
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
+
+        .change-location {
+            font-size: 11px;
+            color: #57606a;
+        }
+
+        .change-body {
+            display: block;
+        }
+
+        .change-body.collapsed {
+            display: none;
+        }
+
+        .expand-icon {
+            font-size: 10px;
+            color: #57606a;
+            transition: transform 0.2s;
+        }
+
+        .change-header.collapsed .expand-icon {
+            transform: rotate(-90deg);
+        }
+
+        .no-changes {
+            padding: 40px;
+            text-align: center;
+            color: #57606a;
+            background-color: var(--color-header-bg);
+            border-radius: 6px;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #cf222e; font-weight: 500; }
+        .string { color: #0a3069; }
+        .comment { color: #6e7781; font-style: italic; }
+        .type { color: #8250df; }
+        .number { color: #0550ae; }
+        .preprocessor { color: #6e7781; }
+
+        /* Copy buttons */
+        .copy-buttons {
+            display: flex;
+            gap: 4px;
+            margin-left: auto;
+        }
+
+        .copy-btn {
+            background: none;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 11px;
+            color: #57606a;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--color-header-bg);
+            color: #24292f;
+        }
+
+        .copy-btn.copied {
+            background-color: var(--color-added-bg);
+            border-color: var(--color-added-border);
+            color: var(--color-added-border);
+        }
+
+        /* File info section */
+        .file-info {
+            margin: 8px 0 16px 0;
+            padding: 12px 16px;
+            background-color: var(--color-header-bg);
+            border-radius: 6px;
+            border: 1px solid var(--color-border);
+        }
+
+        .file-path {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: #24292f;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+
+        .file-path-label {
+            font-size: 11px;
+            color: #57606a;
+            margin-bottom: 2px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            font-size: 11px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            background: white;
+            color: #24292f;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+
+        .action-btn:hover {
+            background-color: var(--color-header-bg);
+            border-color: #57606a;
+        }
+
+        .action-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Navigation */
+        .nav-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--color-border);
+            background-color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--color-header-bg);
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                padding: 0;
+                font-size: 10px;
+            }
+
+            .nav-container {
+                display: none;
+            }
+
+            .file-diff {
+                page-break-inside: avoid;
+            }
+
+            .change-section {
+                page-break-inside: avoid;
+            }
+
+            .diff-container {
+                border: 1px solid #000;
+            }
+
+            .change-body.collapsed {
+                display: block !important;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .diff-container {
+                flex-direction: column;
+            }
+
+            .diff-old {
+                border-right: none;
+                border-bottom: 1px solid var(--color-border);
+            }
+
+            h1 {
+                font-size: 18px;
+            }
+
+            .summary {
+                gap: 8px;
+            }
+
+            .stat {
+                font-size: 12px;
+                padding: 2px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Diff Report</h1>
+        <div class="summary">
+            <span class="stat stat-total">4 changes</span>
+            <span class="stat stat-deletions">-3 deleted</span>
+            <span class="stat stat-modifications">~1 modified</span>
+        </div>
+        <div class="file-info">
+            <div class="file-path-label">Old file:</div>
+            <div class="file-path" id="old-path" data-path="/Users/randlee/Documents/github/roslyn-diff/tests/RoslynDiff.Core.Tests/TestFixtures/CSharp/ClassChanges/ClassRemoved_Old.cs">/Users/randlee/Documents/github/roslyn-diff/tests/RoslynDiff.Core.Tests/TestFixtures/CSharp/ClassChanges/ClassRemoved_Old.cs</div>
+            <div class="file-actions">
+                <button class="action-btn" onclick="openFolder('/Users/randlee/Documents/github/roslyn-diff/tests/RoslynDiff.Core.Tests/TestFixtures/CSharp/ClassChanges')" title="Open containing folder">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 2h5.5c.551 0 1.064.278 1.365.737l.43.645A.25.25 0 009.25 3.5h5A1.75 1.75 0 0116 5.25v8A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V3.75C0 2.784.784 2 1.75 2zm0 1.5a.25.25 0 00-.25.25v9.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25v-8a.25.25 0 00-.25-.25H9.25a1.75 1.75 0 01-1.458-.79l-.429-.644a.25.25 0 00-.208-.11z"/></svg>
+                    Folder
+                </button>
+                <button class="action-btn" onclick="openFile('/Users/randlee/Documents/github/roslyn-diff/tests/RoslynDiff.Core.Tests/TestFixtures/CSharp/ClassChanges/ClassRemoved_Old.cs')" title="Open in default application">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3.75 2h3.5a.75.75 0 010 1.5h-3.5a.25.25 0 00-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 00.25-.25v-3.5a.75.75 0 011.5 0v3.5A1.75 1.75 0 0112.25 14h-8.5A1.75 1.75 0 012 12.25v-8.5C2 2.784 2.784 2 3.75 2zm6.5 0h3a.75.75 0 01.75.75v3a.75.75 0 01-1.5 0V4.56L8.78 8.28a.75.75 0 01-1.06-1.06l3.72-3.72H10.25a.75.75 0 010-1.5z"/></svg>
+                    Open
+                </button>
+                <button class="action-btn editor-btn" data-editor="vscode" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff/tests/RoslynDiff.Core.Tests/TestFixtures/CSharp/ClassChanges/ClassRemoved_Old.cs', 'vscode')" title="Open in VS Code">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14.25 1a.74.74 0 00-.218.033L10.7 2.252l-4.5 4-3.5-2.8a.75.75 0 00-.946.086l-.75.75a.75.75 0 00.033 1.09L4.5 8l-3.463 2.622a.75.75 0 00-.033 1.09l.75.75a.75.75 0 00.946.086l3.5-2.8 4.5 4 3.332 1.22A.74.74 0 0015 14.25V1.75a.75.75 0 00-.75-.75zM11 12.12L7.28 8 11 3.88v8.24z"/></svg>
+                    VS Code
+                </button>
+                <button class="action-btn editor-btn" data-editor="rider" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff/tests/RoslynDiff.Core.Tests/TestFixtures/CSharp/ClassChanges/ClassRemoved_Old.cs', 'rider')" title="Open in Rider">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm13.2 2.8c.4.5.6 1 .6 1.7 0 .5-.1.9-.3 1.3-.2.4-.6.7-1 .9l1.6 2.5h-2.2l-1.4-2.2H8.8v2.2H7V2.1h3.7c.6 0 1.1.1 1.5.3.4.2.8.3 1 .4zM7 12h6v1.2H7V12z"/><path d="M8.8 3.6v2h1.3c.3 0 .6-.1.8-.3.2-.2.3-.4.3-.7s-.1-.5-.3-.7c-.2-.2-.5-.3-.8-.3H8.8z"/></svg>
+                    Rider
+                </button>
+                <button class="action-btn editor-btn" data-editor="zed" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff/tests/RoslynDiff.Core.Tests/TestFixtures/CSharp/ClassChanges/ClassRemoved_Old.cs', 'zed')" title="Open in Zed">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h8l4 4v8H2V2zm2 2v8h8V7h-3V4H4z"/></svg>
+                    Zed
+                </button>
+            </div>
+            <div style="margin-top: 12px;"></div>
+            <div class="file-path-label">New file:</div>
+            <div class="file-path" id="new-path" data-path="/Users/randlee/Documents/github/roslyn-diff/tests/RoslynDiff.Core.Tests/TestFixtures/CSharp/ClassChanges/ClassRemoved_New.cs">/Users/randlee/Documents/github/roslyn-diff/tests/RoslynDiff.Core.Tests/TestFixtures/CSharp/ClassChanges/ClassRemoved_New.cs</div>
+            <div class="file-actions">
+                <button class="action-btn" onclick="openFolder('/Users/randlee/Documents/github/roslyn-diff/tests/RoslynDiff.Core.Tests/TestFixtures/CSharp/ClassChanges')" title="Open containing folder">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 2h5.5c.551 0 1.064.278 1.365.737l.43.645A.25.25 0 009.25 3.5h5A1.75 1.75 0 0116 5.25v8A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V3.75C0 2.784.784 2 1.75 2zm0 1.5a.25.25 0 00-.25.25v9.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25v-8a.25.25 0 00-.25-.25H9.25a1.75 1.75 0 01-1.458-.79l-.429-.644a.25.25 0 00-.208-.11z"/></svg>
+                    Folder
+                </button>
+                <button class="action-btn" onclick="openFile('/Users/randlee/Documents/github/roslyn-diff/tests/RoslynDiff.Core.Tests/TestFixtures/CSharp/ClassChanges/ClassRemoved_New.cs')" title="Open in default application">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3.75 2h3.5a.75.75 0 010 1.5h-3.5a.25.25 0 00-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 00.25-.25v-3.5a.75.75 0 011.5 0v3.5A1.75 1.75 0 0112.25 14h-8.5A1.75 1.75 0 012 12.25v-8.5C2 2.784 2.784 2 3.75 2zm6.5 0h3a.75.75 0 01.75.75v3a.75.75 0 01-1.5 0V4.56L8.78 8.28a.75.75 0 01-1.06-1.06l3.72-3.72H10.25a.75.75 0 010-1.5z"/></svg>
+                    Open
+                </button>
+                <button class="action-btn editor-btn" data-editor="vscode" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff/tests/RoslynDiff.Core.Tests/TestFixtures/CSharp/ClassChanges/ClassRemoved_New.cs', 'vscode')" title="Open in VS Code">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14.25 1a.74.74 0 00-.218.033L10.7 2.252l-4.5 4-3.5-2.8a.75.75 0 00-.946.086l-.75.75a.75.75 0 00.033 1.09L4.5 8l-3.463 2.622a.75.75 0 00-.033 1.09l.75.75a.75.75 0 00.946.086l3.5-2.8 4.5 4 3.332 1.22A.74.74 0 0015 14.25V1.75a.75.75 0 00-.75-.75zM11 12.12L7.28 8 11 3.88v8.24z"/></svg>
+                    VS Code
+                </button>
+                <button class="action-btn editor-btn" data-editor="rider" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff/tests/RoslynDiff.Core.Tests/TestFixtures/CSharp/ClassChanges/ClassRemoved_New.cs', 'rider')" title="Open in Rider">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm13.2 2.8c.4.5.6 1 .6 1.7 0 .5-.1.9-.3 1.3-.2.4-.6.7-1 .9l1.6 2.5h-2.2l-1.4-2.2H8.8v2.2H7V2.1h3.7c.6 0 1.1.1 1.5.3.4.2.8.3 1 .4zM7 12h6v1.2H7V12z"/><path d="M8.8 3.6v2h1.3c.3 0 .6-.1.8-.3.2-.2.3-.4.3-.7s-.1-.5-.3-.7c-.2-.2-.5-.3-.8-.3H8.8z"/></svg>
+                    Rider
+                </button>
+                <button class="action-btn editor-btn" data-editor="zed" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff/tests/RoslynDiff.Core.Tests/TestFixtures/CSharp/ClassChanges/ClassRemoved_New.cs', 'zed')" title="Open in Zed">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h8l4 4v8H2V2zm2 2v8h8V7h-3V4H4z"/></svg>
+                    Zed
+                </button>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="file-diff" id="file-ClassRemoved_New-657eb5ce">
+            <div class="file-header">
+                <h2>ClassRemoved_New.cs</h2>
+                <button class="toggle-btn" onclick="toggleFile('file-ClassRemoved_New-657eb5ce')">Collapse</button>
+            </div>
+            <div class="diff-container" id="file-ClassRemoved_New-657eb5ce-content">
+                <div class="diff-side diff-old">
+                    <div class="diff-side-header">Old Version</div>
+                    <div class="diff-content">
+                        <div class="diff-line line-modified">
+                            <span class="line-number">3</span>
+                            <span class="line-content"><span class="comment">// Test fixture: Class removal detection</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">4</span>
+                            <span class="line-content"><span class="comment">// Expected: Class <span class="string">&quot;DeprecatedHelper&quot;</span> should be detected <span class="keyword">as</span> Removed</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">5</span>
+                            <span class="line-content"><span class="keyword">namespace</span> TestFixtures;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">6</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">7</span>
+                            <span class="line-content"><span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">8</span>
+                            <span class="line-content"><span class="comment">/// The main service <span class="keyword">class</span> that will remain.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">9</span>
+                            <span class="line-content"><span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">10</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> MainService</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">11</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">12</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">void</span> Execute() { }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">13</span>
+                            <span class="line-content">}</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">14</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">15</span>
+                            <span class="line-content"><span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">16</span>
+                            <span class="line-content"><span class="comment">/// A deprecated helper <span class="keyword">class</span> that will be removed.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">17</span>
+                            <span class="line-content"><span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">18</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> DeprecatedHelper</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">19</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">20</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">void</span> OldMethod() { }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">21</span>
+                            <span class="line-content">}</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">22</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">16</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">17</span>
+                            <span class="line-content"><span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">18</span>
+                            <span class="line-content"><span class="comment">/// A deprecated helper <span class="keyword">class</span> that will be removed.</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">19</span>
+                            <span class="line-content"><span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">20</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> DeprecatedHelper</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">21</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">22</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">void</span> OldMethod() { }</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">23</span>
+                            <span class="line-content">}</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">24</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">18</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">void</span> OldMethod() { }</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">19</span>
+                            <span class="line-content"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="diff-side diff-new">
+                    <div class="diff-side-header">New Version</div>
+                    <div class="diff-content">
+                        <div class="diff-line line-modified">
+                            <span class="line-number">3</span>
+                            <span class="line-content"><span class="comment">// Test fixture: Class removal detection</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">4</span>
+                            <span class="line-content"><span class="comment">// Expected: Class <span class="string">&quot;DeprecatedHelper&quot;</span> should be detected <span class="keyword">as</span> Removed</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">5</span>
+                            <span class="line-content"><span class="keyword">namespace</span> TestFixtures;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">6</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">7</span>
+                            <span class="line-content"><span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">8</span>
+                            <span class="line-content"><span class="comment">/// The main service <span class="keyword">class</span> that will remain.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">9</span>
+                            <span class="line-content"><span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">10</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> MainService</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">11</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">12</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">void</span> Execute() { }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">13</span>
+                            <span class="line-content">}</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">14</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line">
+                            <span class="line-number"></span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line">
+                            <span class="line-number"></span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line">
+                            <span class="line-number"></span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line">
+                            <span class="line-number"></span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line">
+                            <span class="line-number"></span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line">
+                            <span class="line-number"></span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line">
+                            <span class="line-number"></span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line">
+                            <span class="line-number"></span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line">
+                            <span class="line-number"></span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line">
+                            <span class="line-number"></span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line">
+                            <span class="line-number"></span>
+                            <span class="line-content"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="changes-list">
+                <div class="change-section" style="margin-left: 0px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-f826275e')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-modified">Modified</span>
+                            <span class="change-kind">Namespace</span>
+                            <span class="change-name">TestFixtures</span>
+                            <span class="change-location">line 3</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-f826275e')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-f826275e')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-f826275e" data-type="Modified" data-kind="Namespace" data-name="TestFixtures" data-old-line="3" data-new-line="3" data-old-content="// Test fixture: Class removal detection
+// Expected: Class &quot;DeprecatedHelper&quot; should be detected as Removed
+namespace TestFixtures;
+
+/// &lt;summary&gt;
+/// The main service class that will remain.
+/// &lt;/summary&gt;
+public class MainService
+{
+    public void Execute() { }
+}
+
+/// &lt;summary&gt;
+/// A deprecated helper class that will be removed.
+/// &lt;/summary&gt;
+public class DeprecatedHelper
+{
+    public void OldMethod() { }
+}
+" data-new-content="// Test fixture: Class removal detection
+// Expected: Class &quot;DeprecatedHelper&quot; should be detected as Removed
+namespace TestFixtures;
+
+/// &lt;summary&gt;
+/// The main service class that will remain.
+/// &lt;/summary&gt;
+public class MainService
+{
+    public void Execute() { }
+}
+">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">3</span>
+                                <span class="line-content"><span class="comment">// Test fixture: Class removal detection</span></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">4</span>
+                                <span class="line-content"><span class="comment">// Expected: Class <span class="string">&quot;DeprecatedHelper&quot;</span> should be detected <span class="keyword">as</span> Removed</span></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">5</span>
+                                <span class="line-content"><span class="keyword">namespace</span> TestFixtures;</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">6</span>
+                                <span class="line-content"></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">7</span>
+                                <span class="line-content"><span class="comment">/// &lt;summary&gt;</span></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">8</span>
+                                <span class="line-content"><span class="comment">/// The main service <span class="keyword">class</span> that will remain.</span></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">9</span>
+                                <span class="line-content"><span class="comment">/// &lt;/summary&gt;</span></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">10</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> MainService</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">11</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">12</span>
+                                <span class="line-content">    <span class="keyword">public</span> <span class="keyword">void</span> Execute() { }</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">13</span>
+                                <span class="line-content">}</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">14</span>
+                                <span class="line-content"></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">15</span>
+                                <span class="line-content"><span class="comment">/// &lt;summary&gt;</span></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">16</span>
+                                <span class="line-content"><span class="comment">/// A deprecated helper <span class="keyword">class</span> that will be removed.</span></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">17</span>
+                                <span class="line-content"><span class="comment">/// &lt;/summary&gt;</span></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">18</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> DeprecatedHelper</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">19</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">20</span>
+                                <span class="line-content">    <span class="keyword">public</span> <span class="keyword">void</span> OldMethod() { }</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">21</span>
+                                <span class="line-content">}</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">22</span>
+                                <span class="line-content"></span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">3</span>
+                                <span class="line-content"><span class="comment">// Test fixture: Class removal detection</span></span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">4</span>
+                                <span class="line-content"><span class="comment">// Expected: Class <span class="string">&quot;DeprecatedHelper&quot;</span> should be detected <span class="keyword">as</span> Removed</span></span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">5</span>
+                                <span class="line-content"><span class="keyword">namespace</span> TestFixtures;</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">6</span>
+                                <span class="line-content"></span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">7</span>
+                                <span class="line-content"><span class="comment">/// &lt;summary&gt;</span></span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">8</span>
+                                <span class="line-content"><span class="comment">/// The main service <span class="keyword">class</span> that will remain.</span></span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">9</span>
+                                <span class="line-content"><span class="comment">/// &lt;/summary&gt;</span></span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">10</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> MainService</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">11</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">12</span>
+                                <span class="line-content">    <span class="keyword">public</span> <span class="keyword">void</span> Execute() { }</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">13</span>
+                                <span class="line-content">}</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">14</span>
+                                <span class="line-content"></span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <div class="change-section" style="margin-left: 20px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-d058f67e')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Class</span>
+                            <span class="change-name">DeprecatedHelper</span>
+                            <span class="change-location">line 16-19</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-d058f67e')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-d058f67e')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-d058f67e" data-type="Removed" data-kind="Class" data-name="DeprecatedHelper" data-old-line="16" data-new-line="" data-old-content="
+/// &lt;summary&gt;
+/// A deprecated helper class that will be removed.
+/// &lt;/summary&gt;
+public class DeprecatedHelper
+{
+    public void OldMethod() { }
+}
+" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">16</span>
+                                <span class="line-content"></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">17</span>
+                                <span class="line-content"><span class="comment">/// &lt;summary&gt;</span></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">18</span>
+                                <span class="line-content"><span class="comment">/// A deprecated helper <span class="keyword">class</span> that will be removed.</span></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">19</span>
+                                <span class="line-content"><span class="comment">/// &lt;/summary&gt;</span></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">20</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> DeprecatedHelper</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">21</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">22</span>
+                                <span class="line-content">    <span class="keyword">public</span> <span class="keyword">void</span> OldMethod() { }</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">23</span>
+                                <span class="line-content">}</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">24</span>
+                                <span class="line-content"></span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="change-section" style="margin-left: 0px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-d058f67e')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Class</span>
+                            <span class="change-name">DeprecatedHelper</span>
+                            <span class="change-location">line 16-19</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-d058f67e')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-d058f67e')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-d058f67e" data-type="Removed" data-kind="Class" data-name="DeprecatedHelper" data-old-line="16" data-new-line="" data-old-content="
+/// &lt;summary&gt;
+/// A deprecated helper class that will be removed.
+/// &lt;/summary&gt;
+public class DeprecatedHelper
+{
+    public void OldMethod() { }
+}
+" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">16</span>
+                                <span class="line-content"></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">17</span>
+                                <span class="line-content"><span class="comment">/// &lt;summary&gt;</span></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">18</span>
+                                <span class="line-content"><span class="comment">/// A deprecated helper <span class="keyword">class</span> that will be removed.</span></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">19</span>
+                                <span class="line-content"><span class="comment">/// &lt;/summary&gt;</span></span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">20</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> DeprecatedHelper</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">21</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">22</span>
+                                <span class="line-content">    <span class="keyword">public</span> <span class="keyword">void</span> OldMethod() { }</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">23</span>
+                                <span class="line-content">}</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">24</span>
+                                <span class="line-content"></span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 0px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-27582aad')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">OldMethod</span>
+                            <span class="change-location">line 18-18</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-27582aad')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-27582aad')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-27582aad" data-type="Removed" data-kind="Method" data-name="OldMethod" data-old-line="18" data-new-line="" data-old-content="    public void OldMethod() { }
+" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">18</span>
+                                <span class="line-content">    <span class="keyword">public</span> <span class="keyword">void</span> OldMethod() { }</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">19</span>
+                                <span class="line-content"></span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <div class="nav-container">
+        <button class="nav-btn" onclick="scrollToTop()" title="Go to top">↑</button>
+        <button class="nav-btn" onclick="prevChange()" title="Previous change">▲</button>
+        <button class="nav-btn" onclick="nextChange()" title="Next change">▼</button>
+        <button class="nav-btn" onclick="expandAll()" title="Expand all">+</button>
+        <button class="nav-btn" onclick="collapseAll()" title="Collapse all">-</button>
+    </div>
+    <script>
+        let changeIndex = -1;
+        const changes = document.querySelectorAll('.change-section');
+
+        function toggleFile(fileId) {
+            const content = document.getElementById(fileId + '-content');
+            const btn = content.previousElementSibling.querySelector('.toggle-btn');
+            if (content.style.display === 'none') {
+                content.style.display = 'flex';
+                btn.textContent = 'Collapse';
+            } else {
+                content.style.display = 'none';
+                btn.textContent = 'Expand';
+            }
+        }
+
+        function toggleChange(changeId) {
+            const body = document.getElementById(changeId);
+            const header = body.previousElementSibling;
+            body.classList.toggle('collapsed');
+            header.classList.toggle('collapsed');
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function prevChange() {
+            if (changes.length === 0) return;
+            changeIndex = Math.max(0, changeIndex - 1);
+            changes[changeIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            highlightChange(changeIndex);
+        }
+
+        function nextChange() {
+            if (changes.length === 0) return;
+            changeIndex = Math.min(changes.length - 1, changeIndex + 1);
+            changes[changeIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            highlightChange(changeIndex);
+        }
+
+        function highlightChange(index) {
+            changes.forEach((c, i) => {
+                c.style.outline = i === index ? '2px solid #0969da' : 'none';
+            });
+        }
+
+        function expandAll() {
+            document.querySelectorAll('.change-body').forEach(el => el.classList.remove('collapsed'));
+            document.querySelectorAll('.change-header').forEach(el => el.classList.remove('collapsed'));
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.change-body').forEach(el => el.classList.add('collapsed'));
+            document.querySelectorAll('.change-header').forEach(el => el.classList.add('collapsed'));
+        }
+
+        // Copy as JSON format (for AI/Claude)
+        function copyAsJson(changeId) {
+            const body = document.getElementById(changeId);
+            const data = {
+                type: body.dataset.type,
+                kind: body.dataset.kind,
+                name: body.dataset.name || null,
+                oldLine: body.dataset.oldLine ? parseInt(body.dataset.oldLine) : null,
+                newLine: body.dataset.newLine ? parseInt(body.dataset.newLine) : null,
+                oldContent: decodeHtmlEntities(body.dataset.oldContent) || null,
+                newContent: decodeHtmlEntities(body.dataset.newContent) || null
+            };
+            copyToClipboard(JSON.stringify(data, null, 2), event.target);
+        }
+
+        // Copy as diff format
+        function copyAsDiff(changeId) {
+            const body = document.getElementById(changeId);
+            const oldContent = decodeHtmlEntities(body.dataset.oldContent);
+            const newContent = decodeHtmlEntities(body.dataset.newContent);
+            const name = body.dataset.name;
+            let diff = '--- ' + (name || 'a') + '\n+++ ' + (name || 'b') + '\n';
+            if (oldContent) {
+                oldContent.split('\n').forEach(line => { diff += '- ' + line + '\n'; });
+            }
+            if (newContent) {
+                newContent.split('\n').forEach(line => { diff += '+ ' + line + '\n'; });
+            }
+            copyToClipboard(diff, event.target);
+        }
+
+        function decodeHtmlEntities(text) {
+            if (!text) return '';
+            const textarea = document.createElement('textarea');
+            textarea.innerHTML = text;
+            return textarea.value;
+        }
+
+        async function copyToClipboard(text, btn) {
+            try {
+                await navigator.clipboard.writeText(text);
+                btn.classList.add('copied');
+                const original = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.textContent = original;
+                }, 1500);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy to clipboard');
+            }
+        }
+
+        // Check if path is absolute
+        function isAbsolutePath(path) {
+            return path.startsWith('/') || /^[A-Za-z]:[\\/]/.test(path);
+        }
+
+        // Copy path to clipboard
+        async function copyPath(path) {
+            try {
+                await navigator.clipboard.writeText(path);
+                return true;
+            } catch (e) { return false; }
+        }
+
+        // File and folder opening
+        function openFolder(path) {
+            copyPath(path);
+            alert('Path copied to clipboard:\n' + path);
+        }
+
+        function openFile(path) {
+            copyPath(path);
+            alert('Path copied to clipboard:\n' + path);
+        }
+
+        // Editor integration
+        function openInEditor(path, editor) {
+            if (!isAbsolutePath(path)) {
+                copyPath(path);
+                const cmds = { vscode: 'code', rider: 'rider', zed: 'zed' };
+                alert('Path is relative. Copied to clipboard.\n\nTo open, run:\n' + (cmds[editor] || editor) + ' "' + path + '"');
+                return;
+            }
+            let url;
+            switch (editor) {
+                case 'vscode':
+                    url = 'vscode://file/' + path;
+                    break;
+                case 'rider':
+                    url = 'jetbrains://rider/navigate/reference?file=' + encodeURIComponent(path) + '&line=1';
+                    break;
+                case 'zed':
+                    copyPath(path);
+                    alert('Zed has no URL scheme. Path copied.\n\nRun: zed "' + path + '"');
+                    return;
+                default:
+                    alert('Unknown editor: ' + editor);
+                    return;
+            }
+            window.location.href = url;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                if (e.ctrlKey || e.metaKey) {
+                    nextChange();
+                    e.preventDefault();
+                }
+            } else if (e.key === 'k' || e.key === 'ArrowUp') {
+                if (e.ctrlKey || e.metaKey) {
+                    prevChange();
+                    e.preventDefault();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
