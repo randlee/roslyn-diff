@@ -196,6 +196,12 @@ public partial class HtmlFormatter : IOutputFormatter
             align-items: center;
         }
 
+        .file-header-buttons {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
         .file-header .toggle-btn {
             background: none;
             border: none;
@@ -207,6 +213,10 @@ public partial class HtmlFormatter : IOutputFormatter
 
         .file-header .toggle-btn:hover {
             text-decoration: underline;
+        }
+
+        .file-header .copy-btn {
+            position: relative;
         }
 
         .diff-container {
@@ -554,6 +564,81 @@ public partial class HtmlFormatter : IOutputFormatter
             background-color: var(--color-header-bg);
         }
 
+        /* Custom CSS tooltips for buttons - more reliable than native title attribute */
+        .action-btn[title],
+        .copy-btn[title],
+        .nav-btn[title] {
+            position: relative;
+        }
+
+        .action-btn[title]::after,
+        .copy-btn[title]::after,
+        .nav-btn[title]::after {
+            content: attr(title);
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 6px 10px;
+            background: #1f2328;
+            color: white;
+            font-size: 11px;
+            font-weight: normal;
+            white-space: nowrap;
+            border-radius: 4px;
+            z-index: 10000;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.15s ease-out, visibility 0.15s ease-out;
+        }
+
+        .action-btn[title]::before,
+        .copy-btn[title]::before,
+        .nav-btn[title]::before {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 4px);
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #1f2328;
+            z-index: 10000;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.15s ease-out, visibility 0.15s ease-out;
+        }
+
+        .action-btn[title]:hover::after,
+        .copy-btn[title]:hover::after,
+        .nav-btn[title]:hover::after,
+        .action-btn[title]:hover::before,
+        .copy-btn[title]:hover::before,
+        .nav-btn[title]:hover::before {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Position nav button tooltips to the left (since they're at the right edge) */
+        .nav-btn[title]::after {
+            bottom: 50%;
+            top: auto;
+            right: calc(100% + 8px);
+            left: auto;
+            transform: translateY(50%);
+        }
+
+        .nav-btn[title]::before {
+            bottom: 50%;
+            top: auto;
+            right: calc(100% + 3px);
+            left: auto;
+            transform: translateY(50%);
+            border-top-color: transparent;
+            border-left-color: #1f2328;
+        }
+
         /* Print styles */
         @media print {
             body {
@@ -785,10 +870,18 @@ public partial class HtmlFormatter : IOutputFormatter
         var displayName = Path.GetFileName(fileName);
         var fileId = GenerateFileId(fileName);
 
+        // Prepare file-level JSON and diff data
+        var fileJson = GenerateFileJson(fileChange);
+        var fileDiff = GenerateFileDiff(fileChange, result);
+
         sb.AppendLine($"        <section class=\"file-diff\" id=\"{fileId}\">");
-        sb.AppendLine("            <div class=\"file-header\">");
+        sb.AppendLine($"            <div class=\"file-header\" data-file-json=\"{HtmlEncode(fileJson)}\" data-file-diff=\"{HtmlEncode(fileDiff)}\">");
         sb.AppendLine($"                <h2>{HtmlEncode(displayName)}</h2>");
-        sb.AppendLine($"                <button class=\"toggle-btn\" onclick=\"toggleFile('{fileId}')\">Collapse</button>");
+        sb.AppendLine("                <div class=\"file-header-buttons\">");
+        sb.AppendLine($"                    <button class=\"toggle-btn\" onclick=\"toggleFile('{fileId}')\">Collapse</button>");
+        sb.AppendLine($"                    <button class=\"copy-btn\" onclick=\"copyFileAsJson(this)\" title=\"Copy entire file diff as JSON\">JSON</button>");
+        sb.AppendLine($"                    <button class=\"copy-btn\" onclick=\"copyFileAsDiff(this)\" title=\"Copy entire file diff in unified diff format\">Diff</button>");
+        sb.AppendLine("                </div>");
         sb.AppendLine("            </div>");
         sb.AppendLine($"            <div class=\"diff-container\" id=\"{fileId}-content\">");
 
@@ -1185,6 +1278,25 @@ public partial class HtmlFormatter : IOutputFormatter
         sb.AppendLine("            copyToClipboard(diff, event.target);");
         sb.AppendLine("        }");
         sb.AppendLine("");
+        sb.AppendLine("        // Copy entire file diff as JSON");
+        sb.AppendLine("        function copyFileAsJson(btn) {");
+        sb.AppendLine("            const header = btn.closest('.file-header');");
+        sb.AppendLine("            const jsonData = decodeHtmlEntities(header.dataset.fileJson);");
+        sb.AppendLine("            try {");
+        sb.AppendLine("                const parsed = JSON.parse(jsonData);");
+        sb.AppendLine("                copyToClipboard(JSON.stringify(parsed, null, 2), btn);");
+        sb.AppendLine("            } catch (e) {");
+        sb.AppendLine("                copyToClipboard(jsonData, btn);");
+        sb.AppendLine("            }");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
+        sb.AppendLine("        // Copy entire file diff in unified diff format");
+        sb.AppendLine("        function copyFileAsDiff(btn) {");
+        sb.AppendLine("            const header = btn.closest('.file-header');");
+        sb.AppendLine("            const diffData = decodeHtmlEntities(header.dataset.fileDiff);");
+        sb.AppendLine("            copyToClipboard(diffData, btn);");
+        sb.AppendLine("        }");
+        sb.AppendLine("");
         sb.AppendLine("        function decodeHtmlEntities(text) {");
         sb.AppendLine("            if (!text) return '';");
         sb.AppendLine("            const textarea = document.createElement('textarea');");
@@ -1265,9 +1377,9 @@ public partial class HtmlFormatter : IOutputFormatter
         sb.AppendLine("                window.location.href = 'zed://file/' + path;");
         sb.AppendLine("                return;");
         sb.AppendLine("            }");
-        sb.AppendLine("            // Rider via JetBrains Toolbox: use jetbrains:// URL scheme");
+        sb.AppendLine("            // Rider: use rider:// URL scheme");
         sb.AppendLine("            if (editor === 'rider') {");
-        sb.AppendLine("                window.location.href = 'jetbrains://open?url=file://' + encodeURIComponent(path);");
+        sb.AppendLine("                window.location.href = 'rider://open?file=' + encodeURIComponent(path);");
         sb.AppendLine("                return;");
         sb.AppendLine("            }");
         sb.AppendLine("            // PyCharm: use pycharm:// URL scheme");
@@ -1448,6 +1560,107 @@ public partial class HtmlFormatter : IOutputFormatter
         }
 
         return Path.GetExtension(path);
+    }
+
+    /// <summary>
+    /// Generates JSON representation of all changes in a file for copy functionality.
+    /// </summary>
+    private static string GenerateFileJson(FileChange fileChange)
+    {
+        var sb = new StringBuilder();
+        sb.Append("{");
+        sb.Append($"\"path\":\"{EscapeJsonString(fileChange.Path ?? "")}\",");
+        sb.Append("\"changes\":[");
+
+        var first = true;
+        foreach (var change in fileChange.Changes)
+        {
+            if (change.Type == ChangeType.Unchanged)
+            {
+                continue;
+            }
+
+            if (!first)
+            {
+                sb.Append(",");
+            }
+            first = false;
+
+            sb.Append("{");
+            sb.Append($"\"type\":\"{change.Type}\",");
+            sb.Append($"\"kind\":\"{change.Kind}\",");
+            sb.Append($"\"name\":{(change.Name != null ? $"\"{EscapeJsonString(change.Name)}\"" : "null")},");
+            sb.Append($"\"oldLine\":{change.OldLocation?.StartLine.ToString() ?? "null"},");
+            sb.Append($"\"newLine\":{change.NewLocation?.StartLine.ToString() ?? "null"},");
+            sb.Append($"\"oldContent\":{(change.OldContent != null ? $"\"{EscapeJsonString(change.OldContent)}\"" : "null")},");
+            sb.Append($"\"newContent\":{(change.NewContent != null ? $"\"{EscapeJsonString(change.NewContent)}\"" : "null")}");
+            sb.Append("}");
+        }
+
+        sb.Append("]}");
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// Generates unified diff format representation of all changes in a file.
+    /// </summary>
+    private static string GenerateFileDiff(FileChange fileChange, DiffResult result)
+    {
+        var sb = new StringBuilder();
+        var filePath = fileChange.Path ?? "file";
+        var oldPath = result.OldPath ?? filePath;
+        var newPath = result.NewPath ?? filePath;
+
+        sb.AppendLine($"--- {oldPath}");
+        sb.AppendLine($"+++ {newPath}");
+
+        foreach (var change in fileChange.Changes)
+        {
+            if (change.Type == ChangeType.Unchanged)
+            {
+                continue;
+            }
+
+            // Add hunk header
+            var oldStart = change.OldLocation?.StartLine ?? 0;
+            var oldCount = change.OldContent?.Split('\n').Length ?? 0;
+            var newStart = change.NewLocation?.StartLine ?? 0;
+            var newCount = change.NewContent?.Split('\n').Length ?? 0;
+            sb.AppendLine($"@@ -{oldStart},{oldCount} +{newStart},{newCount} @@ {change.Name ?? ""}");
+
+            // Add removed lines
+            if (change.OldContent != null)
+            {
+                foreach (var line in change.OldContent.Split('\n'))
+                {
+                    sb.AppendLine($"-{line.TrimEnd('\r')}");
+                }
+            }
+
+            // Add added lines
+            if (change.NewContent != null)
+            {
+                foreach (var line in change.NewContent.Split('\n'))
+                {
+                    sb.AppendLine($"+{line.TrimEnd('\r')}");
+                }
+            }
+        }
+
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// Escapes a string for safe inclusion in JSON.
+    /// </summary>
+    private static string EscapeJsonString(string text)
+    {
+        return text
+            .Replace("\\", "\\\\")
+            .Replace("\"", "\\\"")
+            .Replace("\n", "\\n")
+            .Replace("\r", "\\r")
+            .Replace("\t", "\\t");
     }
 
     // Regex patterns for syntax highlighting (using GeneratedRegex for performance)
