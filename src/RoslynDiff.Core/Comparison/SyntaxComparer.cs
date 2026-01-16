@@ -301,6 +301,7 @@ public sealed class SyntaxComparer
         SyntaxNode? newNode,
         DiffOptions options)
     {
+        // Use ToString() instead of ToFullString() to compare only code, not trivia (comments, whitespace)
         return new Change
         {
             Type = type,
@@ -308,8 +309,8 @@ public sealed class SyntaxComparer
             Name = name,
             OldLocation = oldNode is not null ? NodeMatcher.CreateLocation(oldNode, options.OldPath) : null,
             NewLocation = newNode is not null ? NodeMatcher.CreateLocation(newNode, options.NewPath) : null,
-            OldContent = oldNode?.ToFullString(),
-            NewContent = newNode?.ToFullString()
+            OldContent = oldNode?.ToString(),
+            NewContent = newNode?.ToString()
         };
     }
 

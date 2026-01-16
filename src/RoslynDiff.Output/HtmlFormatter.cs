@@ -173,6 +173,12 @@ public partial class HtmlFormatter : IOutputFormatter
             color: #57606a;
         }
 
+        .stat-mode {
+            background-color: var(--color-header-bg);
+            color: #57606a;
+            border: 1px solid var(--color-border);
+        }
+
         .diff-mode {
             margin-top: 8px;
             font-size: 12px;
@@ -734,6 +740,10 @@ public partial class HtmlFormatter : IOutputFormatter
             {
                 sb.AppendLine($"            <span class=\"stat stat-renames\">\u270e{stats.Renames} renamed</span>");
             }
+
+            // Add diff mode indicator
+            var modeText = result.Mode == DiffMode.Roslyn ? "Roslyn Semantic" : "Line-by-Line";
+            sb.AppendLine($"            <span class=\"stat stat-mode\">Mode: {modeText}</span>");
 
             sb.AppendLine("        </div>");
         }

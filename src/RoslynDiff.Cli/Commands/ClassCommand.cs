@@ -288,25 +288,25 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
 
         if (oldClass is null && newClass is not null)
         {
-            // Entire class is new
+            // Entire class is new - use ToString() for code-only semantic diff
             changes.Add(new Change
             {
                 Type = ChangeType.Added,
                 Kind = ChangeKind.Class,
                 Name = newClass.Identifier.Text,
-                NewContent = newClass.ToFullString(),
+                NewContent = newClass.ToString(),
                 NewLocation = NodeMatcher.CreateLocation(newClass, newFilePath)
             });
         }
         else if (oldClass is not null && newClass is null)
         {
-            // Entire class was removed
+            // Entire class was removed - use ToString() for code-only semantic diff
             changes.Add(new Change
             {
                 Type = ChangeType.Removed,
                 Kind = ChangeKind.Class,
                 Name = oldClass.Identifier.Text,
-                OldContent = oldClass.ToFullString(),
+                OldContent = oldClass.ToString(),
                 OldLocation = NodeMatcher.CreateLocation(oldClass, oldFilePath)
             });
         }
@@ -342,10 +342,11 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
             }
 
             // Process matched pairs for modifications
+            // Use ToString() instead of ToFullString() to compare only code, not trivia (comments, whitespace)
             foreach (var (oldNode, newNode) in matchResult.MatchedPairs)
             {
-                var oldText = oldNode.ToFullString();
-                var newText = newNode.ToFullString();
+                var oldText = oldNode.ToString();
+                var newText = newNode.ToString();
 
                 if (oldText != newText)
                 {
@@ -372,7 +373,7 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
                     Type = ChangeType.Removed,
                     Kind = NodeMatcher.GetChangeKind(removed),
                     Name = name,
-                    OldContent = removed.ToFullString(),
+                    OldContent = removed.ToString(),
                     OldLocation = NodeMatcher.CreateLocation(removed, oldFilePath)
                 });
             }
@@ -386,7 +387,7 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
                     Type = ChangeType.Added,
                     Kind = NodeMatcher.GetChangeKind(added),
                     Name = name,
-                    NewContent = added.ToFullString(),
+                    NewContent = added.ToString(),
                     NewLocation = NodeMatcher.CreateLocation(added, newFilePath)
                 });
             }
