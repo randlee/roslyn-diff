@@ -131,7 +131,7 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
     }
 
     /// <inheritdoc/>
-    public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
+    public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
     {
         // Validate input files
         if (!File.Exists(settings.OldPath))
