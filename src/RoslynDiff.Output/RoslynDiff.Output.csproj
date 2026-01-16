@@ -1,8 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Output formatters and renderers for RoslynDiff results</Description>
     <PackageId>RoslynDiff.Output</PackageId>
+    <Description>Output formatters and renderers for RoslynDiff results. Supports JSON, HTML, text, and terminal output formats.</Description>
+    <PackageTags>diff;roslyn;csharp;vbnet;code-comparison;output-formatter</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,6 +13,11 @@
 
   <ItemGroup>
     <PackageReference Include="Spectre.Console" Version="0.49.1" />
+  </ItemGroup>
+
+  <!-- Include README in Package -->
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <!-- System.Text.Json is included in .NET 10.0 runtime -->

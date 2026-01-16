@@ -1,8 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Core library for Roslyn-based semantic code diffing</Description>
     <PackageId>RoslynDiff.Core</PackageId>
+    <Description>Core library for Roslyn-based semantic code diffing. Provides semantic diff capabilities for C# and VB.NET source code.</Description>
+    <PackageTags>diff;roslyn;csharp;vbnet;code-comparison;semantic-diff</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,6 +13,11 @@
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="4.12.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="4.12.0" />
     <PackageReference Include="DiffPlex" Version="1.7.2" />
+  </ItemGroup>
+
+  <!-- Include README in Package -->
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
