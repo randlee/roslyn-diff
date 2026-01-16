@@ -8,7 +8,11 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -33,12 +37,12 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results
+          name: test-results-${{ matrix.os }}
           path: "**/TestResults/**/*.trx"
 
       - name: Upload coverage reports
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: coverage-reports
+          name: coverage-reports-${{ matrix.os }}
           path: "**/TestResults/**/coverage.cobertura.xml"
