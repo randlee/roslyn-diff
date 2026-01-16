@@ -312,9 +312,16 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
         }
         else if (oldClass is not null && newClass is not null)
         {
-            // Compare class contents
-            var oldNodes = nodeMatcher.ExtractStructuralNodes(oldClass);
-            var newNodes = nodeMatcher.ExtractStructuralNodes(newClass);
+            // Compare class contents - extract only MEMBER-level nodes (not the class itself)
+            // to avoid duplicate reporting of both class and member changes.
+            // When comparing two classes, we want to show individual member changes,
+            // not the entire class as "Modified" alongside those member changes.
+            var oldNodes = nodeMatcher.ExtractStructuralNodes(oldClass)
+                .Where(n => n.Node != oldClass)  // Exclude the class itself
+                .ToList();
+            var newNodes = nodeMatcher.ExtractStructuralNodes(newClass)
+                .Where(n => n.Node != newClass)  // Exclude the class itself
+                .ToList();
 
             var matchResult = nodeMatcher.MatchNodes(oldNodes, newNodes);
 
