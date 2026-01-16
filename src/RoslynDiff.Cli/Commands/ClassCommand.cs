@@ -288,25 +288,25 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
 
         if (oldClass is null && newClass is not null)
         {
-            // Entire class is new - use ToString() for code-only semantic diff
+            // Entire class is new - use NormalizeWhitespace() for consistent formatting
             changes.Add(new Change
             {
                 Type = ChangeType.Added,
                 Kind = ChangeKind.Class,
                 Name = newClass.Identifier.Text,
-                NewContent = newClass.ToString(),
+                NewContent = newClass.NormalizeWhitespace().ToString(),
                 NewLocation = NodeMatcher.CreateLocation(newClass, newFilePath)
             });
         }
         else if (oldClass is not null && newClass is null)
         {
-            // Entire class was removed - use ToString() for code-only semantic diff
+            // Entire class was removed - use NormalizeWhitespace() for consistent formatting
             changes.Add(new Change
             {
                 Type = ChangeType.Removed,
                 Kind = ChangeKind.Class,
                 Name = oldClass.Identifier.Text,
-                OldContent = oldClass.ToString(),
+                OldContent = oldClass.NormalizeWhitespace().ToString(),
                 OldLocation = NodeMatcher.CreateLocation(oldClass, oldFilePath)
             });
         }
@@ -342,13 +342,14 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
             }
 
             // Process matched pairs for modifications
-            // Use ToString() instead of ToFullString() to compare only code, not trivia (comments, whitespace)
+            // Use NormalizeWhitespace() for consistent formatting in diff output
             foreach (var (oldNode, newNode) in matchResult.MatchedPairs)
             {
-                var oldText = oldNode.ToString();
-                var newText = newNode.ToString();
+                // Compare normalized text to detect semantic changes (ignoring whitespace differences)
+                var oldNormalized = oldNode.NormalizeWhitespace().ToString();
+                var newNormalized = newNode.NormalizeWhitespace().ToString();
 
-                if (oldText != newText)
+                if (oldNormalized != newNormalized)
                 {
                     var name = NodeMatcher.GetNodeName(oldNode) ?? "unknown";
                     changes.Add(new Change
@@ -356,8 +357,8 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
                         Type = ChangeType.Modified,
                         Kind = NodeMatcher.GetChangeKind(oldNode),
                         Name = name,
-                        OldContent = oldText,
-                        NewContent = newText,
+                        OldContent = oldNormalized,
+                        NewContent = newNormalized,
                         OldLocation = NodeMatcher.CreateLocation(oldNode, oldFilePath),
                         NewLocation = NodeMatcher.CreateLocation(newNode, newFilePath)
                     });
@@ -373,7 +374,7 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
                     Type = ChangeType.Removed,
                     Kind = NodeMatcher.GetChangeKind(removed),
                     Name = name,
-                    OldContent = removed.ToString(),
+                    OldContent = removed.NormalizeWhitespace().ToString(),
                     OldLocation = NodeMatcher.CreateLocation(removed, oldFilePath)
                 });
             }
@@ -387,7 +388,7 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
                     Type = ChangeType.Added,
                     Kind = NodeMatcher.GetChangeKind(added),
                     Name = name,
-                    NewContent = added.ToString(),
+                    NewContent = added.NormalizeWhitespace().ToString(),
                     NewLocation = NodeMatcher.CreateLocation(added, newFilePath)
                 });
             }

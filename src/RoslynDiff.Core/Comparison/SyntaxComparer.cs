@@ -301,7 +301,8 @@ public sealed class SyntaxComparer
         SyntaxNode? newNode,
         DiffOptions options)
     {
-        // Use ToString() instead of ToFullString() to compare only code, not trivia (comments, whitespace)
+        // Use NormalizeWhitespace() for consistent formatting in diff output
+        // This ensures the method signature and body have consistent indentation
         return new Change
         {
             Type = type,
@@ -309,8 +310,8 @@ public sealed class SyntaxComparer
             Name = name,
             OldLocation = oldNode is not null ? NodeMatcher.CreateLocation(oldNode, options.OldPath) : null,
             NewLocation = newNode is not null ? NodeMatcher.CreateLocation(newNode, options.NewPath) : null,
-            OldContent = oldNode?.ToString(),
-            NewContent = newNode?.ToString()
+            OldContent = oldNode?.NormalizeWhitespace().ToString(),
+            NewContent = newNode?.NormalizeWhitespace().ToString()
         };
     }
 
