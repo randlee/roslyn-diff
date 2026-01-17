@@ -84,7 +84,6 @@ public class HtmlFormatterTests
         {
             Stats = new DiffStats
             {
-                TotalChanges = 10,
                 Additions = 5,
                 Deletions = 3,
                 Modifications = 2
@@ -107,7 +106,7 @@ public class HtmlFormatterTests
         // Arrange
         var result = new DiffResult
         {
-            Stats = new DiffStats { TotalChanges = 5, Additions = 5 }
+            Stats = new DiffStats { Additions = 5 }
         };
         var options = new OutputOptions { IncludeStats = false };
 
@@ -180,7 +179,7 @@ public class HtmlFormatterTests
                     ]
                 }
             ],
-            Stats = new DiffStats { TotalChanges = 1, Modifications = 1 }
+            Stats = new DiffStats { Modifications = 1 }
         };
 
         // Act
@@ -217,7 +216,7 @@ public class HtmlFormatterTests
                     ]
                 }
             ],
-            Stats = new DiffStats { TotalChanges = 1, Additions = 1 }
+            Stats = new DiffStats { Additions = 1 }
         };
 
         // Act
@@ -252,7 +251,7 @@ public class HtmlFormatterTests
                     ]
                 }
             ],
-            Stats = new DiffStats { TotalChanges = 1, Deletions = 1 }
+            Stats = new DiffStats { Deletions = 1 }
         };
 
         // Act
@@ -324,7 +323,7 @@ public class HtmlFormatterTests
                     ]
                 }
             ],
-            Stats = new DiffStats { TotalChanges = 1, Additions = 1 }
+            Stats = new DiffStats { Additions = 1 }
         };
 
         // Act
@@ -452,7 +451,7 @@ public class HtmlFormatterTests
                     ]
                 }
             ],
-            Stats = new DiffStats { TotalChanges = 1, Modifications = 1 }
+            Stats = new DiffStats { Modifications = 1 }
         };
 
         // Act
@@ -518,7 +517,7 @@ public class HtmlFormatterTests
                     ]
                 }
             ],
-            Stats = new DiffStats { TotalChanges = 1, Modifications = 1 }
+            Stats = new DiffStats { Modifications = 1 }
         };
 
         // Act
@@ -563,7 +562,7 @@ public class HtmlFormatterTests
                     ]
                 }
             ],
-            Stats = new DiffStats { TotalChanges = 2, Modifications = 1, Additions = 1 }
+            Stats = new DiffStats { Modifications = 1, Additions = 1 }
         };
 
         // Act
@@ -618,7 +617,7 @@ public class HtmlFormatterTests
                     ]
                 }
             ],
-            Stats = new DiffStats { TotalChanges = 1, Moves = 1 }
+            Stats = new DiffStats { Moves = 1 }
         };
 
         // Act
@@ -655,7 +654,7 @@ public class HtmlFormatterTests
                     ]
                 }
             ],
-            Stats = new DiffStats { TotalChanges = 1, Renames = 1 }
+            Stats = new DiffStats { Renames = 1 }
         };
 
         // Act
@@ -692,7 +691,7 @@ public class HtmlFormatterTests
                     ]
                 }
             ],
-            Stats = new DiffStats { TotalChanges = 1, Modifications = 1 }
+            Stats = new DiffStats { Modifications = 1 }
         };
 
         // Act
@@ -773,7 +772,7 @@ public class HtmlFormatterTests
                     Changes = [new Change { Type = ChangeType.Removed, Kind = ChangeKind.Class, Name = "Class2" }]
                 }
             ],
-            Stats = new DiffStats { TotalChanges = 2, Additions = 1, Deletions = 1 }
+            Stats = new DiffStats { Additions = 1, Deletions = 1 }
         };
 
         // Act
@@ -811,7 +810,7 @@ public class HtmlFormatterTests
                     ]
                 }
             ],
-            Stats = new DiffStats { TotalChanges = 1, Additions = 1 }
+            Stats = new DiffStats { Additions = 1 }
         };
 
         // Act

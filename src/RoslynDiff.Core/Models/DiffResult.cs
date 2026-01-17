@@ -57,8 +57,9 @@ public record DiffStats
 {
     /// <summary>
     /// Gets the total number of changes across all categories.
+    /// Computed as the sum of Additions, Deletions, Modifications, Moves, and Renames.
     /// </summary>
-    public int TotalChanges { get; init; }
+    public int TotalChanges => Additions + Deletions + Modifications + Moves + Renames;
 
     /// <summary>
     /// Gets the number of additions (new code or lines).

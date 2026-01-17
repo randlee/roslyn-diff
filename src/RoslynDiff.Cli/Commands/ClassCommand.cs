@@ -16,6 +16,16 @@ using Spectre.Console.Cli;
 /// </summary>
 public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
 {
+    private readonly OutputOrchestrator _outputOrchestrator;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ClassCommand"/> class.
+    /// </summary>
+    public ClassCommand()
+    {
+        _outputOrchestrator = new OutputOrchestrator();
+    }
+
     /// <summary>
     /// Settings for the class command.
     /// </summary>
@@ -59,19 +69,92 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
         public double Similarity { get; set; } = 0.8;
 
         /// <summary>
-        /// Gets or sets the output format.
+        /// Gets or sets the JSON output option.
         /// </summary>
-        [CommandOption("-o|--output <FORMAT>")]
-        [Description("Output format: json, html, text, plain, or terminal")]
-        [DefaultValue("text")]
-        public string Output { get; set; } = "text";
+        /// <remarks>
+        /// When specified without a value, outputs JSON to stdout.
+        /// When specified with a path, writes JSON to the file.
+        /// </remarks>
+        [CommandOption("--json [path]")]
+        [Description("JSON output (stdout if no file specified)")]
+        public FlagValue<string>? JsonOutput { get; init; }
 
         /// <summary>
-        /// Gets or sets the output file path.
+        /// Gets or sets the HTML output file path.
         /// </summary>
-        [CommandOption("-f|--out-file <PATH>")]
-        [Description("Output to file instead of stdout")]
-        public string? OutFile { get; set; }
+        /// <remarks>
+        /// HTML output requires a file path to be specified.
+        /// </remarks>
+        [CommandOption("--html <path>")]
+        [Description("HTML report to file (required: file path)")]
+        public string? HtmlOutput { get; init; }
+
+        /// <summary>
+        /// Gets or sets the plain text output option.
+        /// </summary>
+        /// <remarks>
+        /// When specified without a value, outputs plain text to stdout.
+        /// When specified with a path, writes plain text to the file.
+        /// </remarks>
+        [CommandOption("--text [path]")]
+        [Description("Plain text diff (stdout if no file specified)")]
+        public FlagValue<string>? TextOutput { get; init; }
+
+        /// <summary>
+        /// Gets or sets the Git-style unified diff output option.
+        /// </summary>
+        /// <remarks>
+        /// When specified without a value, outputs unified diff to stdout.
+        /// When specified with a path, writes unified diff to the file.
+        /// </remarks>
+        [CommandOption("--git [path]")]
+        [Description("Git-style unified diff (stdout if no file specified)")]
+        public FlagValue<string>? GitOutput { get; init; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to open HTML output in the default browser.
+        /// </summary>
+        /// <remarks>
+        /// This option is only valid when --html is specified.
+        /// </remarks>
+        [CommandOption("--open")]
+        [Description("Open HTML in default browser after generation")]
+        [DefaultValue(false)]
+        public bool OpenInBrowser { get; init; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to suppress default console output.
+        /// </summary>
+        [CommandOption("--quiet")]
+        [Description("Suppress default console output")]
+        [DefaultValue(false)]
+        public bool Quiet { get; init; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to disable colored output.
+        /// </summary>
+        [CommandOption("--no-color")]
+        [Description("Disable colored output")]
+        [DefaultValue(false)]
+        public bool NoColor { get; init; }
+
+        /// <inheritdoc/>
+        public override ValidationResult Validate()
+        {
+            // --open is only valid when --html is specified
+            if (OpenInBrowser && string.IsNullOrEmpty(HtmlOutput))
+            {
+                return ValidationResult.Error("--open requires --html to be specified");
+            }
+
+            // --html requires a file path
+            if (HtmlOutput is not null && string.IsNullOrWhiteSpace(HtmlOutput))
+            {
+                return ValidationResult.Error("--html requires a file path");
+            }
+
+            return ValidationResult.Success();
+        }
     }
 
     /// <inheritdoc/>
@@ -89,13 +172,13 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
             if (!File.Exists(oldFilePath))
             {
                 AnsiConsole.MarkupLine($"[red]Error: Old file not found: {oldFilePath}[/]");
-                return 1;
+                return OutputOrchestrator.ExitCodeError;
             }
 
             if (!File.Exists(newFilePath))
             {
                 AnsiConsole.MarkupLine($"[red]Error: New file not found: {newFilePath}[/]");
-                return 1;
+                return OutputOrchestrator.ExitCodeError;
             }
 
             // Parse and validate match strategy
@@ -105,14 +188,14 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
             if (settings.Similarity < 0.0 || settings.Similarity > 1.0)
             {
                 AnsiConsole.MarkupLine("[red]Error: Similarity threshold must be between 0.0 and 1.0[/]");
-                return 1;
+                return OutputOrchestrator.ExitCodeError;
             }
 
             // Validate interface matching
             if (matchStrategy == ClassMatchStrategy.Interface && string.IsNullOrWhiteSpace(settings.InterfaceName))
             {
                 AnsiConsole.MarkupLine("[red]Error: Interface name is required when using interface matching strategy[/]");
-                return 1;
+                return OutputOrchestrator.ExitCodeError;
             }
 
             // Read file contents
@@ -137,7 +220,7 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
             if (oldClass is null && oldClassName is not null)
             {
                 AnsiConsole.MarkupLine($"[red]Error: Class '{oldClassName}' not found in {oldFilePath}[/]");
-                return 1;
+                return OutputOrchestrator.ExitCodeError;
             }
 
             if (newClass is null && newClassName is not null)
@@ -159,7 +242,7 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
                     if (matchResult is null)
                     {
                         AnsiConsole.MarkupLine($"[red]Error: No matching class found in {newFilePath} using {settings.MatchBy} strategy[/]");
-                        return 1;
+                        return OutputOrchestrator.ExitCodeError;
                     }
 
                     matchedNewClass = matchResult.NewClass;
@@ -167,7 +250,7 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
                 else
                 {
                     AnsiConsole.MarkupLine("[red]Error: Class not specified in new file specification[/]");
-                    return 1;
+                    return OutputOrchestrator.ExitCodeError;
                 }
             }
             else if (newClass is null && oldClass is not null && newClassName is null)
@@ -192,47 +275,30 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
             // Perform comparison
             var result = CompareClasses(matchedOldClass, matchedNewClass, oldFilePath, newFilePath);
 
-            // Format output
-            var formatterFactory = new OutputFormatterFactory();
-            if (!formatterFactory.IsFormatSupported(settings.Output))
+            // Create output settings from command settings
+            var outputSettings = new OutputSettings
             {
-                AnsiConsole.MarkupLine($"[red]Error: Unknown output format: {settings.Output}. Supported formats: json, html, text, plain, terminal[/]");
-                return 1;
-            }
-
-            var formatter = formatterFactory.GetFormatter(settings.Output);
-
-            var outputOptions = new OutputOptions
-            {
-                UseColor = string.IsNullOrEmpty(settings.OutFile), // Color for stdout only
-                PrettyPrint = true,
-                AvailableEditors = EditorDetector.DetectAvailableEditors()
+                JsonOutput = settings.JsonOutput?.IsSet == true ? (settings.JsonOutput.Value ?? "") : null,
+                HtmlOutput = settings.HtmlOutput,
+                TextOutput = settings.TextOutput?.IsSet == true ? (settings.TextOutput.Value ?? "") : null,
+                GitOutput = settings.GitOutput?.IsSet == true ? (settings.GitOutput.Value ?? "") : null,
+                OpenInBrowser = settings.OpenInBrowser,
+                Quiet = settings.Quiet,
+                NoColor = settings.NoColor
             };
 
-            var formattedOutput = formatter.FormatResult(result, outputOptions);
-
-            // Write output
-            if (!string.IsNullOrEmpty(settings.OutFile))
-            {
-                await File.WriteAllTextAsync(settings.OutFile, formattedOutput);
-                AnsiConsole.MarkupLine($"[green]Output written to: {settings.OutFile}[/]");
-            }
-            else
-            {
-                Console.WriteLine(formattedOutput);
-            }
-
-            return 0;
+            // Use OutputOrchestrator to handle all output logic
+            return await _outputOrchestrator.WriteOutputsAsync(result, outputSettings, cancellationToken);
         }
         catch (ArgumentException ex)
         {
             AnsiConsole.MarkupLine($"[red]Error: {ex.Message}[/]");
-            return 1;
+            return OutputOrchestrator.ExitCodeError;
         }
         catch (Exception ex)
         {
             AnsiConsole.MarkupLine($"[red]Error: {ex.Message}[/]");
-            return 1;
+            return OutputOrchestrator.ExitCodeError;
         }
     }
 

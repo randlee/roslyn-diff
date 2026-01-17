@@ -125,7 +125,7 @@ public sealed class CSharpDiffer : IDiffer
                     ]
                 }
             ],
-            Stats = new DiffStats { TotalChanges = 1, Modifications = 1 }
+            Stats = new DiffStats { Modifications = 1 }
         };
     }
 
@@ -141,7 +141,6 @@ public sealed class CSharpDiffer : IDiffer
 
         return new DiffStats
         {
-            TotalChanges = additions + deletions + modifications + moves + renames,
             Additions = additions,
             Deletions = deletions,
             Modifications = modifications,

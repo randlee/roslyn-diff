@@ -241,7 +241,7 @@ public record DiffOptions
 |----------|------|---------|-------------|
 | `Mode` | `DiffMode?` | `null` | Diff mode (null = auto) |
 | `IgnoreWhitespace` | `bool` | `false` | Ignore whitespace changes |
-| `IgnoreComments` | `bool` | `false` | Ignore comment changes (Roslyn only) |
+| `IgnoreComments` | `bool` | `false` | **Deprecated** - Roslyn inherently ignores comments (trivia) |
 | `ContextLines` | `int` | `3` | Context lines around changes |
 | `OldPath` | `string?` | `null` | Original file path (for display) |
 | `NewPath` | `string?` | `null` | New file path (for display) |
@@ -263,7 +263,6 @@ var options = new DiffOptions
 {
     Mode = null, // Auto-detect
     IgnoreWhitespace = true,
-    IgnoreComments = true,
     ContextLines = 5,
     OldPath = "original.cs",
     NewPath = "modified.cs"
