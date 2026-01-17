@@ -1,0 +1,16 @@
+# CI Automation Configuration for roslyn-diff
+# .NET 10 project with xUnit tests
+
+upstream_branch: main
+build_command: dotnet build --configuration Release
+test_command: dotnet test --configuration Release --no-build
+warn_patterns:
+  - "warning CS"
+  - "warning NU"
+allow_warnings: false
+auto_fix_enabled: true
+repo_root: .
+
+# Stack detection
+stack: dotnet
+solution_file: roslyn-diff.sln
