@@ -266,7 +266,22 @@ public class OutputOrchestrator
     /// <param name="filePath">The path to the file to open.</param>
     private static void OpenInBrowser(string filePath)
     {
+        // Validate that we have a valid file path
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            Console.Error.WriteLine("Warning: Could not open browser: File path is empty or null.");
+            return;
+        }
+
         var absolutePath = Path.GetFullPath(filePath);
+
+        // Check if the file actually exists before attempting to open
+        if (!File.Exists(absolutePath))
+        {
+            Console.Error.WriteLine($"Warning: Could not open browser: File does not exist: {absolutePath}");
+            return;
+        }
+
         var url = new Uri(absolutePath).AbsoluteUri;
 
         try
