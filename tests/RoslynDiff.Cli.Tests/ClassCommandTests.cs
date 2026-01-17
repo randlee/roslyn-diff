@@ -2,6 +2,7 @@ namespace RoslynDiff.Cli.Tests;
 
 using FluentAssertions;
 using RoslynDiff.Cli.Commands;
+using Spectre.Console.Cli;
 using Xunit;
 
 /// <summary>
@@ -9,7 +10,7 @@ using Xunit;
 /// </summary>
 public class ClassCommandTests
 {
-    #region Settings Tests
+    #region Settings Tests - Default Values
 
     [Fact]
     public void Settings_DefaultMatchBy_ShouldBeAuto()
@@ -32,26 +33,6 @@ public class ClassCommandTests
     }
 
     [Fact]
-    public void Settings_DefaultOutput_ShouldBeText()
-    {
-        // Arrange & Act
-        var settings = new ClassCommand.Settings();
-
-        // Assert
-        settings.Output.Should().Be("text");
-    }
-
-    [Fact]
-    public void Settings_DefaultOutFile_ShouldBeNull()
-    {
-        // Arrange & Act
-        var settings = new ClassCommand.Settings();
-
-        // Assert
-        settings.OutFile.Should().BeNull();
-    }
-
-    [Fact]
     public void Settings_DefaultInterfaceName_ShouldBeNull()
     {
         // Arrange & Act
@@ -59,6 +40,209 @@ public class ClassCommandTests
 
         // Assert
         settings.InterfaceName.Should().BeNull();
+    }
+
+    [Fact]
+    public void Settings_DefaultHtmlOutput_ShouldBeNull()
+    {
+        // Arrange & Act
+        var settings = new ClassCommand.Settings();
+
+        // Assert
+        settings.HtmlOutput.Should().BeNull();
+    }
+
+    [Fact]
+    public void Settings_DefaultJsonOutput_ShouldBeNull()
+    {
+        // Arrange & Act
+        var settings = new ClassCommand.Settings();
+
+        // Assert
+        settings.JsonOutput.Should().BeNull();
+    }
+
+    [Fact]
+    public void Settings_DefaultTextOutput_ShouldBeNull()
+    {
+        // Arrange & Act
+        var settings = new ClassCommand.Settings();
+
+        // Assert
+        settings.TextOutput.Should().BeNull();
+    }
+
+    [Fact]
+    public void Settings_DefaultGitOutput_ShouldBeNull()
+    {
+        // Arrange & Act
+        var settings = new ClassCommand.Settings();
+
+        // Assert
+        settings.GitOutput.Should().BeNull();
+    }
+
+    [Fact]
+    public void Settings_DefaultQuiet_ShouldBeFalse()
+    {
+        // Arrange & Act
+        var settings = new ClassCommand.Settings();
+
+        // Assert
+        settings.Quiet.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Settings_DefaultNoColor_ShouldBeFalse()
+    {
+        // Arrange & Act
+        var settings = new ClassCommand.Settings();
+
+        // Assert
+        settings.NoColor.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Settings_DefaultOpenInBrowser_ShouldBeFalse()
+    {
+        // Arrange & Act
+        var settings = new ClassCommand.Settings();
+
+        // Assert
+        settings.OpenInBrowser.Should().BeFalse();
+    }
+
+    #endregion
+
+    #region Settings Tests - Output Options
+
+    [Fact]
+    public void Settings_HtmlOutput_WhenSetToPath_ShouldReturnThatPath()
+    {
+        // Arrange
+        const string expectedPath = "/path/to/output.html";
+
+        // Act
+        var settings = new ClassCommand.Settings { HtmlOutput = expectedPath };
+
+        // Assert
+        settings.HtmlOutput.Should().Be(expectedPath);
+    }
+
+    [Theory]
+    [InlineData("output.html")]
+    [InlineData("./results/diff.html")]
+    [InlineData("/absolute/path/output.html")]
+    public void Settings_HtmlOutput_WhenSetToVariousPaths_ShouldReturnThatPath(string path)
+    {
+        // Arrange & Act
+        var settings = new ClassCommand.Settings { HtmlOutput = path };
+
+        // Assert
+        settings.HtmlOutput.Should().Be(path);
+    }
+
+    #endregion
+
+    #region Settings Tests - Control Options
+
+    [Fact]
+    public void Settings_Quiet_WhenSetToTrue_ShouldBeTrue()
+    {
+        // Arrange & Act
+        var settings = new ClassCommand.Settings { Quiet = true };
+
+        // Assert
+        settings.Quiet.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Settings_NoColor_WhenSetToTrue_ShouldBeTrue()
+    {
+        // Arrange & Act
+        var settings = new ClassCommand.Settings { NoColor = true };
+
+        // Assert
+        settings.NoColor.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Settings_OpenInBrowser_WhenSetToTrue_ShouldBeTrue()
+    {
+        // Arrange & Act
+        var settings = new ClassCommand.Settings { OpenInBrowser = true };
+
+        // Assert
+        settings.OpenInBrowser.Should().BeTrue();
+    }
+
+    #endregion
+
+    #region Validation Tests
+
+    [Fact]
+    public void Validate_WithOpenInBrowserWithoutHtmlOutput_ShouldReturnError()
+    {
+        // Arrange
+        var settings = new ClassCommand.Settings
+        {
+            OpenInBrowser = true,
+            HtmlOutput = null
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+        result.Message.Should().Contain("--open requires --html");
+    }
+
+    [Fact]
+    public void Validate_WithOpenInBrowserAndHtmlOutput_ShouldSucceed()
+    {
+        // Arrange
+        var settings = new ClassCommand.Settings
+        {
+            OpenInBrowser = true,
+            HtmlOutput = "output.html"
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Validate_WithHtmlOutputEmptyString_ShouldReturnError()
+    {
+        // Arrange
+        var settings = new ClassCommand.Settings
+        {
+            HtmlOutput = "   " // whitespace only
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+        result.Message.Should().Contain("--html requires a file path");
+    }
+
+    [Fact]
+    public void Validate_WithDefaultSettings_ShouldSucceed()
+    {
+        // Arrange
+        var settings = new ClassCommand.Settings();
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
     }
 
     #endregion

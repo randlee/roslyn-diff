@@ -13,6 +13,7 @@ using Spectre.Console.Cli;
 public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
 {
     private readonly DifferFactory _differFactory;
+    private readonly OutputOrchestrator _outputOrchestrator;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DiffCommand"/> class.
@@ -20,6 +21,7 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
     public DiffCommand()
     {
         _differFactory = new DifferFactory();
+        _outputOrchestrator = new OutputOrchestrator();
     }
 
     /// <summary>
@@ -33,9 +35,11 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
     /// Examples:
     /// <list type="bullet">
     /// <item>roslyn-diff diff old.cs new.cs</item>
-    /// <item>roslyn-diff diff old.cs new.cs --output json</item>
-    /// <item>roslyn-diff diff old.cs new.cs -w -c --mode roslyn</item>
-    /// <item>roslyn-diff diff old.txt new.txt --mode line</item>
+    /// <item>roslyn-diff diff old.cs new.cs --json</item>
+    /// <item>roslyn-diff diff old.cs new.cs --html report.html --open</item>
+    /// <item>roslyn-diff diff old.cs new.cs --git output.patch</item>
+    /// <item>roslyn-diff diff old.cs new.cs -w -c --mode roslyn --text</item>
+    /// <item>roslyn-diff diff old.txt new.txt --mode line --quiet</item>
     /// </list>
     /// </para>
     /// </remarks>
@@ -66,7 +70,7 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
         /// </list>
         /// </remarks>
         [CommandOption("-m|--mode <mode>")]
-        [Description("Diff mode: auto, roslyn, or line [default: auto]")]
+        [Description("Diff mode: auto, roslyn, or line [[default: auto]]")]
         [DefaultValue("auto")]
         public string Mode { get; set; } = "auto";
 
@@ -79,55 +83,100 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
         public bool IgnoreWhitespace { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to ignore comments.
-        /// </summary>
-        /// <remarks>
-        /// This option is only effective when using Roslyn semantic diff mode.
-        /// </remarks>
-        [CommandOption("-c|--ignore-comments")]
-        [Description("Ignore comment differences (Roslyn mode only)")]
-        [DefaultValue(false)]
-        public bool IgnoreComments { get; set; }
-
-        /// <summary>
         /// Gets or sets the number of context lines.
         /// </summary>
         [CommandOption("-C|--context <lines>")]
-        [Description("Lines of context to show [default: 3]")]
+        [Description("Lines of context to show [[default: 3]]")]
         [DefaultValue(3)]
         public int ContextLines { get; set; } = 3;
 
         /// <summary>
-        /// Gets or sets the output format.
+        /// Gets or sets the JSON output option.
         /// </summary>
         /// <remarks>
-        /// Supported formats: json, html, text, terminal.
+        /// When specified without a value, outputs JSON to stdout.
+        /// When specified with a path, writes JSON to the file.
         /// </remarks>
-        [CommandOption("-o|--output <format>")]
-        [Description("Output format: json, html, text, terminal [default: text]")]
-        [DefaultValue("text")]
-        public string OutputFormat { get; set; } = "text";
+        [CommandOption("--json [path]")]
+        [Description("JSON output (stdout if no file specified)")]
+        public FlagValue<string>? JsonOutput { get; init; }
 
         /// <summary>
-        /// Gets or sets the output file path.
+        /// Gets or sets the HTML output file path.
         /// </summary>
         /// <remarks>
-        /// If not specified, output is written to stdout.
+        /// HTML output requires a file path to be specified.
         /// </remarks>
-        [CommandOption("--out-file <path>")]
-        [Description("Write output to file instead of stdout")]
-        public string? OutputFile { get; set; }
+        [CommandOption("--html <path>")]
+        [Description("HTML report to file (required: file path)")]
+        public string? HtmlOutput { get; init; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to use rich terminal output.
+        /// Gets or sets the plain text output option.
         /// </summary>
         /// <remarks>
-        /// Uses Spectre.Console for enhanced formatting with colors and styling.
+        /// When specified without a value, outputs plain text to stdout.
+        /// When specified with a path, writes plain text to the file.
         /// </remarks>
-        [CommandOption("-r|--rich")]
-        [Description("Use rich terminal output with colors and formatting")]
+        [CommandOption("--text [path]")]
+        [Description("Plain text diff (stdout if no file specified)")]
+        public FlagValue<string>? TextOutput { get; init; }
+
+        /// <summary>
+        /// Gets or sets the Git-style unified diff output option.
+        /// </summary>
+        /// <remarks>
+        /// When specified without a value, outputs unified diff to stdout.
+        /// When specified with a path, writes unified diff to the file.
+        /// </remarks>
+        [CommandOption("--git [path]")]
+        [Description("Git-style unified diff (stdout if no file specified)")]
+        public FlagValue<string>? GitOutput { get; init; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to open HTML output in the default browser.
+        /// </summary>
+        /// <remarks>
+        /// This option is only valid when --html is specified.
+        /// </remarks>
+        [CommandOption("--open")]
+        [Description("Open HTML in default browser after generation")]
         [DefaultValue(false)]
-        public bool RichOutput { get; set; }
+        public bool OpenInBrowser { get; init; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to suppress default console output.
+        /// </summary>
+        [CommandOption("--quiet")]
+        [Description("Suppress default console output")]
+        [DefaultValue(false)]
+        public bool Quiet { get; init; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to disable colored output.
+        /// </summary>
+        [CommandOption("--no-color")]
+        [Description("Disable colored output")]
+        [DefaultValue(false)]
+        public bool NoColor { get; init; }
+
+        /// <inheritdoc/>
+        public override ValidationResult Validate()
+        {
+            // --open is only valid when --html is specified
+            if (OpenInBrowser && string.IsNullOrEmpty(HtmlOutput))
+            {
+                return ValidationResult.Error("--open requires --html to be specified");
+            }
+
+            // --html requires a file path
+            if (HtmlOutput is not null && string.IsNullOrWhiteSpace(HtmlOutput))
+            {
+                return ValidationResult.Error("--html requires a file path");
+            }
+
+            return ValidationResult.Success();
+        }
     }
 
     /// <inheritdoc/>
@@ -137,13 +186,13 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
         if (!File.Exists(settings.OldPath))
         {
             AnsiConsole.MarkupLine($"[red]Error: Old file not found: {settings.OldPath}[/]");
-            return 1;
+            return OutputOrchestrator.ExitCodeError;
         }
 
         if (!File.Exists(settings.NewPath))
         {
             AnsiConsole.MarkupLine($"[red]Error: New file not found: {settings.NewPath}[/]");
-            return 1;
+            return OutputOrchestrator.ExitCodeError;
         }
 
         // Parse and validate mode
@@ -152,21 +201,28 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             "auto" => null,
             "roslyn" => DiffMode.Roslyn,
             "line" => DiffMode.Line,
-            _ => throw new ArgumentException($"Invalid mode: '{settings.Mode}'. Valid modes: auto, roslyn, line")
+            _ => null // Invalid mode will be caught below
         };
+
+        if (settings.Mode.ToLowerInvariant() is not "auto" and not "roslyn" and not "line")
+        {
+            AnsiConsole.MarkupLine($"[red]Error: Invalid mode: '{settings.Mode}'. Valid modes: auto, roslyn, line[/]");
+            return OutputOrchestrator.ExitCodeError;
+        }
 
         try
         {
             // Read file contents
-            var oldContent = await File.ReadAllTextAsync(settings.OldPath);
-            var newContent = await File.ReadAllTextAsync(settings.NewPath);
+            var oldContent = await File.ReadAllTextAsync(settings.OldPath, cancellationToken);
+            var newContent = await File.ReadAllTextAsync(settings.NewPath, cancellationToken);
 
             // Create diff options
+            // Note: IgnoreComments removed - Roslyn semantic diff inherently ignores comments
+            // (comments are trivia and don't affect semantic equivalence)
             var options = new DiffOptions
             {
                 Mode = diffMode,
                 IgnoreWhitespace = settings.IgnoreWhitespace,
-                IgnoreComments = settings.IgnoreComments,
                 ContextLines = settings.ContextLines,
                 OldPath = Path.GetFullPath(settings.OldPath),
                 NewPath = Path.GetFullPath(settings.NewPath)
@@ -178,59 +234,25 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             // Perform diff
             var result = differ.Compare(oldContent, newContent, options);
 
-            // Determine output format (use terminal format if rich output is requested)
-            var formatName = settings.RichOutput ? "terminal" : settings.OutputFormat;
-
-            // Get the formatter
-            var formatterFactory = new OutputFormatterFactory();
-            var formatter = formatterFactory.IsFormatSupported(formatName)
-                ? formatterFactory.GetFormatter(formatName)
-                : GetLegacyFormatter(formatName);
-
-            // Format output
-            var outputOptions = new OutputOptions
+            // Create output settings from command settings
+            var outputSettings = new OutputSettings
             {
-                UseColor = settings.RichOutput,
-                PrettyPrint = true,
-                AvailableEditors = EditorDetector.DetectAvailableEditors()
+                JsonOutput = settings.JsonOutput?.IsSet == true ? (settings.JsonOutput.Value ?? "") : null,
+                HtmlOutput = settings.HtmlOutput,
+                TextOutput = settings.TextOutput?.IsSet == true ? (settings.TextOutput.Value ?? "") : null,
+                GitOutput = settings.GitOutput?.IsSet == true ? (settings.GitOutput.Value ?? "") : null,
+                OpenInBrowser = settings.OpenInBrowser,
+                Quiet = settings.Quiet,
+                NoColor = settings.NoColor
             };
 
-            var output = formatter.FormatResult(result, outputOptions);
-
-            // Write output
-            if (!string.IsNullOrEmpty(settings.OutputFile))
-            {
-                await File.WriteAllTextAsync(settings.OutputFile, output);
-                AnsiConsole.MarkupLine($"[green]Output written to: {settings.OutputFile}[/]");
-            }
-            else
-            {
-                Console.WriteLine(output);
-            }
-
-            return 0;
-        }
-        catch (ArgumentException ex)
-        {
-            AnsiConsole.MarkupLine($"[red]Error: {ex.Message}[/]");
-            return 1;
+            // Use OutputOrchestrator to handle all output logic
+            return await _outputOrchestrator.WriteOutputsAsync(result, outputSettings, cancellationToken);
         }
         catch (Exception ex)
         {
             AnsiConsole.MarkupLine($"[red]Error: {ex.Message}[/]");
-            return 1;
+            return OutputOrchestrator.ExitCodeError;
         }
-    }
-
-    private static IOutputFormatter GetLegacyFormatter(string format)
-    {
-        return format.ToLowerInvariant() switch
-        {
-            "unified" => new UnifiedFormatter(),
-            "html" => new HtmlFormatter(),
-            "plain" => new PlainTextFormatter(),
-            "terminal" => new SpectreConsoleFormatter(),
-            _ => throw new ArgumentException($"Unknown format: {format}. Supported formats: json, text, unified, html, plain, terminal")
-        };
     }
 }

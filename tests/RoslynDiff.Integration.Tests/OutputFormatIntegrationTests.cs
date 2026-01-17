@@ -67,7 +67,6 @@ public partial class OutputFormatIntegrationTests
             ],
             Stats = new DiffStats
             {
-                TotalChanges = 3,
                 Additions = 1,
                 Deletions = 1,
                 Modifications = 1,

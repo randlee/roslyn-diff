@@ -153,7 +153,8 @@ public partial class LineDiffFormatTests : IDisposable
     #region Helper Methods - CLI Execution
 
     /// <summary>
-    /// Runs roslyn-diff with --mode line -o text on the given files.
+    /// Runs roslyn-diff with --mode line --git on the given files.
+    /// Uses --git flag to produce unified diff format for comparison against diff -u/git diff.
     /// </summary>
     /// <param name="oldFile">Path to the old file.</param>
     /// <param name="newFile">Path to the new file.</param>
@@ -163,7 +164,8 @@ public partial class LineDiffFormatTests : IDisposable
         var psi = new ProcessStartInfo
         {
             FileName = _roslynDiffPath,
-            Arguments = $"diff --mode line -o text \"{oldFile}\" \"{newFile}\"",
+            // Put positional arguments first, then optional flags to avoid --git consuming file path
+            Arguments = $"diff \"{oldFile}\" \"{newFile}\" --mode line --git",
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,

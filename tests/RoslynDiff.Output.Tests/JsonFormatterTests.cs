@@ -113,7 +113,6 @@ public class JsonFormatterTests
             Mode = DiffMode.Roslyn,
             Stats = new DiffStats
             {
-                TotalChanges = 1,
                 Additions = 1
             },
             FileChanges =
@@ -420,7 +419,7 @@ public class JsonFormatterTests
         // Arrange
         var result = new DiffResult
         {
-            Stats = new DiffStats { TotalChanges = 1, Additions = 1 }
+            Stats = new DiffStats { Additions = 1 }
         };
         using var writer = new StringWriter();
 
@@ -519,7 +518,6 @@ public class JsonFormatterTests
         {
             Stats = new DiffStats
             {
-                TotalChanges = 10,
                 Additions = 3,
                 Deletions = 2,
                 Modifications = 4,

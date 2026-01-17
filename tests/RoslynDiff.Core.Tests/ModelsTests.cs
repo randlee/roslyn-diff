@@ -234,7 +234,6 @@ public class ModelsTests
             ],
             Stats = new DiffStats
             {
-                TotalChanges = 2,
                 Additions = 1,
                 Deletions = 1
             }
@@ -250,7 +249,7 @@ public class ModelsTests
     public void DiffResult_RecordEquality_WorksCorrectly()
     {
         // Arrange
-        var stats = new DiffStats { TotalChanges = 0 };
+        var stats = new DiffStats();
         var result1 = new DiffResult { OldPath = "a.cs", NewPath = "b.cs", Stats = stats };
         var result2 = new DiffResult { OldPath = "a.cs", NewPath = "b.cs", Stats = stats };
 
