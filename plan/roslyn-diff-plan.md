@@ -250,29 +250,56 @@ public enum ChangeKind { File, Namespace, Class, Method, Property, Field, Statem
 
 ### 3. Output Formatters
 
-#### JsonFormatter
+#### Output Format Comparison Table
+
+| Format | Flag | File Arg | Best For | Features |
+|--------|------|----------|----------|----------|
+| **Console (default)** | (none) | N/A | Interactive use | Colored if TTY, semantic structure |
+| **JSON** | `--json` | Optional | AI/scripting | Machine-readable, complete data |
+| **HTML** | `--html` | Required | Human review | Syntax highlighting, IDE links |
+| **Text** | `--text` | Optional | Logs, piping | Structured, no colors |
+| **Git** | `--git` | Optional | Standard tools | Unified diff format, patchable |
+
+#### JsonFormatter (`--json`)
 - AI-optimized structure
 - Includes semantic information
 - Complete context for LLM understanding
+- Outputs to stdout or file
 
-#### HtmlFormatter
+#### HtmlFormatter (`--html`)
 - Side-by-side view
 - Syntax highlighting (highlight.js or Prism)
-- Collapsible sections
-- File navigation
+- Collapsible sections with copy buttons
+- IDE integration links (VS Code, Rider, PyCharm, Zed)
 - Summary statistics
+- `--open` flag to launch in browser
 
-#### TerminalFormatter
-**Plain Text (default)**
-- Simple text diff output (similar to standard diff)
-- Works in any terminal/environment
-- Easy to pipe/redirect
+#### PlainTextFormatter (`--text`)
+- Structured output showing changes by type (Class, Method, Property, etc.)
+- Hierarchical view of changes with markers: `[+] Added`, `[-] Removed`, `[~] Modified`
+- Location information (line numbers)
+- No ANSI colors - safe for logs and file output
+- Good for understanding *what* changed semantically
 
-**Spectre.Console (opt-in via `--rich` or `--color`)**
-- Color-coded diff output
+#### UnifiedFormatter (`--git`)
+- Standard unified diff format (like `git diff` or `diff -u`)
+- Uses `--- old` / `+++ new` header format
+- `@@ -line,count +line,count @@` hunk headers
+- Line-by-line `+` / `-` / ` ` prefixes
+- Optional color with ANSI codes (red/green)
+- Compatible with `patch` command and other diff tools
+- Good for seeing *exact* line changes
+
+#### Console Output (default)
+**When connected to terminal (TTY):**
+- Color-coded diff output via Spectre.Console
 - Tree view for structural changes
 - Tables for statistics
 - Progress indicators for large diffs
+
+**When piped/redirected:**
+- Falls back to plain text format
+- No ANSI escape codes
 
 ---
 
@@ -285,18 +312,30 @@ roslyn-diff [options]
 
 ### Subcommands
 
-#### File Diff
+#### File Diff (v0.7.0 Redesigned CLI)
 ```bash
-roslyn-diff file <old-file> <new-file> [options]
+roslyn-diff diff <old-file> <new-file> [options]
 
-Options:
-  -o, --output <format>    Output format: terminal|json|html (default: terminal)
-  -m, --mode <mode>        Diff mode: auto|roslyn|line (default: auto)
-  --out-file <path>        Write output to file
-  --rich                   Use Spectre.Console for rich terminal output (colors, tables)
-  --ignore-whitespace      Ignore whitespace changes
-  --ignore-comments        Ignore comment changes
-  --context <lines>        Lines of context (default: 3)
+Output Format Options (can combine multiple):
+  --json [file]          JSON output (stdout if no file, or to specified file)
+  --html <file>          HTML report to file (required: file path)
+  --text [file]          Plain text diff (stdout if no file)
+  --git [file]           Git-style unified diff (stdout if no file)
+  --open                 Open HTML in default browser after generation
+
+Output Control:
+  --quiet                Suppress default console output (for scripting)
+  --no-color             Disable colored output even if terminal supports it
+
+Diff Mode Options:
+  -m, --mode <mode>      Diff mode: auto|roslyn|line (default: auto)
+  --ignore-whitespace    Ignore whitespace changes
+  --ignore-comments      Ignore comment changes
+  --context <lines>      Lines of context (default: 3)
+
+Default behavior:
+  - If no format flags: colored console output (if TTY) or plain text (if piped)
+  - Multiple formats can be combined (e.g., --json --html report.html)
 ```
 
 #### Class Diff
@@ -307,19 +346,37 @@ Arguments:
   source1                  File path or file:ClassName
   source2                  File path or file:ClassName
 
-Options:
-  -o, --output <format>    Output format: terminal|json|html
+Options (same format options as diff command, plus):
   --match-by <strategy>    Matching: name|interface|content (default: name)
   --interface <name>       Match classes implementing this interface
   --similarity <percent>   Content similarity threshold (default: 70)
-  --out-file <path>        Write output to file
-  --rich                   Use Spectre.Console for rich terminal output
 ```
 
 ### Examples
 ```bash
-# Compare two files
-roslyn-diff file old/Service.cs new/Service.cs
+# Compare two files (default: colored console output)
+roslyn-diff diff old/Service.cs new/Service.cs
+
+# AI use case: JSON to stdout for processing, HTML for human review
+roslyn-diff diff old.cs new.cs --json --html report/diff.html --open
+
+# Save JSON for AI and HTML for human, quiet console
+roslyn-diff diff old.cs new.cs --json analysis.json --html report.html --quiet
+
+# Pipe-friendly: JSON to stdout for jq processing
+roslyn-diff diff old.cs new.cs --json | jq '.summary'
+
+# Generate only HTML report and open it
+roslyn-diff diff old.cs new.cs --html report.html --open
+
+# Git-style unified diff (like git diff output)
+roslyn-diff diff old.cs new.cs --git
+
+# Plain text diff (no ANSI colors, good for logs)
+roslyn-diff diff old.cs new.cs --text > diff.log
+
+# Multiple outputs in one command
+roslyn-diff diff old.cs new.cs --json result.json --html report.html --text diff.txt
 
 # Compare specific classes
 roslyn-diff class old/Service.cs:UserService new/Service.cs:UserService
@@ -330,18 +387,18 @@ roslyn-diff class proj1/Handler.cs proj2/Handler.cs --match-by interface --inter
 # Compare with content similarity (for renamed classes)
 roslyn-diff class old/Foo.cs:OldName new/Bar.cs:NewName --match-by content
 
-# Output JSON for AI consumption
-roslyn-diff file old.cs new.cs -o json --out-file diff.json
-
-# Generate HTML report
-roslyn-diff file old.cs new.cs -o html --out-file report.html
-
-# Rich terminal output with colors and tables
-roslyn-diff file old.cs new.cs --rich
-
-# Force line-by-line mode
-roslyn-diff file config.json other-config.json --mode line
+# Force line-by-line mode for non-code files
+roslyn-diff diff config.json other-config.json --mode line
 ```
+
+### Exit Codes (CI/CD Friendly)
+```
+0 = No differences found
+1 = Differences found (success, but files differ)
+2 = Error (file not found, parse error, etc.)
+```
+
+This allows CI scripts to use: `roslyn-diff diff old.cs new.cs --quiet && echo "No changes"`
 
 ---
 
@@ -486,6 +543,99 @@ roslyn-diff file config.json other-config.json --mode line
 - [ ] Files with preprocessor directives (#if, #region)
 - [ ] Files with string interpolation
 - [ ] Files with raw string literals
+
+### CLI Output Options Tests (v0.7.0)
+
+#### JSON Output Tests
+- [ ] `--json` outputs valid JSON to stdout
+- [ ] `--json <file>` writes valid JSON to specified file
+- [ ] `--json` with no file argument outputs to stdout (not file named "")
+- [ ] JSON output includes metadata, summary, and changes sections
+
+#### HTML Output Tests
+- [ ] `--html <file>` writes valid HTML to specified file (REQUIRED argument)
+- [ ] `--html` without file argument shows error (file is required)
+- [ ] `--html report.html --open` generates file AND opens browser
+- [ ] `--open` without `--html` shows warning/is ignored
+- [ ] HTML output contains proper DOCTYPE, styles, and scripts
+
+#### Text Output Tests
+- [ ] `--text` outputs plain text to stdout
+- [ ] `--text <file>` writes plain text to specified file
+- [ ] Text output contains no ANSI escape codes
+- [ ] Text output shows hierarchical change structure
+
+#### Git/Unified Diff Output Tests
+- [ ] `--git` outputs unified diff format to stdout
+- [ ] `--git <file>` writes unified diff to specified file
+- [ ] Git output uses --- +++ @@ format
+- [ ] Git output is compatible with `patch` command
+
+#### Output Control Flag Tests
+- [ ] `--quiet` suppresses default console output
+- [ ] `--quiet` still allows explicit output flags (--json, --html)
+- [ ] `--quiet --json` outputs JSON only, no console messages
+- [ ] `--quiet` without output flags: only exit code matters
+- [ ] `--no-color` disables ANSI colors in console output
+- [ ] `--no-color` works even when TTY is detected
+- [ ] Default behavior without --no-color uses colors when TTY
+
+#### Combined Output Tests
+- [ ] `--json --html report.html` generates both JSON to stdout and HTML to file
+- [ ] `--json analysis.json --html report.html` generates both to files
+- [ ] `--json analysis.json --html report.html --text diff.txt` generates all three
+- [ ] Multiple file outputs: verify all files are created correctly
+- [ ] Combined with --quiet: verify appropriate suppression
+
+#### Default Behavior Tests (No Format Flags)
+- [ ] No flags, TTY detected: colored console output
+- [ ] No flags, piped to file: plain text output (no ANSI)
+- [ ] No flags, piped to grep: plain text output (no ANSI)
+- [ ] Verify automatic TTY detection works correctly
+
+#### Exit Code Tests
+- [ ] Exit code 0 when files are identical (no differences)
+- [ ] Exit code 1 when differences are found (success with diff)
+- [ ] Exit code 2 on error (file not found)
+- [ ] Exit code 2 on error (parse error in Roslyn mode)
+- [ ] Exit code 2 on error (invalid arguments)
+- [ ] Exit codes work correctly with --quiet flag
+- [ ] `roslyn-diff diff old.cs new.cs --quiet && echo "No changes"` works
+
+#### Error Handling Tests
+- [ ] Missing old file: error message and exit code 2
+- [ ] Missing new file: error message and exit code 2
+- [ ] Invalid --html path (directory instead of file): appropriate error
+- [ ] Invalid --json path (no write permission): appropriate error
+
+---
+
+## Sample Updates (Post v0.7.0 CLI Changes)
+
+After implementing the redesigned CLI API, update `/samples/`:
+
+### Files to Create/Update
+- [ ] `samples/cli-examples.sh` - Bash script demonstrating all CLI flag combinations
+- [ ] `samples/generated/calculator-diff.json` - JSON output example
+- [ ] `samples/generated/calculator-diff.html` - HTML output example
+- [ ] `samples/generated/calculator-diff.txt` - Plain text output example
+- [ ] `samples/generated/calculator-diff.patch` - Git unified diff output example
+- [ ] `samples/README.md` - Documentation explaining how to run samples
+
+### Sample Script Content
+```bash
+# Basic outputs to stdout
+roslyn-diff diff before/Calculator.cs after/Calculator.cs --json
+roslyn-diff diff before/Calculator.cs after/Calculator.cs --text
+roslyn-diff diff before/Calculator.cs after/Calculator.cs --git
+
+# Outputs to files
+roslyn-diff diff before/Calculator.cs after/Calculator.cs --json analysis.json
+roslyn-diff diff before/Calculator.cs after/Calculator.cs --html report.html --open
+
+# Combined outputs (AI use case)
+roslyn-diff diff before/Calculator.cs after/Calculator.cs --json --html report.html --quiet
+```
 
 ---
 
