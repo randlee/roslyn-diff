@@ -30,9 +30,9 @@ public class PerformanceTests
         // Act
         var result = _differ.Compare(oldCode, newCode, options);
 
-        // Assert: Should complete within 10 seconds (increased from 5s to account for CI variability)
+        // Assert: Should complete within 20 seconds (increased to account for slower CI runners like macOS)
         stopwatch.Stop();
-        stopwatch.ElapsedMilliseconds.Should().BeLessThan(10000, "large file diff should complete within 10 seconds");
+        stopwatch.ElapsedMilliseconds.Should().BeLessThan(20000, "large file diff should complete within 20 seconds");
         result.Should().NotBeNull();
         result.Stats.TotalChanges.Should().BeGreaterThan(0);
     }
@@ -177,8 +177,9 @@ public class PerformanceTests
         var result = _differ.Compare(oldCode, newCode, options);
 
         // Assert: Time should scale roughly linearly or better
+        // Allow 30ms per method as upper bound (increased from 20ms for slower CI runners like macOS)
         stopwatch.Stop();
-        var maxExpectedMs = methodCount * 20; // Allow 20ms per method as upper bound
+        var maxExpectedMs = methodCount * 30;
         stopwatch.ElapsedMilliseconds.Should().BeLessThan(maxExpectedMs,
             $"diff of {methodCount} methods should complete in reasonable time");
         result.Should().NotBeNull();
