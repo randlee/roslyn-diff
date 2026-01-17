@@ -48,17 +48,20 @@ dotnet run -- diff old.cs new.cs
 ### Compare Two Files
 
 ```bash
-# Basic diff
+# Basic diff (colored output if terminal, plain if piped)
 roslyn-diff diff old.cs new.cs
 
+# AI use case: JSON for processing + HTML for human review
+roslyn-diff diff old.cs new.cs --json --html report.html --open
+
 # Output as JSON (for AI/tooling consumption)
-roslyn-diff diff old.cs new.cs --output json
+roslyn-diff diff old.cs new.cs --json
 
-# Generate HTML report
-roslyn-diff diff old.cs new.cs --output html --out-file report.html
+# Generate HTML report and open in browser
+roslyn-diff diff old.cs new.cs --html report.html --open
 
-# Rich terminal output with colors
-roslyn-diff diff old.cs new.cs --rich
+# Git-style unified diff (patchable)
+roslyn-diff diff old.cs new.cs --git
 ```
 
 ### Compare Specific Classes
@@ -91,16 +94,32 @@ roslyn-diff diff <old-file> <new-file> [options]
 - `<old-file>` - Path to the original file
 - `<new-file>` - Path to the modified file
 
-**Options:**
+**Output Format Options (can combine multiple):**
+| Option | Description |
+|--------|-------------|
+| `--json [file]` | JSON output (stdout if no file, or to specified file) |
+| `--html <file>` | HTML report to file (required: file path) |
+| `--text [file]` | Plain text diff (stdout if no file) |
+| `--git [file]` | Git-style unified diff (stdout if no file) |
+| `--open` | Open HTML in default browser after generation |
+
+**Output Control:**
+| Option | Description |
+|--------|-------------|
+| `--quiet` | Suppress default console output (for scripting) |
+| `--no-color` | Disable colored output even if terminal supports it |
+
+**Diff Mode Options:**
 | Option | Short | Description | Default |
 |--------|-------|-------------|---------|
 | `--mode <mode>` | `-m` | Diff mode: `auto`, `roslyn`, `line` | `auto` |
 | `--ignore-whitespace` | `-w` | Ignore whitespace differences | `false` |
 | `--ignore-comments` | `-c` | Ignore comment differences (Roslyn mode only) | `false` |
 | `--context <lines>` | `-C` | Lines of context to show | `3` |
-| `--output <format>` | `-o` | Output format: `json`, `html`, `text`, `plain`, `terminal` | `text` |
-| `--out-file <path>` | | Write output to file instead of stdout | |
-| `--rich` | `-r` | Use rich terminal output with colors | `false` |
+
+**Default Behavior:**
+- If no format flags: colored console output (if TTY) or plain text (if piped)
+- Multiple formats can be combined (e.g., `--json --html report.html`)
 
 **Diff Modes:**
 - `auto` - Automatically select based on file extension (.cs/.vb use Roslyn, others use line diff)
@@ -119,14 +138,12 @@ roslyn-diff class <old-spec> <new-spec> [options]
 - `<old-spec>` - Old file specification: `file.cs:ClassName` or `file.cs`
 - `<new-spec>` - New file specification: `file.cs:ClassName` or `file.cs`
 
-**Options:**
+**Options (same format options as diff command, plus):**
 | Option | Short | Description | Default |
 |--------|-------|-------------|---------|
 | `--match-by <strategy>` | `-m` | Matching strategy: `exact`, `interface`, `similarity`, `auto` | `auto` |
 | `--interface <name>` | `-i` | Interface name for interface matching | |
 | `--similarity <threshold>` | `-s` | Similarity threshold (0.0-1.0) | `0.8` |
-| `--output <format>` | `-o` | Output format: `json`, `html`, `text`, `plain`, `terminal` | `text` |
-| `--out-file <path>` | `-f` | Write output to file | |
 
 **Match Strategies:**
 - `exact` - Match classes by exact name
@@ -134,11 +151,32 @@ roslyn-diff class <old-spec> <new-spec> [options]
 - `similarity` - Match by content similarity (for renamed classes)
 - `auto` - Try exact name first, then similarity
 
+## Exit Codes (CI/CD Friendly)
+
+| Code | Meaning |
+|------|---------|
+| `0` | No differences found |
+| `1` | Differences found (success, but files differ) |
+| `2` | Error (file not found, parse error, etc.) |
+
+**Example CI usage:**
+```bash
+roslyn-diff diff old.cs new.cs --quiet && echo "No changes"
+```
+
 ## Output Formats
 
-### JSON (`--output json`)
+### JSON (`--json`)
 
 Machine-readable format, ideal for AI consumption and tooling integration.
+
+```bash
+# To stdout (for piping to jq, AI tools, etc.)
+roslyn-diff diff old.cs new.cs --json
+
+# To file
+roslyn-diff diff old.cs new.cs --json analysis.json
+```
 
 ```json
 {
@@ -159,38 +197,69 @@ Machine-readable format, ideal for AI consumption and tooling integration.
 }
 ```
 
-### HTML (`--output html`)
+### HTML (`--html`)
 
 Interactive HTML report with:
 - Side-by-side diff view
 - Syntax highlighting
-- Collapsible sections
+- Collapsible sections with copy buttons
+- IDE integration links (VS Code, Rider, PyCharm, Zed)
 - Navigation and summary statistics
 
-### Text (`--output text`)
+```bash
+# Generate and open in browser
+roslyn-diff diff old.cs new.cs --html report.html --open
+```
 
-Unified diff format, similar to `git diff`:
+### Text (`--text`)
+
+Structured plain text showing semantic changes:
+
+```bash
+roslyn-diff diff old.cs new.cs --text
+```
+
+```
+Diff: old.cs -> new.cs
+Mode: Roslyn (semantic)
+
+Summary: +2 (2 total changes)
+
+Changes:
+  File: new.cs
+    [+] Method: Multiply (line 5-8)
+    [+] Method: Divide (line 10-13)
+```
+
+### Git Unified Diff (`--git`)
+
+Standard unified diff format, compatible with `patch` command:
+
+```bash
+roslyn-diff diff old.cs new.cs --git
+```
 
 ```diff
 --- old/Calculator.cs
 +++ new/Calculator.cs
-@@ class Calculator @@
-+ public int Multiply(int a, int b)
-+ {
-+     return a * b;
-+ }
+@@ -1,7 +1,12 @@
+ public class Calculator
+ {
+     public int Add(int a, int b) => a + b;
++    public int Multiply(int a, int b) => a * b;
+ }
 ```
 
-### Terminal (`--output terminal` or `--rich`)
+### Console Output (default)
 
-Rich terminal output using Spectre.Console with:
+When connected to a terminal (TTY):
 - Color-coded changes (green for additions, red for deletions)
 - Tree view for structural changes
 - Summary tables
 
-### Plain (`--output plain`)
-
-Simple text output without ANSI codes, suitable for piping and redirection.
+When piped/redirected:
+- Falls back to plain text format
+- No ANSI escape codes
 
 ## Change Types Detected
 
