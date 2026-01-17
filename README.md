@@ -114,7 +114,6 @@ roslyn-diff diff <old-file> <new-file> [options]
 |--------|-------|-------------|---------|
 | `--mode <mode>` | `-m` | Diff mode: `auto`, `roslyn`, `line` | `auto` |
 | `--ignore-whitespace` | `-w` | Ignore whitespace differences | `false` |
-| `--ignore-comments` | `-c` | Ignore comment differences (Roslyn mode only) | `false` |
 | `--context <lines>` | `-C` | Lines of context to show | `3` |
 
 **Default Behavior:**
@@ -306,7 +305,7 @@ public class Calculator
 
 **Command:**
 ```bash
-roslyn-diff diff before.cs after.cs --output json
+roslyn-diff diff before.cs after.cs --json
 ```
 
 **Result:** Detects 2 added methods (`Multiply`, `Divide`)
@@ -325,10 +324,10 @@ roslyn-diff class old.cs:OldService new.cs --match-by similarity
 
 ```bash
 # JSON report for CI/CD
-roslyn-diff diff src/old.cs src/new.cs -o json --out-file diff.json
+roslyn-diff diff src/old.cs src/new.cs --json diff.json
 
-# HTML report for review
-roslyn-diff diff src/old.cs src/new.cs -o html --out-file report.html
+# HTML report for review and open in browser
+roslyn-diff diff src/old.cs src/new.cs --html report.html --open
 ```
 
 ## Programmatic Usage
@@ -351,7 +350,6 @@ var result = differ.Compare(oldContent, newContent, new DiffOptions
 {
     Mode = null, // Auto-detect
     IgnoreWhitespace = false,
-    IgnoreComments = false,
     ContextLines = 3
 });
 

@@ -173,6 +173,9 @@ public class JsonFormatter : IOutputFormatter
     /// </summary>
     internal sealed class JsonOutputModel
     {
+        [JsonPropertyName("$schema")]
+        public string Schema { get; init; } = "roslyn-diff-output-v1";
+
         public required JsonMetadata Metadata { get; init; }
         public required JsonSummary Summary { get; init; }
         public required List<JsonFileChange> Files { get; init; }

@@ -99,7 +99,6 @@ public class PlainTextFormatterTests
         {
             Stats = new DiffStats
             {
-                TotalChanges = 6,
                 Additions = 2,
                 Deletions = 1,
                 Modifications = 3
@@ -125,7 +124,6 @@ public class PlainTextFormatterTests
         {
             Stats = new DiffStats
             {
-                TotalChanges = 6,
                 Additions = 2
             }
         };
@@ -373,7 +371,7 @@ public class PlainTextFormatterTests
         {
             OldPath = "old.cs",
             NewPath = "new.cs",
-            Stats = new DiffStats { TotalChanges = 1, Additions = 1 },
+            Stats = new DiffStats { Additions = 1 },
             FileChanges =
             [
                 new FileChange

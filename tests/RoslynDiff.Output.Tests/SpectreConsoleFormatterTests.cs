@@ -97,7 +97,6 @@ public class SpectreConsoleFormatterTests
         {
             Stats = new DiffStats
             {
-                TotalChanges = 6,
                 Additions = 2,
                 Deletions = 1,
                 Modifications = 3
@@ -122,7 +121,6 @@ public class SpectreConsoleFormatterTests
         {
             Stats = new DiffStats
             {
-                TotalChanges = 6,
                 Additions = 2
             }
         };

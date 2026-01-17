@@ -287,7 +287,6 @@ public sealed class LineDiffer : IDiffer
 
         return new DiffStats
         {
-            TotalChanges = additions + deletions + modifications,
             Additions = additions,
             Deletions = deletions,
             Modifications = modifications,

@@ -2,6 +2,7 @@ namespace RoslynDiff.Cli.Tests;
 
 using FluentAssertions;
 using RoslynDiff.Cli.Commands;
+using Spectre.Console.Cli;
 using Xunit;
 
 /// <summary>
@@ -19,16 +20,6 @@ public class DiffCommandTests
 
         // Assert
         settings.Mode.Should().Be("auto");
-    }
-
-    [Fact]
-    public void Settings_DefaultOutputFormat_ShouldBeText()
-    {
-        // Arrange & Act
-        var settings = new DiffCommand.Settings();
-
-        // Assert
-        settings.OutputFormat.Should().Be("text");
     }
 
     [Fact]
@@ -52,33 +43,73 @@ public class DiffCommandTests
     }
 
     [Fact]
-    public void Settings_DefaultIgnoreComments_ShouldBeFalse()
+    public void Settings_DefaultQuiet_ShouldBeFalse()
     {
         // Arrange & Act
         var settings = new DiffCommand.Settings();
 
         // Assert
-        settings.IgnoreComments.Should().BeFalse();
+        settings.Quiet.Should().BeFalse();
     }
 
     [Fact]
-    public void Settings_DefaultRichOutput_ShouldBeFalse()
+    public void Settings_DefaultNoColor_ShouldBeFalse()
     {
         // Arrange & Act
         var settings = new DiffCommand.Settings();
 
         // Assert
-        settings.RichOutput.Should().BeFalse();
+        settings.NoColor.Should().BeFalse();
     }
 
     [Fact]
-    public void Settings_DefaultOutputFile_ShouldBeNull()
+    public void Settings_DefaultOpenInBrowser_ShouldBeFalse()
     {
         // Arrange & Act
         var settings = new DiffCommand.Settings();
 
         // Assert
-        settings.OutputFile.Should().BeNull();
+        settings.OpenInBrowser.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Settings_DefaultHtmlOutput_ShouldBeNull()
+    {
+        // Arrange & Act
+        var settings = new DiffCommand.Settings();
+
+        // Assert
+        settings.HtmlOutput.Should().BeNull();
+    }
+
+    [Fact]
+    public void Settings_DefaultJsonOutput_ShouldBeNull()
+    {
+        // Arrange & Act
+        var settings = new DiffCommand.Settings();
+
+        // Assert
+        settings.JsonOutput.Should().BeNull();
+    }
+
+    [Fact]
+    public void Settings_DefaultTextOutput_ShouldBeNull()
+    {
+        // Arrange & Act
+        var settings = new DiffCommand.Settings();
+
+        // Assert
+        settings.TextOutput.Should().BeNull();
+    }
+
+    [Fact]
+    public void Settings_DefaultGitOutput_ShouldBeNull()
+    {
+        // Arrange & Act
+        var settings = new DiffCommand.Settings();
+
+        // Assert
+        settings.GitOutput.Should().BeNull();
     }
 
     [Fact]
@@ -114,30 +145,6 @@ public class DiffCommandTests
 
         // Assert
         settings.IgnoreWhitespace.Should().BeFalse();
-    }
-
-    #endregion
-
-    #region IgnoreComments Option
-
-    [Fact]
-    public void Settings_IgnoreComments_WhenSetToTrue_ShouldBeTrue()
-    {
-        // Arrange & Act
-        var settings = new DiffCommand.Settings { IgnoreComments = true };
-
-        // Assert
-        settings.IgnoreComments.Should().BeTrue();
-    }
-
-    [Fact]
-    public void Settings_IgnoreComments_WhenSetToFalse_ShouldBeFalse()
-    {
-        // Arrange & Act
-        var settings = new DiffCommand.Settings { IgnoreComments = false };
-
-        // Assert
-        settings.IgnoreComments.Should().BeFalse();
     }
 
     #endregion
@@ -226,124 +233,106 @@ public class DiffCommandTests
 
     #endregion
 
-    #region OutputFormat Option
-
-    [Theory]
-    [InlineData("json")]
-    [InlineData("html")]
-    [InlineData("text")]
-    [InlineData("terminal")]
-    public void Settings_OutputFormat_WhenSetToValidValue_ShouldReturnThatValue(string format)
-    {
-        // Arrange & Act
-        var settings = new DiffCommand.Settings { OutputFormat = format };
-
-        // Assert
-        settings.OutputFormat.Should().Be(format);
-    }
+    #region Output Format Options
 
     [Fact]
-    public void Settings_OutputFormat_WhenSetToJson_ShouldBeJson()
-    {
-        // Arrange & Act
-        var settings = new DiffCommand.Settings { OutputFormat = "json" };
-
-        // Assert
-        settings.OutputFormat.Should().Be("json");
-    }
-
-    [Fact]
-    public void Settings_OutputFormat_WhenSetToHtml_ShouldBeHtml()
-    {
-        // Arrange & Act
-        var settings = new DiffCommand.Settings { OutputFormat = "html" };
-
-        // Assert
-        settings.OutputFormat.Should().Be("html");
-    }
-
-    [Fact]
-    public void Settings_OutputFormat_WhenSetToText_ShouldBeText()
-    {
-        // Arrange & Act
-        var settings = new DiffCommand.Settings { OutputFormat = "text" };
-
-        // Assert
-        settings.OutputFormat.Should().Be("text");
-    }
-
-    [Fact]
-    public void Settings_OutputFormat_WhenSetToTerminal_ShouldBeTerminal()
-    {
-        // Arrange & Act
-        var settings = new DiffCommand.Settings { OutputFormat = "terminal" };
-
-        // Assert
-        settings.OutputFormat.Should().Be("terminal");
-    }
-
-    #endregion
-
-    #region OutputFile Option
-
-    [Fact]
-    public void Settings_OutputFile_WhenSetToPath_ShouldReturnThatPath()
+    public void Settings_HtmlOutput_WhenSetToPath_ShouldReturnThatPath()
     {
         // Arrange
-        const string expectedPath = "/path/to/output.txt";
+        const string expectedPath = "/path/to/output.html";
 
         // Act
-        var settings = new DiffCommand.Settings { OutputFile = expectedPath };
+        var settings = new DiffCommand.Settings { HtmlOutput = expectedPath };
 
         // Assert
-        settings.OutputFile.Should().Be(expectedPath);
+        settings.HtmlOutput.Should().Be(expectedPath);
     }
 
     [Fact]
-    public void Settings_OutputFile_WhenSetToNull_ShouldBeNull()
+    public void Settings_HtmlOutput_WhenSetToNull_ShouldBeNull()
     {
         // Arrange & Act
-        var settings = new DiffCommand.Settings { OutputFile = null };
+        var settings = new DiffCommand.Settings { HtmlOutput = null };
 
         // Assert
-        settings.OutputFile.Should().BeNull();
+        settings.HtmlOutput.Should().BeNull();
     }
 
     [Theory]
-    [InlineData("output.json")]
+    [InlineData("output.html")]
     [InlineData("./results/diff.html")]
-    [InlineData("/absolute/path/output.txt")]
-    public void Settings_OutputFile_WhenSetToVariousPaths_ShouldReturnThatPath(string path)
+    [InlineData("/absolute/path/output.html")]
+    public void Settings_HtmlOutput_WhenSetToVariousPaths_ShouldReturnThatPath(string path)
     {
         // Arrange & Act
-        var settings = new DiffCommand.Settings { OutputFile = path };
+        var settings = new DiffCommand.Settings { HtmlOutput = path };
 
         // Assert
-        settings.OutputFile.Should().Be(path);
+        settings.HtmlOutput.Should().Be(path);
     }
 
     #endregion
 
-    #region RichOutput Option
+    #region Output Control Options
 
     [Fact]
-    public void Settings_RichOutput_WhenSetToTrue_ShouldBeTrue()
+    public void Settings_Quiet_WhenSetToTrue_ShouldBeTrue()
     {
         // Arrange & Act
-        var settings = new DiffCommand.Settings { RichOutput = true };
+        var settings = new DiffCommand.Settings { Quiet = true };
 
         // Assert
-        settings.RichOutput.Should().BeTrue();
+        settings.Quiet.Should().BeTrue();
     }
 
     [Fact]
-    public void Settings_RichOutput_WhenSetToFalse_ShouldBeFalse()
+    public void Settings_Quiet_WhenSetToFalse_ShouldBeFalse()
     {
         // Arrange & Act
-        var settings = new DiffCommand.Settings { RichOutput = false };
+        var settings = new DiffCommand.Settings { Quiet = false };
 
         // Assert
-        settings.RichOutput.Should().BeFalse();
+        settings.Quiet.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Settings_NoColor_WhenSetToTrue_ShouldBeTrue()
+    {
+        // Arrange & Act
+        var settings = new DiffCommand.Settings { NoColor = true };
+
+        // Assert
+        settings.NoColor.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Settings_NoColor_WhenSetToFalse_ShouldBeFalse()
+    {
+        // Arrange & Act
+        var settings = new DiffCommand.Settings { NoColor = false };
+
+        // Assert
+        settings.NoColor.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Settings_OpenInBrowser_WhenSetToTrue_ShouldBeTrue()
+    {
+        // Arrange & Act
+        var settings = new DiffCommand.Settings { OpenInBrowser = true };
+
+        // Assert
+        settings.OpenInBrowser.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Settings_OpenInBrowser_WhenSetToFalse_ShouldBeFalse()
+    {
+        // Arrange & Act
+        var settings = new DiffCommand.Settings { OpenInBrowser = false };
+
+        // Assert
+        settings.OpenInBrowser.Should().BeFalse();
     }
 
     #endregion
@@ -351,63 +340,33 @@ public class DiffCommandTests
     #region Option Combinations
 
     [Fact]
-    public void Settings_WithIgnoreWhitespaceAndIgnoreComments_ShouldHaveBothTrue()
+    public void Settings_WithHtmlOutputAndOpenInBrowser_ShouldHaveCorrectValues()
     {
         // Arrange & Act
         var settings = new DiffCommand.Settings
         {
-            IgnoreWhitespace = true,
-            IgnoreComments = true
+            HtmlOutput = "report.html",
+            OpenInBrowser = true
         };
 
         // Assert
-        settings.IgnoreWhitespace.Should().BeTrue();
-        settings.IgnoreComments.Should().BeTrue();
+        settings.HtmlOutput.Should().Be("report.html");
+        settings.OpenInBrowser.Should().BeTrue();
     }
 
     [Fact]
-    public void Settings_WithRoslynModeAndIgnoreComments_ShouldHaveCorrectValues()
+    public void Settings_WithQuietAndNoColor_ShouldHaveCorrectValues()
     {
         // Arrange & Act
         var settings = new DiffCommand.Settings
         {
-            Mode = "roslyn",
-            IgnoreComments = true
+            Quiet = true,
+            NoColor = true
         };
 
         // Assert
-        settings.Mode.Should().Be("roslyn");
-        settings.IgnoreComments.Should().BeTrue();
-    }
-
-    [Fact]
-    public void Settings_WithJsonOutputAndOutputFile_ShouldHaveCorrectValues()
-    {
-        // Arrange & Act
-        var settings = new DiffCommand.Settings
-        {
-            OutputFormat = "json",
-            OutputFile = "results.json"
-        };
-
-        // Assert
-        settings.OutputFormat.Should().Be("json");
-        settings.OutputFile.Should().Be("results.json");
-    }
-
-    [Fact]
-    public void Settings_WithRichOutputAndTerminalFormat_ShouldHaveCorrectValues()
-    {
-        // Arrange & Act
-        var settings = new DiffCommand.Settings
-        {
-            RichOutput = true,
-            OutputFormat = "terminal"
-        };
-
-        // Assert
-        settings.RichOutput.Should().BeTrue();
-        settings.OutputFormat.Should().Be("terminal");
+        settings.Quiet.Should().BeTrue();
+        settings.NoColor.Should().BeTrue();
     }
 
     [Fact]
@@ -420,11 +379,11 @@ public class DiffCommandTests
             NewPath = "new.cs",
             Mode = "roslyn",
             IgnoreWhitespace = true,
-            IgnoreComments = true,
             ContextLines = 5,
-            OutputFormat = "json",
-            OutputFile = "diff-result.json",
-            RichOutput = false
+            HtmlOutput = "diff-result.html",
+            Quiet = false,
+            NoColor = true,
+            OpenInBrowser = true
         };
 
         // Assert
@@ -432,11 +391,11 @@ public class DiffCommandTests
         settings.NewPath.Should().Be("new.cs");
         settings.Mode.Should().Be("roslyn");
         settings.IgnoreWhitespace.Should().BeTrue();
-        settings.IgnoreComments.Should().BeTrue();
         settings.ContextLines.Should().Be(5);
-        settings.OutputFormat.Should().Be("json");
-        settings.OutputFile.Should().Be("diff-result.json");
-        settings.RichOutput.Should().BeFalse();
+        settings.HtmlOutput.Should().Be("diff-result.html");
+        settings.Quiet.Should().BeFalse();
+        settings.NoColor.Should().BeTrue();
+        settings.OpenInBrowser.Should().BeTrue();
     }
 
     [Fact]
@@ -508,20 +467,6 @@ public class DiffCommandTests
     }
 
     [Theory]
-    [InlineData("invalid")]
-    [InlineData("xml")]
-    [InlineData("markdown")]
-    public void Settings_OutputFormat_WhenSetToArbitraryString_ShouldStoreIt(string format)
-    {
-        // Arrange & Act
-        // Note: Settings allows any string value; validation happens at execution time
-        var settings = new DiffCommand.Settings { OutputFormat = format };
-
-        // Assert
-        settings.OutputFormat.Should().Be(format);
-    }
-
-    [Theory]
     [InlineData(-1)]
     [InlineData(-100)]
     public void Settings_ContextLines_WhenSetToNegativeValue_ShouldStoreIt(int lines)
@@ -532,6 +477,93 @@ public class DiffCommandTests
 
         // Assert
         settings.ContextLines.Should().Be(lines);
+    }
+
+    #endregion
+
+    #region Validation Tests
+
+    [Fact]
+    public void Validate_WithOpenInBrowserWithoutHtmlOutput_ShouldReturnError()
+    {
+        // Arrange
+        var settings = new DiffCommand.Settings
+        {
+            OpenInBrowser = true,
+            HtmlOutput = null
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+        result.Message.Should().Contain("--open requires --html");
+    }
+
+    [Fact]
+    public void Validate_WithOpenInBrowserAndHtmlOutput_ShouldSucceed()
+    {
+        // Arrange
+        var settings = new DiffCommand.Settings
+        {
+            OpenInBrowser = true,
+            HtmlOutput = "output.html"
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Validate_WithHtmlOutputEmptyString_ShouldReturnError()
+    {
+        // Arrange
+        var settings = new DiffCommand.Settings
+        {
+            HtmlOutput = "   " // whitespace only
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeFalse();
+        result.Message.Should().Contain("--html requires a file path");
+    }
+
+    [Fact]
+    public void Validate_WithValidSettings_ShouldSucceed()
+    {
+        // Arrange
+        var settings = new DiffCommand.Settings
+        {
+            OldPath = "old.cs",
+            NewPath = "new.cs",
+            HtmlOutput = "output.html"
+        };
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Validate_WithDefaultSettings_ShouldSucceed()
+    {
+        // Arrange
+        var settings = new DiffCommand.Settings();
+
+        // Act
+        var result = settings.Validate();
+
+        // Assert
+        result.Successful.Should().BeTrue();
     }
 
     #endregion

@@ -50,8 +50,20 @@ public sealed class UnifiedFormatter : IOutputFormatter
                 continue;
             }
 
+            // For semantic diffs (Roslyn mode), flatten the hierarchy to only show leaf-level changes
+            // This avoids duplicate content when parent containers include full content
+            // For line-level diffs, use the changes as-is (they're already flat)
+            var changesToProcess = result.Mode == DiffMode.Roslyn
+                ? FlattenToLeafChanges(fileChange.Changes)
+                : fileChange.Changes.ToList();
+
+            if (changesToProcess.Count == 0)
+            {
+                continue;
+            }
+
             // Group changes into hunks
-            var hunks = GroupChangesIntoHunks(fileChange.Changes);
+            var hunks = GroupChangesIntoHunks(changesToProcess);
 
             foreach (var hunk in hunks)
             {
@@ -61,6 +73,70 @@ public sealed class UnifiedFormatter : IOutputFormatter
 
         // Note: Standard unified diff format does not include a summary line
         // Removed to match diff -u and git diff output
+    }
+
+    /// <summary>
+    /// Flattens hierarchical changes to only include leaf-level changes.
+    /// For semantic diffs, parent nodes (namespace, class) may include full content,
+    /// but we only want to show the actual changed items (methods, properties, etc.).
+    /// Deduplicates based on location to avoid showing the same change multiple times.
+    /// </summary>
+    private static List<Change> FlattenToLeafChanges(IReadOnlyList<Change> changes)
+    {
+        var leafChanges = new List<Change>();
+        var seenLocations = new HashSet<string>();
+        CollectLeafChanges(changes, leafChanges, seenLocations);
+        return leafChanges;
+    }
+
+    /// <summary>
+    /// Recursively collects leaf-level changes (those without children or where children should be shown).
+    /// </summary>
+    private static void CollectLeafChanges(IReadOnlyList<Change> changes, List<Change> result, HashSet<string> seenLocations)
+    {
+        foreach (var change in changes)
+        {
+            if (change.Children is { Count: > 0 })
+            {
+                // This change has children - recurse into them
+                // Don't include this parent change as it would duplicate content
+                CollectLeafChanges(change.Children, result, seenLocations);
+            }
+            else
+            {
+                // Leaf change - include it if not already seen
+                // For unified diff format:
+                // - Always include Added and Removed changes
+                // - Include Unchanged and Modified changes only for line-level diffs (Kind.Line)
+                //   These provide context and show modified lines
+                // - Exclude Unchanged/Modified changes from semantic diffs (Kind.Class, Method, etc.)
+                //   as they often contain too much content (e.g., entire class body)
+                var isLineLevel = change.Kind == ChangeKind.Line;
+                var shouldInclude = change.Type == ChangeType.Added ||
+                                    change.Type == ChangeType.Removed ||
+                                    (isLineLevel && (change.Type == ChangeType.Modified || change.Type == ChangeType.Unchanged));
+
+                if (shouldInclude)
+                {
+                    // Create a unique key based on location to deduplicate
+                    var locationKey = GetLocationKey(change);
+                    if (seenLocations.Add(locationKey))
+                    {
+                        result.Add(change);
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Creates a unique key for a change based on its location and type.
+    /// </summary>
+    private static string GetLocationKey(Change change)
+    {
+        var oldLoc = change.OldLocation;
+        var newLoc = change.NewLocation;
+        return $"{change.Type}|{oldLoc?.StartLine}:{oldLoc?.EndLine}|{newLoc?.StartLine}:{newLoc?.EndLine}";
     }
 
     private static List<List<Change>> GroupChangesIntoHunks(IReadOnlyList<Change> changes)

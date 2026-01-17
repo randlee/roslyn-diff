@@ -124,6 +124,20 @@ public partial class HtmlFormatter : IOutputFormatter
             gap: 16px;
             margin-bottom: 16px;
             flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .header-title-left {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .header-timestamp {
+            font-size: 13px;
+            color: #57606a;
+            white-space: nowrap;
         }
 
         .header-stats {
@@ -799,59 +813,66 @@ public partial class HtmlFormatter : IOutputFormatter
 
         sb.AppendLine("    <header>");
 
-        // Title row with inline stats
+        // Title row with inline stats (left) and timestamp (right)
         sb.AppendLine("        <div class=\"header-title-row\">");
-        sb.AppendLine("            <h1>Diff Report</h1>");
+        sb.AppendLine("            <div class=\"header-title-left\">");
+        sb.AppendLine("                <h1>Diff Report</h1>");
 
         if (options.IncludeStats)
         {
-            sb.AppendLine("            <div class=\"header-stats\">");
+            sb.AppendLine("                <div class=\"header-stats\">");
 
             // Total changes
-            sb.AppendLine($"                <span class=\"stat-inline\">{stats.TotalChanges} changes</span>");
+            sb.AppendLine($"                    <span class=\"stat-inline\">{stats.TotalChanges} changes</span>");
 
             // Additions
             if (stats.Additions > 0)
             {
-                sb.AppendLine("                <span class=\"stat-separator\">|</span>");
-                sb.AppendLine($"                <span class=\"stat-inline\" style=\"color: var(--color-added-border);\">+{stats.Additions} added</span>");
+                sb.AppendLine("                    <span class=\"stat-separator\">|</span>");
+                sb.AppendLine($"                    <span class=\"stat-inline\" style=\"color: var(--color-added-border);\">+{stats.Additions} added</span>");
             }
 
             // Deletions
             if (stats.Deletions > 0)
             {
-                sb.AppendLine("                <span class=\"stat-separator\">|</span>");
-                sb.AppendLine($"                <span class=\"stat-inline\" style=\"color: var(--color-removed-border);\">-{stats.Deletions} deleted</span>");
+                sb.AppendLine("                    <span class=\"stat-separator\">|</span>");
+                sb.AppendLine($"                    <span class=\"stat-inline\" style=\"color: var(--color-removed-border);\">-{stats.Deletions} deleted</span>");
             }
 
             // Modifications
             if (stats.Modifications > 0)
             {
-                sb.AppendLine("                <span class=\"stat-separator\">|</span>");
-                sb.AppendLine($"                <span class=\"stat-inline\" style=\"color: var(--color-modified-border);\">~{stats.Modifications} modified</span>");
+                sb.AppendLine("                    <span class=\"stat-separator\">|</span>");
+                sb.AppendLine($"                    <span class=\"stat-inline\" style=\"color: var(--color-modified-border);\">~{stats.Modifications} modified</span>");
             }
 
             // Moves
             if (stats.Moves > 0)
             {
-                sb.AppendLine("                <span class=\"stat-separator\">|</span>");
-                sb.AppendLine($"                <span class=\"stat-inline\" style=\"color: var(--color-moved-border);\">\u21c4{stats.Moves} moved</span>");
+                sb.AppendLine("                    <span class=\"stat-separator\">|</span>");
+                sb.AppendLine($"                    <span class=\"stat-inline\" style=\"color: var(--color-moved-border);\">\u21c4{stats.Moves} moved</span>");
             }
 
             // Renames
             if (stats.Renames > 0)
             {
-                sb.AppendLine("                <span class=\"stat-separator\">|</span>");
-                sb.AppendLine($"                <span class=\"stat-inline\" style=\"color: var(--color-renamed-border);\">\u270e{stats.Renames} renamed</span>");
+                sb.AppendLine("                    <span class=\"stat-separator\">|</span>");
+                sb.AppendLine($"                    <span class=\"stat-inline\" style=\"color: var(--color-renamed-border);\">\u270e{stats.Renames} renamed</span>");
             }
 
             // Mode indicator
             var modeText = result.Mode == DiffMode.Roslyn ? "Roslyn Semantic" : "Line-by-Line";
-            sb.AppendLine("                <span class=\"stat-separator\">|</span>");
-            sb.AppendLine($"                <span class=\"stat-inline\">Mode: {modeText}</span>");
+            sb.AppendLine("                    <span class=\"stat-separator\">|</span>");
+            sb.AppendLine($"                    <span class=\"stat-inline\">Mode: {modeText}</span>");
 
-            sb.AppendLine("            </div>");
+            sb.AppendLine("                </div>");
         }
+
+        sb.AppendLine("            </div>");
+
+        // Timestamp (right-aligned)
+        var timestamp = DateTime.Now.ToString("MMM d, yyyy h:mm tt");
+        sb.AppendLine($"            <span class=\"header-timestamp\">{HtmlEncode(timestamp)}</span>");
 
         sb.AppendLine("        </div>");
 
@@ -1220,9 +1241,22 @@ public partial class HtmlFormatter : IOutputFormatter
 
         sb.AppendLine($"                    <div class=\"change-body\" id=\"{changeId}\" {changeMetadata}>");
 
-        // Show old and new content if available
-        if (change.OldContent != null || change.NewContent != null)
+        // If this change has children, show a summary instead of full content to avoid duplication
+        // The children will show their own detailed content
+        var hasChildren = change.Children != null && change.Children.Count > 0;
+
+        if (hasChildren)
         {
+            // Show a summary placeholder for parent elements with children
+            var childCount = change.Children!.Count;
+            var childSummary = childCount == 1 ? "1 nested change" : $"{childCount} nested changes";
+            sb.AppendLine($"                        <div class=\"diff-line\" style=\"padding: 8px 12px; color: #57606a; font-style: italic;\">");
+            sb.AppendLine($"                            Contains {childSummary} shown below.");
+            sb.AppendLine("                        </div>");
+        }
+        else if (change.OldContent != null || change.NewContent != null)
+        {
+            // Show old and new content only for leaf changes (no children)
             sb.AppendLine("                        <div class=\"diff-container\">");
 
             sb.AppendLine("                            <div class=\"diff-side diff-old\">");
@@ -1245,9 +1279,9 @@ public partial class HtmlFormatter : IOutputFormatter
         sb.AppendLine("                    </div>");
 
         // Render children recursively
-        if (change.Children != null)
+        if (hasChildren)
         {
-            foreach (var child in change.Children)
+            foreach (var child in change.Children!)
             {
                 AppendChange(sb, child, depth + 1);
             }

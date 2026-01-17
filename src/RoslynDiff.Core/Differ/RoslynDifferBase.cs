@@ -231,7 +231,7 @@ public abstract class RoslynDifferBase : IDiffer
                     ]
                 }
             ],
-            Stats = new DiffStats { TotalChanges = 1, Modifications = 1 }
+            Stats = new DiffStats { Modifications = 1 }
         };
     }
 
@@ -330,7 +330,6 @@ public abstract class RoslynDifferBase : IDiffer
 
         return new DiffStats
         {
-            TotalChanges = stats.Additions + stats.Deletions + stats.Modifications + stats.Moves + stats.Renames,
             Additions = stats.Additions,
             Deletions = stats.Deletions,
             Modifications = stats.Modifications,

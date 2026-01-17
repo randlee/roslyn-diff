@@ -1,104 +1,134 @@
 {
-  "$schema": "roslyn-diff-output-v1",
   "metadata": {
-    "tool": "roslyn-diff",
-    "version": "0.5.0",
-    "timestamp": "2025-01-14T20:00:00Z",
+    "version": "0.5.0\u002B9ba8af9f7194d3aae65912a5cca52a74e7434e5c",
+    "timestamp": "2026-01-17T02:59:00.611965+00:00",
     "mode": "roslyn",
-    "oldPath": "samples/before/Calculator.cs",
-    "newPath": "samples/after/Calculator.cs"
+    "options": {
+      "includeContent": true,
+      "contextLines": 3
+    }
   },
   "summary": {
-    "totalChanges": 4,
-    "additions": 2,
+    "totalChanges": 7,
+    "additions": 4,
     "deletions": 0,
-    "modifications": 2,
-    "moves": 0,
-    "renames": 0
+    "modifications": 3,
+    "renames": 0,
+    "moves": 0
   },
-  "fileChanges": [
+  "files": [
     {
-      "path": "samples/after/Calculator.cs",
+      "oldPath": "/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/cli-output-redesign/samples/before/Calculator.cs",
+      "newPath": "/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/cli-output-redesign/samples/after/Calculator.cs",
       "changes": [
         {
-          "type": "Modified",
-          "kind": "Method",
-          "name": "Add",
-          "oldName": null,
+          "type": "modified",
+          "kind": "namespace",
+          "name": "Samples",
+          "location": {
+            "startLine": 1,
+            "endLine": 56,
+            "startColumn": 1,
+            "endColumn": 2
+          },
           "oldLocation": {
-            "file": "samples/before/Calculator.cs",
-            "startLine": 11,
-            "endLine": 14,
-            "startColumn": 5,
-            "endColumn": 6
+            "startLine": 1,
+            "endLine": 23,
+            "startColumn": 1,
+            "endColumn": 2
           },
-          "newLocation": {
-            "file": "samples/after/Calculator.cs",
-            "startLine": 14,
-            "endLine": 17,
-            "startColumn": 5,
-            "endColumn": 6
-          },
-          "oldContent": "    public int Add(int a, int b)\n    {\n        return a + b;\n    }",
-          "newContent": "    /// <summary>\n    /// Adds two numbers together.\n    /// </summary>\n    /// <param name=\"a\">The first number.</param>\n    /// <param name=\"b\">The second number.</param>\n    /// <returns>The sum of a and b.</returns>\n    public int Add(int a, int b)\n    {\n        return a + b;\n    }",
-          "children": []
+          "content": "namespace Samples;\r\n/// \u003Csummary\u003E\n/// A simple calculator class for basic arithmetic operations.\n/// \u003C/summary\u003E\npublic class Calculator\r\n{\r\n    /// \u003Csummary\u003E\n    /// Adds two numbers together.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022a\u0022\u003EThe first number.\u003C/param\u003E\n    /// \u003Cparam name = \u0022b\u0022\u003EThe second number.\u003C/param\u003E\n    /// \u003Creturns\u003EThe sum of a and b.\u003C/returns\u003E\n    public int Add(int a, int b)\r\n    {\r\n        return a \u002B b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Subtracts the second number from the first.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022a\u0022\u003EThe first number.\u003C/param\u003E\n    /// \u003Cparam name = \u0022b\u0022\u003EThe second number.\u003C/param\u003E\n    /// \u003Creturns\u003EThe difference of a and b.\u003C/returns\u003E\n    public int Subtract(int a, int b)\r\n    {\r\n        return a - b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Multiplies two numbers.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022a\u0022\u003EThe first number.\u003C/param\u003E\n    /// \u003Cparam name = \u0022b\u0022\u003EThe second number.\u003C/param\u003E\n    /// \u003Creturns\u003EThe product of a and b.\u003C/returns\u003E\n    public int Multiply(int a, int b)\r\n    {\r\n        return a * b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Divides the first number by the second.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022a\u0022\u003EThe dividend.\u003C/param\u003E\n    /// \u003Cparam name = \u0022b\u0022\u003EThe divisor.\u003C/param\u003E\n    /// \u003Creturns\u003EThe quotient of a divided by b.\u003C/returns\u003E\n    /// \u003Cexception cref = \u0022DivideByZeroException\u0022\u003EThrown when b is zero.\u003C/exception\u003E\n    public int Divide(int a, int b)\r\n    {\r\n        if (b == 0)\r\n        {\r\n            throw new DivideByZeroException(\u0022Cannot divide by zero.\u0022);\r\n        }\r\n\r\n        return a / b;\r\n    }\r\n}",
+          "oldContent": "namespace Samples;\r\n/// \u003Csummary\u003E\n/// A simple calculator class for basic arithmetic operations.\n/// \u003C/summary\u003E\npublic class Calculator\r\n{\r\n    /// \u003Csummary\u003E\n    /// Adds two numbers together.\n    /// \u003C/summary\u003E\n    public int Add(int a, int b)\r\n    {\r\n        return a \u002B b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Subtracts the second number from the first.\n    /// \u003C/summary\u003E\n    public int Subtract(int a, int b)\r\n    {\r\n        return a - b;\r\n    }\r\n}",
+          "children": [
+            {
+              "type": "modified",
+              "kind": "class",
+              "name": "Calculator",
+              "location": {
+                "startLine": 6,
+                "endLine": 56,
+                "startColumn": 1,
+                "endColumn": 2
+              },
+              "oldLocation": {
+                "startLine": 6,
+                "endLine": 23,
+                "startColumn": 1,
+                "endColumn": 2
+              },
+              "content": "public class Calculator\r\n{\r\n    /// \u003Csummary\u003E\n    /// Adds two numbers together.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022a\u0022\u003EThe first number.\u003C/param\u003E\n    /// \u003Cparam name = \u0022b\u0022\u003EThe second number.\u003C/param\u003E\n    /// \u003Creturns\u003EThe sum of a and b.\u003C/returns\u003E\n    public int Add(int a, int b)\r\n    {\r\n        return a \u002B b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Subtracts the second number from the first.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022a\u0022\u003EThe first number.\u003C/param\u003E\n    /// \u003Cparam name = \u0022b\u0022\u003EThe second number.\u003C/param\u003E\n    /// \u003Creturns\u003EThe difference of a and b.\u003C/returns\u003E\n    public int Subtract(int a, int b)\r\n    {\r\n        return a - b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Multiplies two numbers.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022a\u0022\u003EThe first number.\u003C/param\u003E\n    /// \u003Cparam name = \u0022b\u0022\u003EThe second number.\u003C/param\u003E\n    /// \u003Creturns\u003EThe product of a and b.\u003C/returns\u003E\n    public int Multiply(int a, int b)\r\n    {\r\n        return a * b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Divides the first number by the second.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022a\u0022\u003EThe dividend.\u003C/param\u003E\n    /// \u003Cparam name = \u0022b\u0022\u003EThe divisor.\u003C/param\u003E\n    /// \u003Creturns\u003EThe quotient of a divided by b.\u003C/returns\u003E\n    /// \u003Cexception cref = \u0022DivideByZeroException\u0022\u003EThrown when b is zero.\u003C/exception\u003E\n    public int Divide(int a, int b)\r\n    {\r\n        if (b == 0)\r\n        {\r\n            throw new DivideByZeroException(\u0022Cannot divide by zero.\u0022);\r\n        }\r\n\r\n        return a / b;\r\n    }\r\n}",
+              "oldContent": "public class Calculator\r\n{\r\n    /// \u003Csummary\u003E\n    /// Adds two numbers together.\n    /// \u003C/summary\u003E\n    public int Add(int a, int b)\r\n    {\r\n        return a \u002B b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Subtracts the second number from the first.\n    /// \u003C/summary\u003E\n    public int Subtract(int a, int b)\r\n    {\r\n        return a - b;\r\n    }\r\n}"
+            }
+          ]
         },
         {
-          "type": "Modified",
-          "kind": "Method",
-          "name": "Subtract",
-          "oldName": null,
+          "type": "modified",
+          "kind": "class",
+          "name": "Calculator",
+          "location": {
+            "startLine": 6,
+            "endLine": 56,
+            "startColumn": 1,
+            "endColumn": 2
+          },
           "oldLocation": {
-            "file": "samples/before/Calculator.cs",
-            "startLine": 19,
-            "endLine": 22,
-            "startColumn": 5,
-            "endColumn": 6
+            "startLine": 6,
+            "endLine": 23,
+            "startColumn": 1,
+            "endColumn": 2
           },
-          "newLocation": {
-            "file": "samples/after/Calculator.cs",
-            "startLine": 25,
-            "endLine": 28,
-            "startColumn": 5,
-            "endColumn": 6
-          },
-          "oldContent": "    public int Subtract(int a, int b)\n    {\n        return a - b;\n    }",
-          "newContent": "    /// <summary>\n    /// Subtracts the second number from the first.\n    /// </summary>\n    /// <param name=\"a\">The first number.</param>\n    /// <param name=\"b\">The second number.</param>\n    /// <returns>The difference of a and b.</returns>\n    public int Subtract(int a, int b)\n    {\n        return a - b;\n    }",
-          "children": []
+          "content": "public class Calculator\r\n{\r\n    /// \u003Csummary\u003E\n    /// Adds two numbers together.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022a\u0022\u003EThe first number.\u003C/param\u003E\n    /// \u003Cparam name = \u0022b\u0022\u003EThe second number.\u003C/param\u003E\n    /// \u003Creturns\u003EThe sum of a and b.\u003C/returns\u003E\n    public int Add(int a, int b)\r\n    {\r\n        return a \u002B b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Subtracts the second number from the first.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022a\u0022\u003EThe first number.\u003C/param\u003E\n    /// \u003Cparam name = \u0022b\u0022\u003EThe second number.\u003C/param\u003E\n    /// \u003Creturns\u003EThe difference of a and b.\u003C/returns\u003E\n    public int Subtract(int a, int b)\r\n    {\r\n        return a - b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Multiplies two numbers.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022a\u0022\u003EThe first number.\u003C/param\u003E\n    /// \u003Cparam name = \u0022b\u0022\u003EThe second number.\u003C/param\u003E\n    /// \u003Creturns\u003EThe product of a and b.\u003C/returns\u003E\n    public int Multiply(int a, int b)\r\n    {\r\n        return a * b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Divides the first number by the second.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022a\u0022\u003EThe dividend.\u003C/param\u003E\n    /// \u003Cparam name = \u0022b\u0022\u003EThe divisor.\u003C/param\u003E\n    /// \u003Creturns\u003EThe quotient of a divided by b.\u003C/returns\u003E\n    /// \u003Cexception cref = \u0022DivideByZeroException\u0022\u003EThrown when b is zero.\u003C/exception\u003E\n    public int Divide(int a, int b)\r\n    {\r\n        if (b == 0)\r\n        {\r\n            throw new DivideByZeroException(\u0022Cannot divide by zero.\u0022);\r\n        }\r\n\r\n        return a / b;\r\n    }\r\n}",
+          "oldContent": "public class Calculator\r\n{\r\n    /// \u003Csummary\u003E\n    /// Adds two numbers together.\n    /// \u003C/summary\u003E\n    public int Add(int a, int b)\r\n    {\r\n        return a \u002B b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Subtracts the second number from the first.\n    /// \u003C/summary\u003E\n    public int Subtract(int a, int b)\r\n    {\r\n        return a - b;\r\n    }\r\n}",
+          "children": [
+            {
+              "type": "added",
+              "kind": "method",
+              "name": "Multiply",
+              "location": {
+                "startLine": 36,
+                "endLine": 39,
+                "startColumn": 5,
+                "endColumn": 6
+              },
+              "content": "public int Multiply(int a, int b)\r\n{\r\n    return a * b;\r\n}"
+            },
+            {
+              "type": "added",
+              "kind": "method",
+              "name": "Divide",
+              "location": {
+                "startLine": 48,
+                "endLine": 55,
+                "startColumn": 5,
+                "endColumn": 6
+              },
+              "content": "public int Divide(int a, int b)\r\n{\r\n    if (b == 0)\r\n    {\r\n        throw new DivideByZeroException(\u0022Cannot divide by zero.\u0022);\r\n    }\r\n\r\n    return a / b;\r\n}"
+            }
+          ]
         },
         {
-          "type": "Added",
-          "kind": "Method",
+          "type": "added",
+          "kind": "method",
           "name": "Multiply",
-          "oldName": null,
-          "oldLocation": null,
-          "newLocation": {
-            "file": "samples/after/Calculator.cs",
+          "location": {
             "startLine": 36,
             "endLine": 39,
             "startColumn": 5,
             "endColumn": 6
           },
-          "oldContent": null,
-          "newContent": "    /// <summary>\n    /// Multiplies two numbers.\n    /// </summary>\n    /// <param name=\"a\">The first number.</param>\n    /// <param name=\"b\">The second number.</param>\n    /// <returns>The product of a and b.</returns>\n    public int Multiply(int a, int b)\n    {\n        return a * b;\n    }",
-          "children": []
+          "content": "public int Multiply(int a, int b)\r\n{\r\n    return a * b;\r\n}"
         },
         {
-          "type": "Added",
-          "kind": "Method",
+          "type": "added",
+          "kind": "method",
           "name": "Divide",
-          "oldName": null,
-          "oldLocation": null,
-          "newLocation": {
-            "file": "samples/after/Calculator.cs",
+          "location": {
             "startLine": 48,
-            "endLine": 56,
+            "endLine": 55,
             "startColumn": 5,
             "endColumn": 6
           },
-          "oldContent": null,
-          "newContent": "    /// <summary>\n    /// Divides the first number by the second.\n    /// </summary>\n    /// <param name=\"a\">The dividend.</param>\n    /// <param name=\"b\">The divisor.</param>\n    /// <returns>The quotient of a divided by b.</returns>\n    /// <exception cref=\"DivideByZeroException\">Thrown when b is zero.</exception>\n    public int Divide(int a, int b)\n    {\n        if (b == 0)\n        {\n            throw new DivideByZeroException(\"Cannot divide by zero.\");\n        }\n        return a / b;\n    }",
-          "children": []
+          "content": "public int Divide(int a, int b)\r\n{\r\n    if (b == 0)\r\n    {\r\n        throw new DivideByZeroException(\u0022Cannot divide by zero.\u0022);\r\n    }\r\n\r\n    return a / b;\r\n}"
         }
       ]
     }
