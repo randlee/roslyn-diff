@@ -1,9 +1,10 @@
 # Sample Data Validation Testing Strategy
 
-**Document Version:** 1.0
+**Document Version:** 1.1
 **Created:** 2026-01-17
+**Updated:** 2026-01-17
 **Status:** Draft - Pending Review
-**Worktree Branch:** `feature/sample-data-validation-tests` (based off `develop`)
+**Worktree Branch:** `feature/sample-data-validation-tests` (based off `feature/cli-output-redesign`)
 
 ## Executive Summary
 
@@ -328,6 +329,8 @@ For each file pair in tests/*/TestFixtures/:
 
 ### Phase 5: Test Implementation (Priority: High)
 
+Tests added to `RoslynDiff.Integration.Tests/SampleValidation/` subfolder:
+
 | Task | Description | Est. Effort |
 |------|-------------|-------------|
 | 5.1 | JSON consistency test class | Medium |
@@ -335,6 +338,7 @@ For each file pair in tests/*/TestFixtures/:
 | 5.3 | Cross-format test class | Medium |
 | 5.4 | External tool test class | Medium |
 | 5.5 | Sample coverage test class | Small |
+| 5.6 | Add reference to TestUtilities in Integration.Tests.csproj | Trivial |
 
 ### Phase 6: Documentation & Cleanup (Priority: Medium)
 
@@ -343,14 +347,17 @@ For each file pair in tests/*/TestFixtures/:
 | 6.1 | README for TestUtilities project | Small |
 | 6.2 | Update main testing documentation | Small |
 | 6.3 | Add TempTestCases usage guide | Small |
+| 6.4 | Add TempTestCases/ to .gitignore | Trivial |
 
 ---
 
 ## 6. File Structure
 
+**Design Decision:** Use existing `RoslynDiff.Integration.Tests` project for validation tests rather than creating a new test project. This reduces project overhead and keeps all integration-style tests together.
+
 ```
 tests/
-├── RoslynDiff.TestUtilities/           # NEW PROJECT
+├── RoslynDiff.TestUtilities/           # NEW PROJECT (shared utilities)
 │   ├── RoslynDiff.TestUtilities.csproj
 │   ├── Models/
 │   │   └── TestResult.cs
@@ -375,19 +382,26 @@ tests/
 │   └── Attributes/
 │       └── SampleDataSourceAttribute.cs
 │
-├── RoslynDiff.SampleValidation.Tests/  # NEW PROJECT
-│   ├── RoslynDiff.SampleValidation.Tests.csproj
-│   ├── JsonConsistencyTests.cs
-│   ├── HtmlConsistencyTests.cs
-│   ├── CrossFormatConsistencyTests.cs
-│   ├── LineNumberIntegrityTests.cs
-│   ├── ExternalToolCompatibilityTests.cs
-│   ├── SampleCoverageTests.cs
-│   └── TempTestCases/                  # .gitignored
-│       └── .gitkeep
+├── RoslynDiff.Integration.Tests/       # EXISTING PROJECT (add tests here)
+│   ├── SampleValidation/               # NEW subfolder for validation tests
+│   │   ├── JsonConsistencyTests.cs
+│   │   ├── HtmlConsistencyTests.cs
+│   │   ├── CrossFormatConsistencyTests.cs
+│   │   ├── LineNumberIntegrityTests.cs
+│   │   ├── ExternalToolCompatibilityTests.cs
+│   │   └── SampleCoverageTests.cs
+│   ├── TempTestCases/                  # NEW - .gitignored for ad-hoc testing
+│   │   └── .gitkeep
+│   └── ... (existing integration tests)
 │
-└── ... (existing test projects)
+└── ... (other existing test projects)
 ```
+
+**Benefits of this approach:**
+- No new test project overhead (csproj, solution changes)
+- Validation tests run with other integration tests
+- Shares existing test infrastructure and dependencies
+- Simpler CI configuration
 
 ---
 
