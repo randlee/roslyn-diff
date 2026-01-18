@@ -390,4 +390,25 @@ public class OutputSettings
     /// When true, plain text output is used even in interactive terminals.
     /// </summary>
     public bool NoColor { get; init; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to include non-impactful changes in output.
+    /// </summary>
+    /// <remarks>
+    /// Non-impactful changes include formatting-only and non-breaking changes.
+    /// </remarks>
+    public bool IncludeNonImpactful { get; init; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to include formatting-only changes.
+    /// </summary>
+    public bool IncludeFormatting { get; init; }
+
+    /// <summary>
+    /// Gets or sets the minimum impact level to include in output.
+    /// </summary>
+    /// <remarks>
+    /// Only changes at or above this impact level are included.
+    /// </remarks>
+    public ChangeImpact MinimumImpactLevel { get; init; } = ChangeImpact.FormattingOnly;
 }
