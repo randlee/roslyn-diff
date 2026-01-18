@@ -66,8 +66,19 @@ def truncate(text: str, max_len: int) -> str:
 
 
 def main():
-    # Parse arguments
-    filter_arg = sys.argv[1] if len(sys.argv) > 1 else "--open"
+    # Parse arguments (accept flags anywhere, ignore unknown text)
+    args = sys.argv[1:]
+    raw_args = " ".join(args).strip()
+
+    if raw_args:
+        print(f"python3 .claude/scripts/git-pr-status.py '{raw_args}'")
+    else:
+        print("python3 .claude/scripts/git-pr-status.py")
+
+    filter_arg = "--open"
+    for candidate in ("--open", "--all", "--merged"):
+        if candidate in args or (raw_args and candidate in raw_args):
+            filter_arg = candidate
 
     state_map = {
         "--all": ("all", "All PRs"),

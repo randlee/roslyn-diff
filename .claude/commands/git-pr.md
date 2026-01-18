@@ -1,6 +1,7 @@
 ---
+allowed-tools: Bash(python3 .claude/scripts/git-pr-status.py*)
 name: git-pr
-version: 0.5.0
+version: 0.6.0
 description: Show outstanding PRs and their CI status in a formatted table.
 ---
 
@@ -13,15 +14,20 @@ Display GitHub PR status for this repository.
 /git-pr [--open|--all|--merged] [--fix [instructions]]
 ```
 
+## Context
+
+- PR status: !`python3 .claude/scripts/git-pr-status.py $ARGUMENTS`
+
 ## Flags
 - `--open` (default): Show open PRs only
 - `--all`: Show all PRs (open, merged, closed)
 - `--merged`: Show recently merged PRs
 - `--fix`: If PR is failing, automatically attempt to fix (can include additional instructions)
+- Any other text after the flags is ignored by the script but remains visible to Claude for context.
 
 ## Instructions
 
-1. Run: `python3 .claude/scripts/git-pr-status.py` to get the PR table
+1. Use the PR status table from the Context section. Only run `python3 .claude/scripts/git-pr-status.py [flags]` if the Context is missing.
 2. Process the output according to the Response Handling rules below
 
 ## Response Handling
