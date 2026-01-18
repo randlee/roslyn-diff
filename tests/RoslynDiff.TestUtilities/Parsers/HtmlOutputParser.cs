@@ -292,8 +292,10 @@ public class HtmlOutputParser : ILineNumberParser
         if (!string.IsNullOrEmpty(newLineStr) && int.TryParse(newLineStr, out var newLine))
         {
             // For single line changes or as a start, use the line number
-            // In a real implementation, we might need to count lines in content
-            var endLine = newLine + (newContent?.Split('\n').Length ?? 1) - 1;
+            // Calculate end line by counting actual content lines (trimming trailing newlines to avoid off-by-one)
+            var contentForCounting = newContent?.TrimEnd('\n', '\r') ?? string.Empty;
+            var lineCount = string.IsNullOrEmpty(contentForCounting) ? 1 : contentForCounting.Split('\n').Length;
+            var endLine = newLine + lineCount - 1;
             lineRange = new LineRange(newLine, endLine);
         }
 
@@ -301,7 +303,9 @@ public class HtmlOutputParser : ILineNumberParser
         var oldLineStr = node.GetAttributeValue("data-old-line", string.Empty);
         if (!string.IsNullOrEmpty(oldLineStr) && int.TryParse(oldLineStr, out var oldLine))
         {
-            var endLine = oldLine + (oldContent?.Split('\n').Length ?? 1) - 1;
+            var contentForCounting = oldContent?.TrimEnd('\n', '\r') ?? string.Empty;
+            var lineCount = string.IsNullOrEmpty(contentForCounting) ? 1 : contentForCounting.Split('\n').Length;
+            var endLine = oldLine + lineCount - 1;
             oldLineRange = new LineRange(oldLine, endLine);
         }
 

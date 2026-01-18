@@ -378,8 +378,18 @@ public class JsonOutputParser : ILineNumberParser
     /// <summary>
     /// Recursively adds line numbers from a change and its children.
     /// </summary>
+    /// <remarks>
+    /// Skips unchanged items (context lines) to only include actual changes.
+    /// </remarks>
     private static void AddLineNumbersFromChange(ParsedChange change, HashSet<int> lineNumbers)
     {
+        // Skip unchanged items - these are context lines, not actual changes
+        var isUnchanged = change.ChangeType.Equals("unchanged", StringComparison.OrdinalIgnoreCase);
+        if (isUnchanged)
+        {
+            return;
+        }
+
         if (change.LineRange != null)
         {
             for (int i = change.LineRange.Start; i <= change.LineRange.End; i++)
@@ -417,6 +427,9 @@ public class JsonOutputParser : ILineNumberParser
         // Skip removed items - their line numbers are from the old file context
         var isRemoved = change.ChangeType.Equals("removed", StringComparison.OrdinalIgnoreCase);
 
+        // Skip unchanged items - these are context lines, not actual changes
+        var isUnchanged = change.ChangeType.Equals("unchanged", StringComparison.OrdinalIgnoreCase);
+
         // Skip container types whose line ranges span their children
         var isContainer = change.Kind != null &&
             (change.Kind.Equals("namespace", StringComparison.OrdinalIgnoreCase) ||
@@ -431,8 +444,8 @@ public class JsonOutputParser : ILineNumberParser
         // Parent nodes naturally encompass their children's line ranges.
         if (change.Children.Count == 0)
         {
-            // Only collect from non-removed, non-container items (new file context, actual changes)
-            if (change.LineRange != null && !isRemoved && !isContainer)
+            // Only collect from non-removed, non-unchanged, non-container items (new file context, actual changes)
+            if (change.LineRange != null && !isRemoved && !isUnchanged && !isContainer)
             {
                 ranges.Add(change.LineRange);
             }
