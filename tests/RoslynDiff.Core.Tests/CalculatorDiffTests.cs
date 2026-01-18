@@ -117,12 +117,14 @@ public class Calculator
             .First();
 
         // Act
+#pragma warning disable CS0618 // Type or member is obsolete
         var oldNodes = nodeMatcher.ExtractStructuralNodes(oldClass)
             .Where(n => n.Node != oldClass)
             .ToList();
         var newNodes = nodeMatcher.ExtractStructuralNodes(newClass)
             .Where(n => n.Node != newClass)
             .ToList();
+#pragma warning restore CS0618 // Type or member is obsolete
 
         var matchResult = nodeMatcher.MatchNodes(oldNodes, newNodes);
 
@@ -166,12 +168,14 @@ public class Calculator
             .First();
 
         // Act
+#pragma warning disable CS0618 // Type or member is obsolete
         var oldNodes = nodeMatcher.ExtractStructuralNodes(oldClass)
             .Where(n => n.Node != oldClass)
             .ToList();
         var newNodes = nodeMatcher.ExtractStructuralNodes(newClass)
             .Where(n => n.Node != newClass)
             .ToList();
+#pragma warning restore CS0618 // Type or member is obsolete
 
         var matchResult = nodeMatcher.MatchNodes(oldNodes, newNodes);
 
@@ -250,12 +254,14 @@ public class Calculator
             .OfType<Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax>()
             .First();
 
+#pragma warning disable CS0618 // Type or member is obsolete
         var oldNodes = nodeMatcher.ExtractStructuralNodes(oldClass)
             .Where(n => n.Node != oldClass)
             .ToList();
         var newNodes = nodeMatcher.ExtractStructuralNodes(newClass)
             .Where(n => n.Node != newClass)
             .ToList();
+#pragma warning restore CS0618 // Type or member is obsolete
 
         var matchResult = nodeMatcher.MatchNodes(oldNodes, newNodes);
 

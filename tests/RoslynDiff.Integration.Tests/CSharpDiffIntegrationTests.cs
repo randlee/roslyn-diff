@@ -89,13 +89,40 @@ public class CSharpDiffIntegrationTests
         files.GetArrayLength().Should().BeGreaterThanOrEqualTo(1);
 
         // Verify Calculator class was detected as added
+        // Changes are now hierarchical - Calculator may be nested under a namespace modification
         var changes = files[0].GetProperty("changes");
-        changes.EnumerateArray()
-            .Should()
-            .Contain(c =>
-                c.GetProperty("type").GetString() == "added" &&
-                c.GetProperty("kind").GetString() == "class" &&
-                c.GetProperty("name").GetString() == "Calculator");
+        bool foundCalculatorAdded = FindChangeInHierarchy(
+            changes,
+            "added",
+            "class",
+            "Calculator");
+        foundCalculatorAdded.Should().BeTrue("Calculator class should be detected as added");
+    }
+
+    /// <summary>
+    /// Recursively searches for a change in the hierarchical JSON structure.
+    /// </summary>
+    private static bool FindChangeInHierarchy(JsonElement changes, string type, string kind, string name)
+    {
+        foreach (var change in changes.EnumerateArray())
+        {
+            if (change.GetProperty("type").GetString() == type &&
+                change.GetProperty("kind").GetString() == kind &&
+                change.GetProperty("name").GetString() == name)
+            {
+                return true;
+            }
+
+            // Check children if they exist
+            if (change.TryGetProperty("children", out var children))
+            {
+                if (FindChangeInHierarchy(children, type, kind, name))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     [Fact]
@@ -150,7 +177,7 @@ public class CSharpDiffIntegrationTests
         result.Stats.Deletions.Should().BeGreaterThan(0);
         result.FileChanges.Should().HaveCountGreaterThanOrEqualTo(1);
 
-        var changes = result.FileChanges[0].Changes;
+        var changes = result.FileChanges[0].Changes.Flatten().ToList();
         changes.Should().Contain(c =>
             c.Type == ChangeType.Removed &&
             c.Kind == ChangeKind.Class);
@@ -203,7 +230,7 @@ public class CSharpDiffIntegrationTests
 
         // Assert
         result.Stats.Additions.Should().BeGreaterThan(0);
-        result.FileChanges.SelectMany(fc => fc.Changes)
+        result.FileChanges.SelectMany(fc => fc.Changes.Flatten())
             .Should().Contain(c =>
                 c.Type == ChangeType.Added &&
                 c.Kind == ChangeKind.Method);
@@ -227,7 +254,7 @@ public class CSharpDiffIntegrationTests
 
         // Assert
         result.Stats.Deletions.Should().BeGreaterThan(0);
-        result.FileChanges.SelectMany(fc => fc.Changes)
+        result.FileChanges.SelectMany(fc => fc.Changes.Flatten())
             .Should().Contain(c =>
                 c.Type == ChangeType.Removed &&
                 c.Kind == ChangeKind.Method);
@@ -275,7 +302,7 @@ public class CSharpDiffIntegrationTests
 
         // Assert
         result.Stats.Additions.Should().BeGreaterThan(0);
-        result.FileChanges.SelectMany(fc => fc.Changes)
+        result.FileChanges.SelectMany(fc => fc.Changes.Flatten())
             .Should().Contain(c =>
                 c.Type == ChangeType.Added &&
                 c.Kind == ChangeKind.Property);
@@ -463,7 +490,7 @@ public class CSharpDiffIntegrationTests
 
         // Assert
         var addedChanges = result.FileChanges
-            .SelectMany(fc => fc.Changes)
+            .SelectMany(fc => fc.Changes.Flatten())
             .Where(c => c.Type == ChangeType.Added)
             .ToList();
 

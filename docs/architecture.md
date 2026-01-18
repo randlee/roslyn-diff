@@ -467,3 +467,87 @@ The CLI application using Spectre.Console.Cli.
 - No external dependencies
 - Works offline
 - Portable across systems
+
+### 9. Recursive Tree Diff Algorithm (BUG-003 Fix)
+
+**Decision:** Use recursive tree comparison instead of flat node extraction.
+
+**Rationale:**
+- Fixes BUG-003 (duplicate node detection) where the old flat extraction method could report the same node multiple times
+- Each node is processed exactly once at its natural tree level
+- Produces hierarchical output that mirrors the code structure
+- Enables early termination when subtrees are identical (O(n) complexity)
+
+**Old Approach (Flat Extraction):**
+```
+1. Extract ALL structural nodes from both trees (recursive descent)
+2. Match extracted nodes using name/signature
+3. Compare matched pairs
+```
+Problem: A method inside a class would be extracted both as a child of the class AND independently, causing duplicate detection.
+
+**New Approach (Recursive Tree Comparison):**
+```
+1. Extract IMMEDIATE children only at each level
+2. Match siblings using O(n) hash-based lookup
+3. Recurse into matched pairs
+4. Report additions/removals at their natural level
+```
+Benefit: Each node is visited exactly once, and changes are reported hierarchically.
+
+## Recursive Tree Comparison
+
+The `RecursiveTreeComparer` implements level-by-level tree diffing:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    RecursiveTreeComparer                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Old Tree                          New Tree                      │
+│  ────────                          ────────                      │
+│  Namespace                         Namespace                     │
+│    └── Class                         └── Class                   │
+│          ├── Method1                       ├── Method1 (mod)     │
+│          ├── Method2                       ├── Method3 (new)     │
+│          └── Property                      └── Property          │
+│                                                                  │
+│  Algorithm:                                                      │
+│  1. Extract immediate children at level N                        │
+│  2. Match by (name, kind, signature) hash                        │
+│  3. For matched pairs: compare → recurse if different            │
+│  4. Unmatched old = Removed, Unmatched new = Added               │
+│  5. Changes are nested: Class.Children contains Method changes   │
+│                                                                  │
+├─────────────────────────────────────────────────────────────────┤
+│  Output: Hierarchical Changes                                    │
+│  ─────────────────────────                                       │
+│  Change(Class, Modified)                                         │
+│    └── Children:                                                 │
+│          ├── Change(Method1, Modified)                           │
+│          ├── Change(Method2, Removed)                            │
+│          └── Change(Method3, Added)                              │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Key Classes
+
+| Class | Responsibility |
+|-------|----------------|
+| `ITreeComparer` | Interface for tree comparison with sync/async support |
+| `RecursiveTreeComparer` | Level-by-level recursive comparison implementation |
+| `ChangeExtensions` | Helper methods for working with hierarchical changes |
+
+### Hierarchical vs Flat Output
+
+The recursive algorithm produces hierarchical `Change` objects where nested changes appear in the `Children` property. For backward compatibility, use `ChangeExtensions.Flatten()`:
+
+```csharp
+// Hierarchical (new default)
+var changes = comparer.Compare(oldTree, newTree, options);
+// Changes[0].Children contains nested method/property changes
+
+// Flat (backward compatible)
+var flatChanges = changes.Flatten().ToList();
+// All changes at same level, like the old behavior
+```

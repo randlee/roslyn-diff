@@ -68,9 +68,10 @@ public class SemanticComparerTests
         // Enhance with semantic analysis
         var result = _semanticComparer.EnhanceWithSemantics(syntaxChanges, oldCode, newCode, options);
 
-        // Should detect a rename instead of add+remove
-        result.Should().ContainSingle(c => c.Type == ChangeType.Renamed);
-        var renamed = result.Single(c => c.Type == ChangeType.Renamed);
+        // Should detect a rename instead of add+remove - flatten to find nested changes
+        var flatResult = FlattenAllChanges(result);
+        flatResult.Should().ContainSingle(c => c.Type == ChangeType.Renamed);
+        var renamed = flatResult.Single(c => c.Type == ChangeType.Renamed);
         renamed.Kind.Should().Be(ChangeKind.Class);
         renamed.Name.Should().Be("NewClassName");
         renamed.OldName.Should().Be("OldClassName");
@@ -112,9 +113,10 @@ public class SemanticComparerTests
         var syntaxChanges = _syntaxComparer.CompareSource(oldCode, newCode, options);
         var result = _semanticComparer.EnhanceWithSemantics(syntaxChanges, oldCode, newCode, options);
 
-        // Should detect class rename
-        result.Should().Contain(c => c.Type == ChangeType.Renamed && c.Kind == ChangeKind.Class);
-        var renamed = result.First(c => c.Type == ChangeType.Renamed && c.Kind == ChangeKind.Class);
+        // Should detect class rename - flatten to find nested changes
+        var flatResult = FlattenAllChanges(result);
+        flatResult.Should().Contain(c => c.Type == ChangeType.Renamed && c.Kind == ChangeKind.Class);
+        var renamed = flatResult.First(c => c.Type == ChangeType.Renamed && c.Kind == ChangeKind.Class);
         renamed.Name.Should().Be("RenamedService");
         renamed.OldName.Should().Be("OriginalService");
     }
@@ -403,9 +405,11 @@ public class SemanticComparerTests
         var syntaxChanges = _syntaxComparer.CompareSource(oldCode, newCode, options);
         var result = _semanticComparer.EnhanceWithSemantics(syntaxChanges, oldCode, newCode, options);
 
-        result.Should().ContainSingle(c => c.Type == ChangeType.Added && c.Name == "NewClass");
-        result.Should().NotContain(c => c.Type == ChangeType.Renamed);
-        result.Should().NotContain(c => c.Type == ChangeType.Moved);
+        // Use Flatten() because changes may be hierarchical (nested under namespace)
+        var flatResult = result.Flatten().ToList();
+        flatResult.Should().ContainSingle(c => c.Type == ChangeType.Added && c.Name == "NewClass");
+        flatResult.Should().NotContain(c => c.Type == ChangeType.Renamed);
+        flatResult.Should().NotContain(c => c.Type == ChangeType.Moved);
     }
 
     [Fact]
@@ -425,9 +429,11 @@ public class SemanticComparerTests
         var syntaxChanges = _syntaxComparer.CompareSource(oldCode, newCode, options);
         var result = _semanticComparer.EnhanceWithSemantics(syntaxChanges, oldCode, newCode, options);
 
-        result.Should().ContainSingle(c => c.Type == ChangeType.Removed && c.Name == "ToRemove");
-        result.Should().NotContain(c => c.Type == ChangeType.Renamed);
-        result.Should().NotContain(c => c.Type == ChangeType.Moved);
+        // Use Flatten() because changes may be hierarchical (nested under namespace)
+        var flatResult = result.Flatten().ToList();
+        flatResult.Should().ContainSingle(c => c.Type == ChangeType.Removed && c.Name == "ToRemove");
+        flatResult.Should().NotContain(c => c.Type == ChangeType.Renamed);
+        flatResult.Should().NotContain(c => c.Type == ChangeType.Moved);
     }
 
     [Fact]

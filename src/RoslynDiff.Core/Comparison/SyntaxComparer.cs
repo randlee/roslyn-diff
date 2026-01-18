@@ -14,33 +14,45 @@ using RoslynDiff.Core.Models;
 /// method, property, and field level rather than just line-by-line differences.
 /// </para>
 /// <para>
-/// The comparison algorithm works in three phases:
-/// <list type="number">
-///   <item>Extract structural nodes from both trees</item>
-///   <item>Match nodes by name and kind</item>
-///   <item>Generate changes based on matching results</item>
-/// </list>
+/// The comparison delegates to <see cref="RecursiveTreeComparer"/> which uses
+/// a recursive, level-by-level algorithm where each node is processed exactly once.
+/// This addresses BUG-003 (duplicate node extraction) and provides O(n) complexity
+/// with early termination for identical subtrees.
 /// </para>
 /// </remarks>
 public sealed class SyntaxComparer
 {
-    private readonly NodeMatcher _matcher;
+    private readonly ITreeComparer _treeComparer;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SyntaxComparer"/> class.
     /// </summary>
     public SyntaxComparer()
     {
-        _matcher = new NodeMatcher();
+        _treeComparer = new RecursiveTreeComparer();
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SyntaxComparer"/> class with a custom tree comparer.
+    /// </summary>
+    /// <param name="treeComparer">The tree comparer to use for comparing trees.</param>
+    public SyntaxComparer(ITreeComparer treeComparer)
+    {
+        ArgumentNullException.ThrowIfNull(treeComparer);
+        _treeComparer = treeComparer;
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SyntaxComparer"/> class with a custom node matcher.
     /// </summary>
     /// <param name="matcher">The node matcher to use for comparing trees.</param>
+    /// <remarks>
+    /// This constructor is provided for backward compatibility and testing purposes.
+    /// New code should use the <see cref="SyntaxComparer(ITreeComparer)"/> constructor.
+    /// </remarks>
     internal SyntaxComparer(NodeMatcher matcher)
     {
-        _matcher = matcher;
+        _treeComparer = new RecursiveTreeComparer(matcher, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount });
     }
 
     /// <summary>
@@ -53,38 +65,22 @@ public sealed class SyntaxComparer
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="oldTree"/>, <paramref name="newTree"/>, or <paramref name="options"/> is <c>null</c>.
     /// </exception>
+    /// <remarks>
+    /// The returned list contains hierarchical changes where parent changes may contain
+    /// nested child changes. For backward compatibility with code expecting a flat list,
+    /// use <see cref="ChangeExtensions.Flatten"/> to flatten the hierarchy.
+    /// </remarks>
     public List<Change> Compare(SyntaxTree oldTree, SyntaxTree newTree, DiffOptions options)
     {
         ArgumentNullException.ThrowIfNull(oldTree);
         ArgumentNullException.ThrowIfNull(newTree);
         ArgumentNullException.ThrowIfNull(options);
 
-        var oldRoot = oldTree.GetRoot();
-        var newRoot = newTree.GetRoot();
+        // Delegate to RecursiveTreeComparer for the actual comparison
+        var result = _treeComparer.Compare(oldTree, newTree, options);
 
-        // Extract structural nodes from both trees
-        var oldNodes = _matcher.ExtractStructuralNodes(oldRoot);
-        var newNodes = _matcher.ExtractStructuralNodes(newRoot);
-
-        // Match nodes between old and new trees
-        var matchResult = _matcher.MatchNodes(oldNodes, newNodes);
-
-        // Build the change list
-        var changes = new List<Change>();
-
-        // Process matched pairs for modifications
-        ProcessMatchedPairs(matchResult.MatchedPairs, options, changes);
-
-        // Process unmatched old nodes as removals
-        ProcessRemovals(matchResult.UnmatchedOld, options, changes);
-
-        // Process unmatched new nodes as additions
-        ProcessAdditions(matchResult.UnmatchedNew, options, changes);
-
-        // Sort changes by location for consistent output
-        SortChangesByLocation(changes);
-
-        return changes;
+        // Convert to List<Change> for backward compatibility
+        return result.ToList();
     }
 
     /// <summary>
@@ -140,208 +136,8 @@ public sealed class SyntaxComparer
         return false;
     }
 
-    private void ProcessMatchedPairs(
-        IReadOnlyList<(SyntaxNode Old, SyntaxNode New)> matchedPairs,
-        DiffOptions options,
-        List<Change> changes)
-    {
-        foreach (var (oldNode, newNode) in matchedPairs)
-        {
-            if (AreNodesEquivalent(oldNode, newNode, options))
-            {
-                // Nodes are equivalent, no change needed
-                continue;
-            }
-
-            // Content has changed - create a modification change
-            var change = CreateChange(
-                ChangeType.Modified,
-                NodeMatcher.GetChangeKind(oldNode),
-                NodeMatcher.GetNodeName(oldNode),
-                oldNode,
-                newNode,
-                options);
-
-            // Recursively compare children for nested changes
-            var childChanges = CompareChildren(oldNode, newNode, options);
-            if (childChanges.Count > 0)
-            {
-                change = change with { Children = childChanges };
-            }
-
-            changes.Add(change);
-        }
-    }
-
-    private void ProcessRemovals(
-        IReadOnlyList<SyntaxNode> unmatchedOld,
-        DiffOptions options,
-        List<Change> changes)
-    {
-        foreach (var oldNode in unmatchedOld)
-        {
-            var change = CreateChange(
-                ChangeType.Removed,
-                NodeMatcher.GetChangeKind(oldNode),
-                NodeMatcher.GetNodeName(oldNode),
-                oldNode: oldNode,
-                newNode: null,
-                options);
-
-            changes.Add(change);
-        }
-    }
-
-    private void ProcessAdditions(
-        IReadOnlyList<SyntaxNode> unmatchedNew,
-        DiffOptions options,
-        List<Change> changes)
-    {
-        foreach (var newNode in unmatchedNew)
-        {
-            var change = CreateChange(
-                ChangeType.Added,
-                NodeMatcher.GetChangeKind(newNode),
-                NodeMatcher.GetNodeName(newNode),
-                oldNode: null,
-                newNode: newNode,
-                options);
-
-            changes.Add(change);
-        }
-    }
-
-    private List<Change> CompareChildren(SyntaxNode oldParent, SyntaxNode newParent, DiffOptions options)
-    {
-        // Extract child structural nodes
-        var oldChildren = ExtractImmediateStructuralChildren(oldParent);
-        var newChildren = ExtractImmediateStructuralChildren(newParent);
-
-        if (oldChildren.Count == 0 && newChildren.Count == 0)
-        {
-            return [];
-        }
-
-        // Match children
-        var matchResult = _matcher.MatchNodes(oldChildren, newChildren);
-
-        var childChanges = new List<Change>();
-
-        // Process matched children for modifications
-        foreach (var (oldChild, newChild) in matchResult.MatchedPairs)
-        {
-            if (!AreNodesEquivalent(oldChild, newChild, options))
-            {
-                var change = CreateChange(
-                    ChangeType.Modified,
-                    NodeMatcher.GetChangeKind(oldChild),
-                    NodeMatcher.GetNodeName(oldChild),
-                    oldChild,
-                    newChild,
-                    options);
-
-                childChanges.Add(change);
-            }
-        }
-
-        // Process removed children
-        foreach (var oldChild in matchResult.UnmatchedOld)
-        {
-            var change = CreateChange(
-                ChangeType.Removed,
-                NodeMatcher.GetChangeKind(oldChild),
-                NodeMatcher.GetNodeName(oldChild),
-                oldChild,
-                null,
-                options);
-
-            childChanges.Add(change);
-        }
-
-        // Process added children
-        foreach (var newChild in matchResult.UnmatchedNew)
-        {
-            var change = CreateChange(
-                ChangeType.Added,
-                NodeMatcher.GetChangeKind(newChild),
-                NodeMatcher.GetNodeName(newChild),
-                null,
-                newChild,
-                options);
-
-            childChanges.Add(change);
-        }
-
-        return childChanges;
-    }
-
-    private IReadOnlyList<NodeMatcher.NodeInfo> ExtractImmediateStructuralChildren(SyntaxNode parent)
-    {
-        var children = new List<NodeMatcher.NodeInfo>();
-
-        foreach (var child in parent.ChildNodes())
-        {
-            if (IsStructuralNode(child))
-            {
-                var name = NodeMatcher.GetNodeName(child);
-                var kind = NodeMatcher.GetChangeKind(child);
-                var signature = NodeMatcher.GetSignature(child);
-                children.Add(new NodeMatcher.NodeInfo(child, name, kind, signature));
-            }
-        }
-
-        return children;
-    }
-
-    private static Change CreateChange(
-        ChangeType type,
-        ChangeKind kind,
-        string? name,
-        SyntaxNode? oldNode,
-        SyntaxNode? newNode,
-        DiffOptions options)
-    {
-        // Use NormalizeWhitespace() for consistent formatting in diff output
-        // This ensures the method signature and body have consistent indentation
-        return new Change
-        {
-            Type = type,
-            Kind = kind,
-            Name = name,
-            OldLocation = oldNode is not null ? NodeMatcher.CreateLocation(oldNode, options.OldPath) : null,
-            NewLocation = newNode is not null ? NodeMatcher.CreateLocation(newNode, options.NewPath) : null,
-            OldContent = oldNode?.NormalizeWhitespace().ToString(),
-            NewContent = newNode?.NormalizeWhitespace().ToString()
-        };
-    }
-
     private static SyntaxNode NormalizeWhitespace(SyntaxNode node)
     {
         return node.NormalizeWhitespace();
-    }
-
-    private static void SortChangesByLocation(List<Change> changes)
-    {
-        changes.Sort((a, b) =>
-        {
-            // Prefer new location, fall back to old location
-            var aLine = a.NewLocation?.StartLine ?? a.OldLocation?.StartLine ?? 0;
-            var bLine = b.NewLocation?.StartLine ?? b.OldLocation?.StartLine ?? 0;
-            return aLine.CompareTo(bLine);
-        });
-    }
-
-    private static bool IsStructuralNode(SyntaxNode node)
-    {
-        return node is Microsoft.CodeAnalysis.CSharp.Syntax.BaseNamespaceDeclarationSyntax
-            or Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax
-            or Microsoft.CodeAnalysis.CSharp.Syntax.StructDeclarationSyntax
-            or Microsoft.CodeAnalysis.CSharp.Syntax.RecordDeclarationSyntax
-            or Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax
-            or Microsoft.CodeAnalysis.CSharp.Syntax.EnumDeclarationSyntax
-            or Microsoft.CodeAnalysis.CSharp.Syntax.MethodDeclarationSyntax
-            or Microsoft.CodeAnalysis.CSharp.Syntax.ConstructorDeclarationSyntax
-            or Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax
-            or Microsoft.CodeAnalysis.CSharp.Syntax.FieldDeclarationSyntax;
     }
 }

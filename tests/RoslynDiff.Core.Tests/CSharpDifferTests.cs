@@ -75,7 +75,7 @@ public class CSharpDifferTests
 
         result.Stats.Additions.Should().BeGreaterThan(0);
         result.FileChanges.Should().HaveCount(1);
-        var changes = result.FileChanges[0].Changes;
+        var changes = result.FileChanges[0].Changes.Flatten();
         changes.Should().Contain(c => c.Type == ChangeType.Added && c.Kind == ChangeKind.Class && c.Name == "Bar");
     }
 
@@ -96,7 +96,7 @@ public class CSharpDifferTests
         var result = _differ.Compare(oldCode, newCode, options);
 
         result.Stats.Deletions.Should().BeGreaterThan(0);
-        var changes = result.FileChanges[0].Changes;
+        var changes = result.FileChanges[0].Changes.Flatten();
         changes.Should().Contain(c => c.Type == ChangeType.Removed && c.Kind == ChangeKind.Class && c.Name == "Bar");
     }
 
@@ -155,7 +155,7 @@ public class CSharpDifferTests
         var result = _differ.Compare(validCode, invalidCode, options);
 
         result.FileChanges.Should().HaveCount(1);
-        var changes = result.FileChanges[0].Changes;
+        var changes = result.FileChanges[0].Changes.Flatten();
         changes.Should().Contain(c => c.Name == "Parse Error");
     }
 
@@ -183,7 +183,7 @@ public class CSharpDifferTests
 
         var result = _differ.Compare(oldCode, newCode, options);
 
-        var addedClass = result.FileChanges[0].Changes
+        var addedClass = result.FileChanges[0].Changes.Flatten()
             .FirstOrDefault(c => c.Type == ChangeType.Added && c.Name == "Bar");
 
         addedClass.Should().NotBeNull();

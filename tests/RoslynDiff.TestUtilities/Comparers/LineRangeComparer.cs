@@ -32,6 +32,27 @@ public record LineRange(int Start, int End, string? Source = null)
     }
 
     /// <summary>
+    /// Determines whether this range fully contains another range.
+    /// </summary>
+    /// <param name="other">The other range to check for containment.</param>
+    /// <returns><c>true</c> if this range fully contains the other; otherwise, <c>false</c>.</returns>
+    public bool Contains(LineRange other)
+    {
+        return Start <= other.Start && End >= other.End;
+    }
+
+    /// <summary>
+    /// Determines whether this range partially overlaps with another (overlaps but neither fully contains the other).
+    /// </summary>
+    /// <param name="other">The other range to check.</param>
+    /// <returns><c>true</c> if the ranges have a partial overlap; otherwise, <c>false</c>.</returns>
+    public bool PartiallyOverlapsWith(LineRange other)
+    {
+        // Must overlap but neither can fully contain the other
+        return OverlapsWith(other) && !Contains(other) && !other.Contains(this);
+    }
+
+    /// <summary>
     /// Returns a string representation of this line range.
     /// </summary>
     public override string ToString()
@@ -71,7 +92,9 @@ public static class LineRangeComparer
     /// Returns an empty collection if no overlaps are found.
     /// </returns>
     /// <remarks>
-    /// Two ranges are considered overlapping if they share any line numbers.
+    /// Two ranges are considered overlapping if they share any line numbers and neither fully contains the other.
+    /// Full containment (one range completely inside another) is allowed as it represents hierarchical parent-child
+    /// relationships in diff output (e.g., a namespace containing a class).
     /// Adjacent ranges (e.g., 1-5 and 6-10) are not considered overlapping.
     /// This method performs an O(n²) comparison of all range pairs.
     /// </remarks>
@@ -90,7 +113,8 @@ public static class LineRangeComparer
         {
             for (int j = i + 1; j < rangeList.Count; j++)
             {
-                if (rangeList[i].OverlapsWith(rangeList[j]))
+                // Only flag partial overlaps - full containment is allowed for hierarchical output
+                if (rangeList[i].PartiallyOverlapsWith(rangeList[j]))
                 {
                     overlaps.Add(new OverlapPair(rangeList[i], rangeList[j]));
                 }

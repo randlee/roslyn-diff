@@ -121,7 +121,7 @@ public class VisualBasicDifferTests
 
         result.Stats.Additions.Should().BeGreaterThan(0);
         result.FileChanges.Should().HaveCount(1);
-        var changes = result.FileChanges[0].Changes;
+        var changes = result.FileChanges[0].Changes.Flatten();
         changes.Should().Contain(c => c.Type == ChangeType.Added && c.Kind == ChangeKind.Class && c.Name == "Bar");
     }
 
@@ -147,7 +147,7 @@ public class VisualBasicDifferTests
         var result = _differ.Compare(oldCode, newCode, options);
 
         result.Stats.Deletions.Should().BeGreaterThan(0);
-        var changes = result.FileChanges[0].Changes;
+        var changes = result.FileChanges[0].Changes.Flatten();
         changes.Should().Contain(c => c.Type == ChangeType.Removed && c.Kind == ChangeKind.Class && c.Name == "Bar");
     }
 
@@ -173,7 +173,7 @@ public class VisualBasicDifferTests
         var result = _differ.Compare(oldCode, newCode, options);
 
         result.Stats.Additions.Should().BeGreaterThan(0);
-        var changes = result.FileChanges[0].Changes;
+        var changes = result.FileChanges[0].Changes.Flatten();
         changes.Should().Contain(c => c.Type == ChangeType.Added && c.Kind == ChangeKind.Class && c.Name == "Bar");
     }
 
@@ -376,7 +376,7 @@ public class VisualBasicDifferTests
         var result = _differ.Compare(oldCode, newCode, options);
 
         result.Stats.Additions.Should().BeGreaterThan(0);
-        var changes = result.FileChanges[0].Changes;
+        var changes = result.FileChanges[0].Changes.Flatten();
         changes.Should().Contain(c => c.Type == ChangeType.Added && c.Kind == ChangeKind.Class && c.Name == "Point");
     }
 
@@ -399,7 +399,7 @@ public class VisualBasicDifferTests
         var result = _differ.Compare(oldCode, newCode, options);
 
         result.Stats.Additions.Should().BeGreaterThan(0);
-        var changes = result.FileChanges[0].Changes;
+        var changes = result.FileChanges[0].Changes.Flatten();
         changes.Should().Contain(c => c.Type == ChangeType.Added && c.Kind == ChangeKind.Class && c.Name == "IFoo");
     }
 
@@ -424,7 +424,7 @@ public class VisualBasicDifferTests
         var result = _differ.Compare(oldCode, newCode, options);
 
         result.Stats.Additions.Should().BeGreaterThan(0);
-        var changes = result.FileChanges[0].Changes;
+        var changes = result.FileChanges[0].Changes.Flatten();
         changes.Should().Contain(c => c.Type == ChangeType.Added && c.Kind == ChangeKind.Class && c.Name == "Color");
     }
 
@@ -461,7 +461,7 @@ public class VisualBasicDifferTests
         // Should detect a modification, not an addition and removal
         result.Stats.Modifications.Should().BeGreaterThan(0);
         // Should NOT have both an addition and removal of the same method
-        var changes = result.FileChanges[0].Changes;
+        var changes = result.FileChanges[0].Changes.Flatten();
         changes.Should().NotContain(c => c.Type == ChangeType.Added && c.Name != null && c.Name.ToLower() == "mymethod");
         changes.Should().NotContain(c => c.Type == ChangeType.Removed && c.Name != null && c.Name.ToLower() == "mymethod");
     }
@@ -513,7 +513,7 @@ public class VisualBasicDifferTests
         var result = _differ.Compare(validCode, invalidCode, options);
 
         result.FileChanges.Should().HaveCount(1);
-        var changes = result.FileChanges[0].Changes;
+        var changes = result.FileChanges[0].Changes.Flatten();
         changes.Should().Contain(c => c.Name == "Parse Error");
     }
 
@@ -546,7 +546,7 @@ public class VisualBasicDifferTests
 
         var result = _differ.Compare(oldCode, newCode, options);
 
-        var addedClass = result.FileChanges[0].Changes
+        var addedClass = result.FileChanges[0].Changes.Flatten()
             .FirstOrDefault(c => c.Type == ChangeType.Added && c.Name == "Bar");
 
         addedClass.Should().NotBeNull();

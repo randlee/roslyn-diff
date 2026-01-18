@@ -1,0 +1,5 @@
+# Ignore all files in TempTestCases except documentation
+*
+!.gitkeep
+!.gitignore
+!README.md

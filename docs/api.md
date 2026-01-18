@@ -544,6 +544,215 @@ public record OutputOptions
 
 ---
 
+## Tree Comparison
+
+### ITreeComparer Interface
+
+Interface for recursive tree comparison with async support.
+
+**Namespace:** `RoslynDiff.Core.Comparison`
+
+```csharp
+public interface ITreeComparer
+{
+    ValueTask<IReadOnlyList<Change>> CompareAsync(
+        SyntaxTree oldTree,
+        SyntaxTree newTree,
+        DiffOptions options,
+        CancellationToken cancellationToken = default);
+
+    IReadOnlyList<Change> Compare(
+        SyntaxTree oldTree,
+        SyntaxTree newTree,
+        DiffOptions options);
+}
+```
+
+#### Methods
+
+##### CompareAsync
+
+```csharp
+ValueTask<IReadOnlyList<Change>> CompareAsync(
+    SyntaxTree oldTree,
+    SyntaxTree newTree,
+    DiffOptions options,
+    CancellationToken cancellationToken = default)
+```
+
+Compares two syntax trees asynchronously using recursive tree diff.
+
+**Parameters:**
+- `oldTree` - The original syntax tree
+- `newTree` - The new syntax tree to compare
+- `options` - Options controlling comparison behavior
+- `cancellationToken` - Token to cancel the operation
+
+**Returns:** Hierarchical list of `Change` objects representing differences
+
+##### Compare
+
+```csharp
+IReadOnlyList<Change> Compare(SyntaxTree oldTree, SyntaxTree newTree, DiffOptions options)
+```
+
+Synchronous version of `CompareAsync`. Prefer async for large trees.
+
+---
+
+### RecursiveTreeComparer
+
+Level-by-level recursive tree comparison implementation. Addresses BUG-003 (duplicate node detection).
+
+**Namespace:** `RoslynDiff.Core.Comparison`
+
+```csharp
+public sealed class RecursiveTreeComparer : ITreeComparer
+{
+    public RecursiveTreeComparer();
+    public RecursiveTreeComparer(NodeMatcher matcher, ParallelOptions parallelOptions);
+}
+```
+
+#### Constructors
+
+##### Default Constructor
+
+```csharp
+public RecursiveTreeComparer()
+```
+
+Creates instance with default `NodeMatcher` and parallel options based on processor count.
+
+##### Custom Constructor
+
+```csharp
+public RecursiveTreeComparer(NodeMatcher matcher, ParallelOptions parallelOptions)
+```
+
+Creates instance with custom node matcher and parallel processing options.
+
+**Parameters:**
+- `matcher` - Custom node matcher for comparing trees
+- `parallelOptions` - Options controlling parallelism (e.g., `MaxDegreeOfParallelism`)
+
+#### Key Characteristics
+
+- **O(n) complexity** with early termination for identical subtrees
+- **Hierarchical output** matching code structure
+- **Parallel subtree comparison** via `ValueTask` when beneficial
+- **Cancellation support** for long-running comparisons
+
+#### Example
+
+```csharp
+using RoslynDiff.Core.Comparison;
+using RoslynDiff.Core.Models;
+using Microsoft.CodeAnalysis.CSharp;
+
+var oldTree = CSharpSyntaxTree.ParseText(oldContent);
+var newTree = CSharpSyntaxTree.ParseText(newContent);
+
+var comparer = new RecursiveTreeComparer();
+var options = new DiffOptions { OldPath = "old.cs", NewPath = "new.cs" };
+
+// Async (preferred for large files)
+var changes = await comparer.CompareAsync(oldTree, newTree, options);
+
+// Sync (simpler use cases)
+var changes = comparer.Compare(oldTree, newTree, options);
+
+// Changes are hierarchical - class changes contain method changes as Children
+foreach (var change in changes)
+{
+    Console.WriteLine($"{change.Kind}: {change.Name} ({change.Type})");
+    if (change.Children != null)
+    {
+        foreach (var child in change.Children)
+        {
+            Console.WriteLine($"  - {child.Kind}: {child.Name} ({child.Type})");
+        }
+    }
+}
+```
+
+---
+
+### ChangeExtensions
+
+Extension methods for working with hierarchical `Change` structures.
+
+**Namespace:** `RoslynDiff.Core.Models`
+
+```csharp
+public static class ChangeExtensions
+{
+    public static IEnumerable<Change> Flatten(this IEnumerable<Change> changes);
+    public static int CountAll(this IEnumerable<Change> changes);
+    public static Change? FindByName(this IEnumerable<Change> changes, string name);
+    public static IEnumerable<Change> OfKind(this IEnumerable<Change> changes, ChangeKind kind);
+}
+```
+
+#### Methods
+
+##### Flatten
+
+```csharp
+public static IEnumerable<Change> Flatten(this IEnumerable<Change> changes)
+```
+
+Flattens hierarchical changes into a single-level enumerable (depth-first).
+
+**Use Case:** Backward compatibility with code expecting flat change lists.
+
+```csharp
+// Hierarchical changes from RecursiveTreeComparer
+var hierarchicalChanges = comparer.Compare(oldTree, newTree, options);
+
+// Flatten for backward compatibility
+var flatChanges = hierarchicalChanges.Flatten().ToList();
+```
+
+##### CountAll
+
+```csharp
+public static int CountAll(this IEnumerable<Change> changes)
+```
+
+Counts all changes including nested children.
+
+```csharp
+var totalChanges = changes.CountAll();
+```
+
+##### FindByName
+
+```csharp
+public static Change? FindByName(this IEnumerable<Change> changes, string name)
+```
+
+Finds a change by name at any nesting level.
+
+```csharp
+var methodChange = changes.FindByName("Calculate");
+```
+
+##### OfKind
+
+```csharp
+public static IEnumerable<Change> OfKind(this IEnumerable<Change> changes, ChangeKind kind)
+```
+
+Gets all changes of a specific kind at any nesting level.
+
+```csharp
+var methodChanges = changes.OfKind(ChangeKind.Method).ToList();
+var propertyChanges = changes.OfKind(ChangeKind.Property).ToList();
+```
+
+---
+
 ## Class Matching
 
 ### ClassMatcher

@@ -83,11 +83,40 @@ public sealed class NodeMatcher
     /// </summary>
     /// <param name="root">The root syntax node of the tree.</param>
     /// <returns>A list of structural nodes with their metadata.</returns>
+    [Obsolete("Use ExtractImmediateStructuralChildren for hierarchical comparison. " +
+              "This method will be removed in a future version.", false)]
     public IReadOnlyList<NodeInfo> ExtractStructuralNodes(SyntaxNode root)
     {
         var nodes = new List<NodeInfo>();
         ExtractNodesRecursive(root, nodes);
         return nodes;
+    }
+
+    /// <summary>
+    /// Extracts only IMMEDIATE structural children of a parent node.
+    /// This is O(children) not O(all descendants).
+    /// </summary>
+    /// <remarks>
+    /// Unlike <see cref="ExtractStructuralNodes"/> which recursively flattens the entire tree,
+    /// this method only returns direct children, enabling level-by-level comparison.
+    /// </remarks>
+    public IReadOnlyList<NodeInfo> ExtractImmediateStructuralChildren(SyntaxNode parent)
+    {
+        var children = new List<NodeInfo>();
+
+        foreach (var child in parent.ChildNodes())
+        {
+            if (IsStructuralNode(child))
+            {
+                children.Add(new NodeInfo(
+                    child,
+                    GetNodeName(child),
+                    GetChangeKind(child),
+                    GetSignature(child)));
+            }
+        }
+
+        return children;
     }
 
     /// <summary>
