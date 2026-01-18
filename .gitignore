@@ -381,6 +381,10 @@ MSBuild_Logs/
 # MFractors (Xamarin productivity tool) working folder
 **/.mfractor/
 
+# Temporary test case files (except .gitkeep)
+tests/RoslynDiff.Integration.Tests/TempTestCases/*
+!tests/RoslynDiff.Integration.Tests/TempTestCases/.gitkeep
+
 # Local History for Visual Studio
 **/.localhistory/
 
