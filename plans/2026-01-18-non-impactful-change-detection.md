@@ -2,9 +2,20 @@
 
 **Document ID:** DESIGN-004
 **Date:** 2026-01-18
-**Status:** PROPOSED
+**Status:** IN PROGRESS (Phase 3/5 complete)
 **Worktree:** `/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/non-impactful-detection`
 **Branch:** `feature/non-impactful-detection` (based on `develop`)
+**PR:** https://github.com/randlee/roslyn-diff/pull/34
+**Last Updated:** 2026-01-18
+
+### Progress Summary
+| Phase | Status | Commit |
+|-------|--------|--------|
+| 1. Core Infrastructure | ✅ Complete | 6476acd |
+| 2. SemanticComparer Integration | ✅ Complete | 690fd30 |
+| 3. Output Formatters | ✅ Complete | f6bf1b5 |
+| 4. CLI Integration | ⏳ Pending | - |
+| 5. Polish | ⏳ Pending | - |
 
 ---
 
@@ -582,14 +593,15 @@ The v2 schema adds:
 - [x] **QA Gate:** Stage, commit, push to PR
 - **Commit:** 690fd30
 
-### Phase 3: Output Formatters (Day 4)
+### Phase 3: Output Formatters (Day 4) ✅ COMPLETED 2026-01-18
 
-- [ ] Update `JsonFormatter` with impact fields and filtering
-- [ ] Update `HtmlFormatter` with impact styling
-- [ ] Update `OutputOptions` with new properties
-- [ ] Add formatter tests
-- [ ] **QA Gate:** Run `dotnet test` - must be 100% pass
-- [ ] **QA Gate:** Stage, commit, push to PR
+- [x] Update `JsonFormatter` with impact fields and filtering
+- [x] Update `HtmlFormatter` with impact styling
+- [x] Update `OutputOptions` with new properties
+- [x] Add formatter tests
+- [x] **QA Gate:** Run `dotnet test` - 849 tests pass (100%)
+- [x] **QA Gate:** Stage, commit, push to PR
+- **Commit:** f6bf1b5
 
 ### Phase 4: CLI Integration (Day 5)
 
