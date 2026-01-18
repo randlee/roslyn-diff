@@ -266,6 +266,14 @@ public class OutputOrchestrator
     /// <param name="filePath">The path to the file to open.</param>
     private static void OpenInBrowser(string filePath)
     {
+        // Skip browser opening if running in test mode
+        var disableBrowserOpen = Environment.GetEnvironmentVariable("ROSLYN_DIFF_DISABLE_BROWSER_OPEN");
+        if (!string.IsNullOrEmpty(disableBrowserOpen) && disableBrowserOpen.Equals("true", StringComparison.OrdinalIgnoreCase))
+        {
+            Console.Error.WriteLine("Info: Browser opening disabled (ROSLYN_DIFF_DISABLE_BROWSER_OPEN=true)");
+            return;
+        }
+
         // Validate that we have a valid file path
         if (string.IsNullOrWhiteSpace(filePath))
         {
@@ -273,7 +281,17 @@ public class OutputOrchestrator
             return;
         }
 
-        var absolutePath = Path.GetFullPath(filePath);
+        // Get absolute path with exception handling
+        string absolutePath;
+        try
+        {
+            absolutePath = Path.GetFullPath(filePath);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Warning: Could not open browser: Invalid file path: {ex.Message}");
+            return;
+        }
 
         // Check if the file actually exists before attempting to open
         if (!File.Exists(absolutePath))
