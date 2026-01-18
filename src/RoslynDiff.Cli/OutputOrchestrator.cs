@@ -239,6 +239,7 @@ public class OutputOrchestrator
             PrettyPrint = true,
             IncludeStats = true,
             Compact = false,
+            IncludeNonImpactful = settings.IncludeNonImpactful || settings.IncludeFormatting,
             AvailableEditors = EditorDetector.DetectAvailableEditors()
         };
     }
