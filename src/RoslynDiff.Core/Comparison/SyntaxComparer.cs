@@ -240,6 +240,13 @@ public sealed class SyntaxComparer
                     newChild,
                     options);
 
+                // Recursively compare grandchildren (e.g., methods within a modified class)
+                var grandchildChanges = CompareChildren(oldChild, newChild, options);
+                if (grandchildChanges.Count > 0)
+                {
+                    change = change with { Children = grandchildChanges };
+                }
+
                 childChanges.Add(change);
             }
         }
