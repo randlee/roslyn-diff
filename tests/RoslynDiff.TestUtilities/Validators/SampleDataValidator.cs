@@ -497,9 +497,8 @@ public static class SampleDataValidator
 
         // Build arguments
         var args = new StringBuilder();
-        args.Append($"file \"{oldFile}\" \"{newFile}\"");
-        args.Append($" --output {format}");
-        args.Append($" --out-file \"{outputFile}\"");
+        args.Append($"diff \"{oldFile}\" \"{newFile}\"");
+        args.Append($" --{format.ToLowerInvariant()} \"{outputFile}\"");
 
         // Add mode flag if specified
         if (options.DiffMode != DiffMode.Auto)
@@ -527,7 +526,9 @@ public static class SampleDataValidator
             throw new TimeoutException($"CLI invocation timed out after {options.CliTimeoutMs}ms");
         }
 
-        if (process.ExitCode != 0)
+        // Exit codes: 0 = no differences (files identical), 1 = differences found (both success!)
+        // Exit code 2+ = actual error (file not found, invalid arguments, etc.)
+        if (process.ExitCode > 1)
         {
             var error = process.StandardError.ReadToEnd();
             throw new InvalidOperationException($"CLI invocation failed with exit code {process.ExitCode}: {error}");
