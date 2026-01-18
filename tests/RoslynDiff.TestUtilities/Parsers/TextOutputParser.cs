@@ -11,9 +11,10 @@ namespace RoslynDiff.TestUtilities.Parsers;
 public class TextOutputParser : ILineNumberParser
 {
     // Regex patterns for parsing text output
+    // Change markers: + (added), - (removed), ~ (modified), > (moved), @ (renamed), = (unchanged), ? (unknown)
     private static readonly Regex LineReferencePattern = new(@"\(line (\d+)(?:-(\d+))?\)", RegexOptions.Compiled);
     private static readonly Regex LineReferencePattern2 = new(@"line (\d+)(?:-(\d+))?", RegexOptions.Compiled);
-    private static readonly Regex ChangeLinePattern = new(@"^\s*(\[[\+\-M]\])\s+(\w+):\s+(.+?)(?:\s+\(line (\d+)(?:-(\d+))?\))?$", RegexOptions.Compiled | RegexOptions.Multiline);
+    private static readonly Regex ChangeLinePattern = new(@"^\s*(\[[\+\-~>=@\?]\])\s+(\w+):\s+(.+?)(?:\s+\(line (\d+)(?:-(\d+))?\))?\s*$", RegexOptions.Compiled | RegexOptions.Multiline);
 
     /// <inheritdoc/>
     public string FormatName => "Text";
@@ -75,12 +76,15 @@ public class TextOutputParser : ILineNumberParser
             };
         }
 
+        // Normalize line endings for cross-platform compatibility
+        var normalizedContent = textContent.Replace("\r\n", "\n").Replace("\r", "\n");
+
         var changes = new List<ParsedChange>();
         var errors = new List<string>();
         var metadata = new Dictionary<string, string>();
 
         // Parse header lines for metadata
-        var lines = textContent.Split('\n');
+        var lines = normalizedContent.Split('\n');
         string? oldPath = null;
         string? newPath = null;
         string? mode = null;
@@ -103,7 +107,7 @@ public class TextOutputParser : ILineNumberParser
         }
 
         // Parse change lines (e.g., "[+] Method: Multiply (line 5-8)")
-        var matches = ChangeLinePattern.Matches(textContent);
+        var matches = ChangeLinePattern.Matches(normalizedContent);
         foreach (Match match in matches)
         {
             var changeIndicator = match.Groups[1].Value;
@@ -114,7 +118,10 @@ public class TextOutputParser : ILineNumberParser
             {
                 "[+]" => "added",
                 "[-]" => "removed",
-                "[M]" => "modified",
+                "[~]" => "modified",
+                "[>]" => "moved",
+                "[@]" => "renamed",
+                "[=]" => "unchanged",
                 _ => "unknown"
             };
 
@@ -258,8 +265,18 @@ public class TextOutputParser : ILineNumberParser
     /// <summary>
     /// Recursively adds line numbers from a change and its children.
     /// </summary>
+    /// <remarks>
+    /// Skips unchanged items (context lines) to only include actual changes.
+    /// </remarks>
     private static void AddLineNumbersFromChange(ParsedChange change, HashSet<int> lineNumbers)
     {
+        // Skip unchanged items - these are context lines, not actual changes
+        var isUnchanged = change.ChangeType.Equals("unchanged", StringComparison.OrdinalIgnoreCase);
+        if (isUnchanged)
+        {
+            return;
+        }
+
         if (change.LineRange != null)
         {
             for (int i = change.LineRange.Start; i <= change.LineRange.End; i++)
@@ -286,16 +303,20 @@ public class TextOutputParser : ILineNumberParser
     /// Recursively collects line ranges from a change and its children.
     /// </summary>
     /// <remarks>
-    /// Only collects line ranges from non-removed, non-container items. Removed items have
-    /// line numbers from the OLD file, not the NEW file. Container items (Namespace, Class,
-    /// Interface, etc.) have line ranges that span their children, which would cause
-    /// false overlap detection.
+    /// Only collects line ranges from non-removed, non-unchanged, non-container items.
+    /// Removed items have line numbers from the OLD file, not the NEW file.
+    /// Unchanged items are context lines, not actual changes.
+    /// Container items (Namespace, Class, Interface, etc.) have line ranges that span
+    /// their children, which would cause false overlap detection.
     /// Also skips parent nodes with children to avoid hierarchical parent-child overlaps.
     /// </remarks>
     private static void CollectLineRangesFromChange(ParsedChange change, List<LineRange> ranges)
     {
         // Skip removed items - their line numbers are from the old file context
         var isRemoved = change.ChangeType.Equals("removed", StringComparison.OrdinalIgnoreCase);
+
+        // Skip unchanged items - these are context lines, not actual changes
+        var isUnchanged = change.ChangeType.Equals("unchanged", StringComparison.OrdinalIgnoreCase);
 
         // Skip container types whose line ranges span their children
         var isContainer = change.Kind != null &&
@@ -311,8 +332,8 @@ public class TextOutputParser : ILineNumberParser
         // Parent nodes naturally encompass their children's line ranges.
         if (change.Children.Count == 0)
         {
-            // Only collect from non-removed, non-container items (new file context, actual changes)
-            if (change.LineRange != null && !isRemoved && !isContainer)
+            // Only collect from non-removed, non-unchanged, non-container items (new file context, actual changes)
+            if (change.LineRange != null && !isRemoved && !isUnchanged && !isContainer)
             {
                 ranges.Add(change.LineRange);
             }
