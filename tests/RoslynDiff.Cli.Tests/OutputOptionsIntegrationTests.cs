@@ -40,6 +40,9 @@ public class OutputOptionsIntegrationTests : IDisposable
         _tempDir = Path.Combine(Path.GetTempPath(), $"roslyn-diff-tests-{Guid.NewGuid():N}");
         Directory.CreateDirectory(_tempDir);
 
+        // Disable browser opening during tests to prevent unwanted Safari/browser tabs
+        Environment.SetEnvironmentVariable("ROSLYN_DIFF_DISABLE_BROWSER_OPEN", "true");
+
         // Navigate to test fixtures - relative path from test assembly location
         var assemblyDir = Path.GetDirectoryName(typeof(OutputOptionsIntegrationTests).Assembly.Location)!;
         _fixturesDir = Path.Combine(assemblyDir, "..", "..", "..", "..", "RoslynDiff.Core.Tests", "TestFixtures", "CSharp");
