@@ -83,28 +83,10 @@ public sealed class NodeMatcher
     /// </summary>
     /// <param name="root">The root syntax node of the tree.</param>
     /// <returns>A list of structural nodes with their metadata.</returns>
-    /// <remarks>
-    /// This method only extracts top-level structural nodes directly under the root.
-    /// Nested nodes (e.g., methods within classes) are handled by CompareChildren in SyntaxComparer.
-    /// This prevents duplicate reporting where the same node appears both as a child and at the top level.
-    /// </remarks>
     public IReadOnlyList<NodeInfo> ExtractStructuralNodes(SyntaxNode root)
     {
         var nodes = new List<NodeInfo>();
-
-        // Only extract immediate structural children of root (top-level declarations)
-        // This prevents duplicate reporting of nested nodes
-        foreach (var child in root.ChildNodes())
-        {
-            if (IsStructuralNode(child))
-            {
-                var name = GetNodeName(child);
-                var kind = GetChangeKind(child);
-                var signature = GetSignature(child);
-                nodes.Add(new NodeInfo(child, name, kind, signature));
-            }
-        }
-
+        ExtractNodesRecursive(root, nodes);
         return nodes;
     }
 
@@ -272,6 +254,23 @@ public sealed class NodeMatcher
         return -1;
     }
 
+    private void ExtractNodesRecursive(SyntaxNode node, List<NodeInfo> nodes)
+    {
+        // Check if this node is a structural node we want to track
+        if (IsStructuralNode(node))
+        {
+            var name = GetNodeName(node);
+            var kind = GetChangeKind(node);
+            var signature = GetSignature(node);
+            nodes.Add(new NodeInfo(node, name, kind, signature));
+        }
+
+        // Recursively process children
+        foreach (var child in node.ChildNodes())
+        {
+            ExtractNodesRecursive(child, nodes);
+        }
+    }
 
     private static bool IsStructuralNode(SyntaxNode node)
     {
