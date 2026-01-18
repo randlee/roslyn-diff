@@ -85,6 +85,41 @@ public record DiffStats
     /// Gets the number of renamed symbols or elements.
     /// </summary>
     public int Renames { get; init; }
+
+    // Impact breakdown statistics
+
+    /// <summary>
+    /// Gets the number of breaking public API changes.
+    /// </summary>
+    public int BreakingPublicApiCount { get; init; }
+
+    /// <summary>
+    /// Gets the number of breaking internal API changes.
+    /// </summary>
+    public int BreakingInternalApiCount { get; init; }
+
+    /// <summary>
+    /// Gets the number of non-breaking changes.
+    /// </summary>
+    public int NonBreakingCount { get; init; }
+
+    /// <summary>
+    /// Gets the number of formatting-only changes.
+    /// </summary>
+    public int FormattingOnlyCount { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether there are any breaking changes (public or internal API).
+    /// </summary>
+    public bool HasBreakingChanges => BreakingPublicApiCount > 0 || BreakingInternalApiCount > 0;
+
+    /// <summary>
+    /// Gets a value indicating whether the changes require review.
+    /// </summary>
+    /// <remarks>
+    /// Returns <c>true</c> if there are any changes that are not purely formatting-only.
+    /// </remarks>
+    public bool RequiresReview => BreakingPublicApiCount > 0 || BreakingInternalApiCount > 0 || NonBreakingCount > 0;
 }
 
 /// <summary>

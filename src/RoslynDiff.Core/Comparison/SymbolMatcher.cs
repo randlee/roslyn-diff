@@ -247,7 +247,7 @@ public sealed class SymbolMatcher
     /// <summary>
     /// Finds a syntax node at a given location in a tree.
     /// </summary>
-    private static SyntaxNode? FindNodeAtLocation(SyntaxTree tree, SourceLocation? location)
+    internal static SyntaxNode? FindNodeAtLocation(SyntaxTree tree, SourceLocation? location)
     {
         if (location is null)
             return null;

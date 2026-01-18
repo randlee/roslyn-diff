@@ -47,4 +47,26 @@ public record DiffOptions
     /// This is used for display purposes and to determine the file type for automatic mode selection.
     /// </remarks>
     public string? NewPath { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether non-impactful changes should be included in results.
+    /// </summary>
+    /// <remarks>
+    /// When <c>true</c>, all changes are included regardless of impact level.
+    /// When <c>false</c>, non-breaking and formatting-only changes are filtered out.
+    /// Default is <c>true</c> for the core library; output formatters may apply their own filtering.
+    /// </remarks>
+    public bool IncludeNonImpactful { get; init; } = true;
+
+    /// <summary>
+    /// Gets the minimum impact level to include in results.
+    /// </summary>
+    /// <remarks>
+    /// Only changes with an impact level at or above this threshold are included.
+    /// The hierarchy from most to least impactful is:
+    /// <see cref="ChangeImpact.BreakingPublicApi"/> > <see cref="ChangeImpact.BreakingInternalApi"/>
+    /// > <see cref="ChangeImpact.NonBreaking"/> > <see cref="ChangeImpact.FormattingOnly"/>.
+    /// Default includes all changes.
+    /// </remarks>
+    public ChangeImpact MinimumImpactLevel { get; init; } = ChangeImpact.FormattingOnly;
 }
