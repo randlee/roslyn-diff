@@ -557,26 +557,30 @@ The v2 schema adds:
 
 ## 7. Implementation Checklist
 
-### Phase 1: Core Infrastructure (Day 1-2)
+### Phase 1: Core Infrastructure (Day 1-2) ✅ COMPLETED 2026-01-18
 
-- [ ] Create `ChangeImpact.cs` enum
-- [ ] Create `Visibility.cs` enum
-- [ ] Add properties to `Change.cs` record
-- [ ] Create `VisibilityExtractor.cs` with Roslyn visitor
-- [ ] Create `ImpactClassifier.cs` with classification logic
-- [ ] Add unit tests for both new classes
-- [ ] **QA Gate:** Run `dotnet test` - must be 100% pass
-- [ ] **QA Gate:** Stage, commit, push, create PR to develop
+- [x] Create `ChangeImpact.cs` enum
+- [x] Create `Visibility.cs` enum
+- [x] Create `SymbolKind.cs` enum (added - needed by ImpactClassifier)
+- [x] Add properties to `Change.cs` record (Impact, Visibility, Caveats)
+- [x] Create `VisibilityExtractor.cs` with Roslyn visitor
+- [x] Create `ImpactClassifier.cs` with classification logic
+- [x] Add unit tests for both new classes (59 tests: 23 + 36)
+- [x] **QA Gate:** Run `dotnet test` - 844 tests pass (100%)
+- [x] **QA Gate:** Stage, commit, push, create PR to develop
+- **PR:** https://github.com/randlee/roslyn-diff/pull/34
+- **Commit:** 6476acd
 
-### Phase 2: SemanticComparer Integration (Day 3)
+### Phase 2: SemanticComparer Integration (Day 3) ✅ COMPLETED 2026-01-18
 
-- [ ] Integrate `VisibilityExtractor` into symbol matching
-- [ ] Integrate `ImpactClassifier` into change creation
-- [ ] Update `DiffOptions` with new properties
-- [ ] Update `DiffStats` with impact breakdown
-- [ ] Add integration tests
-- [ ] **QA Gate:** Run `dotnet test` - must be 100% pass
-- [ ] **QA Gate:** Stage, commit, push to PR
+- [x] Integrate `VisibilityExtractor` into symbol matching
+- [x] Integrate `ImpactClassifier` into change creation
+- [x] Update `DiffOptions` with new properties (IncludeNonImpactful, MinimumImpactLevel)
+- [x] Update `DiffStats` with impact breakdown (BreakingPublicApiCount, etc.)
+- [x] Add integration tests (5 tests for impact classification scenarios)
+- [x] **QA Gate:** Run `dotnet test` - 849 tests pass (100%)
+- [x] **QA Gate:** Stage, commit, push to PR
+- **Commit:** 690fd30
 
 ### Phase 3: Output Formatters (Day 4)
 
