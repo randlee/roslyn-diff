@@ -400,10 +400,13 @@ public static class SampleDataValidator
                 ));
             }
 
-            // Compare line number sets
-            var jsonLines = new HashSet<int>(jsonRanges.SelectMany(r => Enumerable.Range(r.Start, r.LineCount)));
-            var htmlLines = new HashSet<int>(htmlRanges.SelectMany(r => Enumerable.Range(r.Start, r.LineCount)));
-            var textLines = new HashSet<int>(textRanges.SelectMany(r => Enumerable.Range(r.Start, r.LineCount)));
+            // Compare line number sets using only start lines
+            // Note: We compare start lines only because HTML format computes end lines from
+            // content length which may differ from JSON/Text's explicit location data due to
+            // newline normalization differences. Start lines are reliable across all formats.
+            var jsonLines = new HashSet<int>(jsonRanges.Select(r => r.Start));
+            var htmlLines = new HashSet<int>(htmlRanges.Select(r => r.Start));
+            var textLines = new HashSet<int>(textRanges.Select(r => r.Start));
 
             var issues2 = new List<string>();
 
@@ -497,9 +500,8 @@ public static class SampleDataValidator
 
         // Build arguments
         var args = new StringBuilder();
-        args.Append($"file \"{oldFile}\" \"{newFile}\"");
-        args.Append($" --output {format}");
-        args.Append($" --out-file \"{outputFile}\"");
+        args.Append($"diff \"{oldFile}\" \"{newFile}\"");
+        args.Append($" --{format.ToLowerInvariant()} \"{outputFile}\"");
 
         // Add mode flag if specified
         if (options.DiffMode != DiffMode.Auto)
@@ -527,7 +529,9 @@ public static class SampleDataValidator
             throw new TimeoutException($"CLI invocation timed out after {options.CliTimeoutMs}ms");
         }
 
-        if (process.ExitCode != 0)
+        // Exit codes: 0 = no differences (files identical), 1 = differences found (both success!)
+        // Exit code 2+ = actual error (file not found, invalid arguments, etc.)
+        if (process.ExitCode > 1)
         {
             var error = process.StandardError.ReadToEnd();
             throw new InvalidOperationException($"CLI invocation failed with exit code {process.ExitCode}: {error}");

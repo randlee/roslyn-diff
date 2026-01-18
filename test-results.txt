@@ -1,0 +1,28 @@
+Test run for /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Output.Tests/bin/Debug/net10.0/RoslynDiff.Output.Tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Cli.Tests/bin/Debug/net10.0/RoslynDiff.Cli.Tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Core.Tests/bin/Debug/net10.0/RoslynDiff.Core.Tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/bin/Debug/net10.0/RoslynDiff.Integration.Tests.dll (.NETCoreApp,Version=v10.0)
+VSTest version 18.0.1 (arm64)
+
+VSTest version 18.0.1 (arm64)
+
+VSTest version 18.0.1 (arm64)
+
+VSTest version 18.0.1 (arm64)
+
+Starting test execution, please wait...
+Starting test execution, please wait...
+Starting test execution, please wait...
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:   130, Skipped:     0, Total:   130, Duration: 70 ms - RoslynDiff.Output.Tests.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:   325, Skipped:     0, Total:   325, Duration: 1 s - RoslynDiff.Core.Tests.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:   138, Skipped:     0, Total:   138, Duration: 1 s - RoslynDiff.Integration.Tests.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:   129, Skipped:     0, Total:   129, Duration: 3 s - RoslynDiff.Cli.Tests.dll (net10.0)

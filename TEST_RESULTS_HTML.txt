@@ -1,0 +1,171 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  RoslynDiff.Core -> /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/src/RoslynDiff.Core/bin/Debug/net10.0/RoslynDiff.Core.dll
+  RoslynDiff.Output -> /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/src/RoslynDiff.Output/bin/Debug/net10.0/RoslynDiff.Output.dll
+  RoslynDiff.Core.Tests -> /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Core.Tests/bin/Debug/net10.0/RoslynDiff.Core.Tests.dll
+  RoslynDiff.TestUtilities -> /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/bin/Debug/net10.0/RoslynDiff.TestUtilities.dll
+Test run for /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Core.Tests/bin/Debug/net10.0/RoslynDiff.Core.Tests.dll (.NETCoreApp,Version=v10.0)
+VSTest version 18.0.1 (arm64)
+
+  RoslynDiff.Cli -> /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/src/RoslynDiff.Cli/bin/Debug/net10.0/roslyn-diff.dll
+  RoslynDiff.Output.Tests -> /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Output.Tests/bin/Debug/net10.0/RoslynDiff.Output.Tests.dll
+Test run for /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Output.Tests/bin/Debug/net10.0/RoslynDiff.Output.Tests.dll (.NETCoreApp,Version=v10.0)
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Core.Tests/bin/Debug/net10.0/RoslynDiff.Core.Tests.dll
+VSTest version 18.0.1 (arm64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Output.Tests/bin/Debug/net10.0/RoslynDiff.Output.Tests.dll
+  RoslynDiff.Cli.Tests -> /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Cli.Tests/bin/Debug/net10.0/RoslynDiff.Cli.Tests.dll
+  RoslynDiff.Integration.Tests -> /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/bin/Debug/net10.0/RoslynDiff.Integration.Tests.dll
+Test run for /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Cli.Tests/bin/Debug/net10.0/RoslynDiff.Cli.Tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/bin/Debug/net10.0/RoslynDiff.Integration.Tests.dll (.NETCoreApp,Version=v10.0)
+VSTest version 18.0.1 (arm64)
+
+VSTest version 18.0.1 (arm64)
+
+Starting test execution, please wait...
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Cli.Tests/bin/Debug/net10.0/RoslynDiff.Cli.Tests.dll
+A total of 1 test files matched the specified pattern.
+/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/bin/Debug/net10.0/RoslynDiff.Integration.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.5+1b188a7b0a (64-bit .NET 10.0.0)
+[xUnit.net 00:00:00.03]   Discovering: RoslynDiff.Core.Tests
+[xUnit.net 00:00:00.06]   Discovered:  RoslynDiff.Core.Tests
+No test matches the given testcase filter `FullyQualifiedName~HtmlConsistencyTests` in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Core.Tests/bin/Debug/net10.0/RoslynDiff.Core.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.5+1b188a7b0a (64-bit .NET 10.0.0)
+
+[xUnit.net 00:00:00.03]   Discovering: RoslynDiff.Output.Tests
+[xUnit.net 00:00:00.05]   Discovered:  RoslynDiff.Output.Tests
+No test matches the given testcase filter `FullyQualifiedName~HtmlConsistencyTests` in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Output.Tests/bin/Debug/net10.0/RoslynDiff.Output.Tests.dll
+
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.5+1b188a7b0a (64-bit .NET 10.0.0)
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.5+1b188a7b0a (64-bit .NET 10.0.0)
+[xUnit.net 00:00:00.03]   Discovering: RoslynDiff.Cli.Tests
+[xUnit.net 00:00:00.04]   Discovering: RoslynDiff.Integration.Tests
+[xUnit.net 00:00:00.05]   Discovered:  RoslynDiff.Cli.Tests
+No test matches the given testcase filter `FullyQualifiedName~HtmlConsistencyTests` in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Cli.Tests/bin/Debug/net10.0/RoslynDiff.Cli.Tests.dll
+[xUnit.net 00:00:00.06]   Discovered:  RoslynDiff.Integration.Tests
+[xUnit.net 00:00:00.07]   Starting:    RoslynDiff.Integration.Tests
+
+     Warning:
+     The component "Fluent Assertions" is governed by the rules defined in the Xceed License Agreement and
+     the Xceed Fluent Assertions Community License. You may use Fluent Assertions free of charge for
+     non-commercial use only. An active subscription is required to use Fluent Assertions for commercial use.
+     Please contact Xceed Sales mailto:sales@xceed.com to acquire a subscription at a very low cost.
+     A paid commercial license supports the development and continued increasing support of
+     Fluent Assertions users under both commercial and community licenses. Help us
+     keep Fluent Assertions at the forefront of unit testing.
+     For more information, visit https://xceed.com/products/unit-testing/fluent-assertions/
+[xUnit.net 00:00:00.19]     RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html001_FlagCombinationConsistency_HtmlToFile [FAIL]
+[xUnit.net 00:00:00.19]       1 of 1 validations failed:
+[xUnit.net 00:00:00.19]       - HTML Consistency Validation: Error during validation: CLI invocation failed with exit code 255: 
+[xUnit.net 00:00:00.19]         System.InvalidOperationException: CLI invocation failed with exit code 255: 
+[xUnit.net 00:00:00.19]          at RoslynDiff.TestUtilities.Validators.SampleDataValidator.GenerateOutput(String oldFile, String newFile, String format, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 533
+[xUnit.net 00:00:00.19]          at RoslynDiff.TestUtilities.Validators.SampleDataValidator.ValidateHtmlConsistency(String oldFile, String newFile, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 265
+[xUnit.net 00:00:00.19]       Stack Trace:
+[xUnit.net 00:00:00.20]         /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/SampleValidationTestBase.cs(139,0): at RoslynDiff.Integration.Tests.SampleValidation.SampleValidationTestBase.AssertAllPassed(IEnumerable`1 results)
+[xUnit.net 00:00:00.20]         /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/HtmlConsistencyTests.cs(34,0): at RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html001_FlagCombinationConsistency_HtmlToFile()
+[xUnit.net 00:00:00.20]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.20]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.35]     RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html006_AllSamples_HtmlParseable [FAIL]
+[xUnit.net 00:00:00.35]       2 of 2 validations failed:
+[xUnit.net 00:00:00.35]       - HTML Consistency Validation: Error during validation: CLI invocation failed with exit code 255: 
+[xUnit.net 00:00:00.35]         System.InvalidOperationException: CLI invocation failed with exit code 255: 
+[xUnit.net 00:00:00.35]          at RoslynDiff.TestUtilities.Validators.SampleDataValidator.GenerateOutput(String oldFile, String newFile, String format, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 533
+[xUnit.net 00:00:00.35]          at RoslynDiff.TestUtilities.Validators.SampleDataValidator.ValidateHtmlConsistency(String oldFile, String newFile, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 265
+[xUnit.net 00:00:00.35]       - HTML Consistency Validation: Error during validation: CLI invocation failed with exit code 255: 
+[xUnit.net 00:00:00.35]         System.InvalidOperationException: CLI invocation failed with exit code 255: 
+[xUnit.net 00:00:00.35]          at RoslynDiff.TestUtilities.Validators.SampleDataValidator.GenerateOutput(String oldFile, String newFile, String format, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 533
+[xUnit.net 00:00:00.35]          at RoslynDiff.TestUtilities.Validators.SampleDataValidator.ValidateHtmlConsistency(String oldFile, String newFile, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 265
+[xUnit.net 00:00:00.35]       Stack Trace:
+[xUnit.net 00:00:00.35]         /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/SampleValidationTestBase.cs(139,0): at RoslynDiff.Integration.Tests.SampleValidation.SampleValidationTestBase.AssertAllPassed(IEnumerable`1 results)
+[xUnit.net 00:00:00.35]         /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/HtmlConsistencyTests.cs(180,0): at RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html006_AllSamples_HtmlParseable()
+[xUnit.net 00:00:00.35]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.35]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.60]     RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html005_UserService_ValidatesSuccessfully [FAIL]
+[xUnit.net 00:00:00.60]       1 of 1 validations failed:
+[xUnit.net 00:00:00.60]       - HTML Consistency Validation: Error during validation: CLI invocation failed with exit code 255: 
+[xUnit.net 00:00:00.60]         System.InvalidOperationException: CLI invocation failed with exit code 255: 
+[xUnit.net 00:00:00.60]          at RoslynDiff.TestUtilities.Validators.SampleDataValidator.GenerateOutput(String oldFile, String newFile, String format, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 533
+[xUnit.net 00:00:00.60]          at RoslynDiff.TestUtilities.Validators.SampleDataValidator.ValidateHtmlConsistency(String oldFile, String newFile, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 265
+[xUnit.net 00:00:00.60]       Stack Trace:
+[xUnit.net 00:00:00.60]         /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/SampleValidationTestBase.cs(139,0): at RoslynDiff.Integration.Tests.SampleValidation.SampleValidationTestBase.AssertAllPassed(IEnumerable`1 results)
+[xUnit.net 00:00:00.60]         /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/HtmlConsistencyTests.cs(140,0): at RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html005_UserService_ValidatesSuccessfully()
+[xUnit.net 00:00:00.60]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.60]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.68]     RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html004_Calculator_ValidatesSuccessfully [FAIL]
+[xUnit.net 00:00:00.68]       1 of 1 validations failed:
+[xUnit.net 00:00:00.68]       - HTML Consistency Validation: Error during validation: CLI invocation failed with exit code 255: 
+[xUnit.net 00:00:00.68]         System.InvalidOperationException: CLI invocation failed with exit code 255: 
+[xUnit.net 00:00:00.68]          at RoslynDiff.TestUtilities.Validators.SampleDataValidator.GenerateOutput(String oldFile, String newFile, String format, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 533
+[xUnit.net 00:00:00.68]          at RoslynDiff.TestUtilities.Validators.SampleDataValidator.ValidateHtmlConsistency(String oldFile, String newFile, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 265
+[xUnit.net 00:00:00.68]       Stack Trace:
+[xUnit.net 00:00:00.68]         /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/SampleValidationTestBase.cs(139,0): at RoslynDiff.Integration.Tests.SampleValidation.SampleValidationTestBase.AssertAllPassed(IEnumerable`1 results)
+[xUnit.net 00:00:00.68]         /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/HtmlConsistencyTests.cs(116,0): at RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html004_Calculator_ValidatesSuccessfully()
+[xUnit.net 00:00:00.68]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.68]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.68]   Finished:    RoslynDiff.Integration.Tests
+  Failed RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html001_FlagCombinationConsistency_HtmlToFile [100 ms]
+  Error Message:
+   1 of 1 validations failed:
+- HTML Consistency Validation: Error during validation: CLI invocation failed with exit code 255: 
+  System.InvalidOperationException: CLI invocation failed with exit code 255: 
+   at RoslynDiff.TestUtilities.Validators.SampleDataValidator.GenerateOutput(String oldFile, String newFile, String format, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 533
+   at RoslynDiff.TestUtilities.Validators.SampleDataValidator.ValidateHtmlConsistency(String oldFile, String newFile, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 265
+  Stack Trace:
+     at RoslynDiff.Integration.Tests.SampleValidation.SampleValidationTestBase.AssertAllPassed(IEnumerable`1 results) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/SampleValidationTestBase.cs:line 139
+   at RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html001_FlagCombinationConsistency_HtmlToFile() in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/HtmlConsistencyTests.cs:line 34
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html006_AllSamples_HtmlParseable [163 ms]
+  Error Message:
+   2 of 2 validations failed:
+- HTML Consistency Validation: Error during validation: CLI invocation failed with exit code 255: 
+  System.InvalidOperationException: CLI invocation failed with exit code 255: 
+   at RoslynDiff.TestUtilities.Validators.SampleDataValidator.GenerateOutput(String oldFile, String newFile, String format, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 533
+   at RoslynDiff.TestUtilities.Validators.SampleDataValidator.ValidateHtmlConsistency(String oldFile, String newFile, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 265
+- HTML Consistency Validation: Error during validation: CLI invocation failed with exit code 255: 
+  System.InvalidOperationException: CLI invocation failed with exit code 255: 
+   at RoslynDiff.TestUtilities.Validators.SampleDataValidator.GenerateOutput(String oldFile, String newFile, String format, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 533
+   at RoslynDiff.TestUtilities.Validators.SampleDataValidator.ValidateHtmlConsistency(String oldFile, String newFile, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 265
+  Stack Trace:
+     at RoslynDiff.Integration.Tests.SampleValidation.SampleValidationTestBase.AssertAllPassed(IEnumerable`1 results) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/SampleValidationTestBase.cs:line 139
+   at RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html006_AllSamples_HtmlParseable() in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/HtmlConsistencyTests.cs:line 180
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html003_DataAttributeConsistency_MatchVisualDisplay [82 ms]
+  Passed RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html002_SectionLineNumberIntegrity_NoOverlaps [82 ms]
+  Failed RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html005_UserService_ValidatesSuccessfully [81 ms]
+  Error Message:
+   1 of 1 validations failed:
+- HTML Consistency Validation: Error during validation: CLI invocation failed with exit code 255: 
+  System.InvalidOperationException: CLI invocation failed with exit code 255: 
+   at RoslynDiff.TestUtilities.Validators.SampleDataValidator.GenerateOutput(String oldFile, String newFile, String format, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 533
+   at RoslynDiff.TestUtilities.Validators.SampleDataValidator.ValidateHtmlConsistency(String oldFile, String newFile, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 265
+  Stack Trace:
+     at RoslynDiff.Integration.Tests.SampleValidation.SampleValidationTestBase.AssertAllPassed(IEnumerable`1 results) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/SampleValidationTestBase.cs:line 139
+   at RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html005_UserService_ValidatesSuccessfully() in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/HtmlConsistencyTests.cs:line 140
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html004_Calculator_ValidatesSuccessfully [83 ms]
+  Error Message:
+   1 of 1 validations failed:
+- HTML Consistency Validation: Error during validation: CLI invocation failed with exit code 255: 
+  System.InvalidOperationException: CLI invocation failed with exit code 255: 
+   at RoslynDiff.TestUtilities.Validators.SampleDataValidator.GenerateOutput(String oldFile, String newFile, String format, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 533
+   at RoslynDiff.TestUtilities.Validators.SampleDataValidator.ValidateHtmlConsistency(String oldFile, String newFile, SampleDataValidatorOptions options) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.TestUtilities/Validators/SampleDataValidator.cs:line 265
+  Stack Trace:
+     at RoslynDiff.Integration.Tests.SampleValidation.SampleValidationTestBase.AssertAllPassed(IEnumerable`1 results) in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/SampleValidationTestBase.cs:line 139
+   at RoslynDiff.Integration.Tests.SampleValidation.HtmlConsistencyTests.Html004_Calculator_ValidatesSuccessfully() in /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/sample-data-validation-tests/tests/RoslynDiff.Integration.Tests/SampleValidation/HtmlConsistencyTests.cs:line 116
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Test Run Failed.
+Total tests: 6
+     Passed: 2
+     Failed: 4
+ Total time: 0.9672 Seconds
