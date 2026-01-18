@@ -748,6 +748,49 @@ public partial class HtmlFormatter : IOutputFormatter
             border-left-color: #1f2328;
         }
 
+        /* Impact indicator badges */
+        .impact-indicator {
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 3px;
+            margin-left: 8px;
+        }
+
+        .impact-breaking-public {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        .impact-breaking-internal {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+
+        .impact-nonbreaking {
+            background-color: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .impact-formatting {
+            background-color: #f9fafb;
+            color: #9ca3af;
+        }
+
+        /* Caveat warnings */
+        .change-caveats {
+            font-size: 11px;
+            color: #b45309;
+            background-color: #fffbeb;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+
+        /* Muted styling for non-breaking changes */
+        .change-nonbreaking {
+            opacity: 0.7;
+        }
+
         /* Print styles */
         @media print {
             body {
@@ -1214,7 +1257,11 @@ public partial class HtmlFormatter : IOutputFormatter
         var nameText = change.Name ?? "(unnamed)";
         var locationText = FormatLocation(change);
 
-        sb.AppendLine($"                <div class=\"change-section\" style=\"margin-left: {depth * 20}px\">");
+        // Determine impact styling
+        var (impactBadgeClass, impactBadgeText) = GetImpactBadge(change.Impact);
+        var sectionClass = IsNonBreakingOrFormattingOnly(change.Impact) ? "change-section change-nonbreaking" : "change-section";
+
+        sb.AppendLine($"                <div class=\"{sectionClass}\" style=\"margin-left: {depth * 20}px\">");
         sb.AppendLine($"                    <div class=\"change-header\">");
         sb.AppendLine($"                        <div class=\"change-title\" onclick=\"toggleChange('{changeId}')\">");
         sb.AppendLine($"                            <span class=\"expand-icon\">\u25bc</span>");
@@ -1227,12 +1274,26 @@ public partial class HtmlFormatter : IOutputFormatter
             sb.AppendLine($"                            <span class=\"change-location\">{locationText}</span>");
         }
 
+        // Add impact indicator badge
+        sb.AppendLine($"                            <span class=\"impact-indicator {impactBadgeClass}\">{impactBadgeText}</span>");
+
         sb.AppendLine("                        </div>");
         sb.AppendLine("                        <div class=\"copy-buttons\" onclick=\"event.stopPropagation()\">");
         sb.AppendLine($"                            <button class=\"copy-btn\" onclick=\"copyAsJson('{changeId}')\" title=\"Copy as JSON\">JSON</button>");
         sb.AppendLine($"                            <button class=\"copy-btn\" onclick=\"copyAsDiff('{changeId}')\" title=\"Copy as diff\">Diff</button>");
         sb.AppendLine("                        </div>");
         sb.AppendLine("                    </div>");
+
+        // Display caveats if present
+        if (change.Caveats != null && change.Caveats.Count > 0)
+        {
+            sb.AppendLine("                    <div class=\"change-caveats\">");
+            foreach (var caveat in change.Caveats)
+            {
+                sb.AppendLine($"                        <div>\u26a0\ufe0f {HtmlEncode(caveat)}</div>");
+            }
+            sb.AppendLine("                    </div>");
+        }
 
         // Store change data for copy buttons (JSON-encoded in data attributes)
         var oldContentEscaped = HtmlEncode(change.OldContent ?? "");
@@ -1328,6 +1389,23 @@ public partial class HtmlFormatter : IOutputFormatter
             ChangeType.Renamed => "badge-renamed",
             _ => ""
         };
+    }
+
+    private static (string cssClass, string text) GetImpactBadge(ChangeImpact impact)
+    {
+        return impact switch
+        {
+            ChangeImpact.BreakingPublicApi => ("impact-breaking-public", "BREAKING PUBLIC API"),
+            ChangeImpact.BreakingInternalApi => ("impact-breaking-internal", "BREAKING INTERNAL"),
+            ChangeImpact.NonBreaking => ("impact-nonbreaking", "NON-BREAKING"),
+            ChangeImpact.FormattingOnly => ("impact-formatting", "FORMATTING"),
+            _ => ("impact-nonbreaking", "NON-BREAKING")
+        };
+    }
+
+    private static bool IsNonBreakingOrFormattingOnly(ChangeImpact impact)
+    {
+        return impact is ChangeImpact.NonBreaking or ChangeImpact.FormattingOnly;
     }
 
     private static string FormatLocation(Change change)

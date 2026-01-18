@@ -35,6 +35,12 @@ public record OutputOptions
     public bool IncludeStats { get; init; } = true;
 
     /// <summary>
+    /// Gets or sets whether to include non-impactful changes in output.
+    /// Default is false for JSON (AI-optimized), true for HTML (human review).
+    /// </summary>
+    public bool IncludeNonImpactful { get; init; } = false;
+
+    /// <summary>
     /// Gets or sets a value indicating whether to use compact output format.
     /// </summary>
     public bool Compact { get; init; }
