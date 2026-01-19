@@ -1,5 +1,6 @@
 namespace RoslynDiff.Core.Differ;
 
+using System.Text.RegularExpressions;
 using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
 using RoslynDiff.Core.Models;
@@ -58,14 +59,22 @@ public sealed class LineDiffer : IDiffer
     }
 
     /// <inheritdoc/>
+    /// <inheritdoc/>
     public DiffResult Compare(string oldContent, string newContent, DiffOptions options)
     {
         ArgumentNullException.ThrowIfNull(oldContent);
         ArgumentNullException.ThrowIfNull(newContent);
         ArgumentNullException.ThrowIfNull(options);
 
+        // Determine effective whitespace mode (backward compatibility with IgnoreWhitespace)
+        var effectiveMode = ResolveWhitespaceMode(options);
+
+        // Preprocess content and determine DiffPlex ignoreWhitespace flag based on mode
+        var (processedOld, processedNew, diffPlexIgnoreWs) = PrepareContentForComparison(
+            oldContent, newContent, effectiveMode, options.NewPath ?? options.OldPath);
+
         var diffBuilder = new InlineDiffBuilder(_differ);
-        var diff = diffBuilder.BuildDiffModel(oldContent, newContent, options.IgnoreWhitespace);
+        var diff = diffBuilder.BuildDiffModel(processedOld, processedNew, diffPlexIgnoreWs);
 
         var changes = BuildChanges(diff, options);
         var stats = CalculateStats(changes);
@@ -293,5 +302,99 @@ public sealed class LineDiffer : IDiffer
             Moves = 0,
             Renames = 0
         };
+    }
+
+    /// <summary>
+    /// Resolves the effective whitespace mode, accounting for backward compatibility with IgnoreWhitespace.
+    /// </summary>
+    /// <param name="options">The diff options.</param>
+    /// <returns>The effective whitespace mode to use.</returns>
+    private static WhitespaceMode ResolveWhitespaceMode(DiffOptions options)
+    {
+        // If WhitespaceMode is explicitly set to something other than default, use it
+        if (options.WhitespaceMode != WhitespaceMode.Exact)
+        {
+            return options.WhitespaceMode;
+        }
+
+        // Backward compatibility: map IgnoreWhitespace to IgnoreLeadingTrailing
+        // This matches the previous DiffPlex ignoreWhitespace=true behavior
+        if (options.IgnoreWhitespace)
+        {
+            return WhitespaceMode.IgnoreLeadingTrailing;
+        }
+
+        return WhitespaceMode.Exact;
+    }
+
+    /// <summary>
+    /// Prepares content for comparison based on the whitespace mode.
+    /// </summary>
+    /// <param name="oldContent">The original content.</param>
+    /// <param name="newContent">The new content.</param>
+    /// <param name="mode">The whitespace handling mode.</param>
+    /// <param name="filePath">The file path for language-aware processing.</param>
+    /// <returns>A tuple of (processedOld, processedNew, diffPlexIgnoreWhitespace).</returns>
+    private static (string ProcessedOld, string ProcessedNew, bool DiffPlexIgnoreWs) PrepareContentForComparison(
+        string oldContent,
+        string newContent,
+        WhitespaceMode mode,
+        string? filePath)
+    {
+        return mode switch
+        {
+            WhitespaceMode.Exact => (oldContent, newContent, false),
+            WhitespaceMode.IgnoreLeadingTrailing => (oldContent, newContent, true),
+            WhitespaceMode.IgnoreAll => (CollapseWhitespace(oldContent), CollapseWhitespace(newContent), false),
+            WhitespaceMode.LanguageAware => HandleLanguageAware(oldContent, newContent, filePath),
+            _ => (oldContent, newContent, false)
+        };
+    }
+
+    /// <summary>
+    /// Handles language-aware whitespace processing based on the file type.
+    /// </summary>
+    /// <param name="oldContent">The original content.</param>
+    /// <param name="newContent">The new content.</param>
+    /// <param name="filePath">The file path for language classification.</param>
+    /// <returns>A tuple of (processedOld, processedNew, diffPlexIgnoreWhitespace).</returns>
+    private static (string ProcessedOld, string ProcessedNew, bool DiffPlexIgnoreWs) HandleLanguageAware(
+        string oldContent,
+        string newContent,
+        string? filePath)
+    {
+        var sensitivity = LanguageClassifier.GetSensitivity(filePath);
+
+        return sensitivity switch
+        {
+            // Whitespace-significant languages: preserve exact whitespace
+            WhitespaceSensitivity.Significant => (oldContent, newContent, false),
+            // Brace languages: safe to ignore leading/trailing whitespace
+            WhitespaceSensitivity.Insignificant => (oldContent, newContent, true),
+            // Unknown: preserve exact whitespace for safety
+            WhitespaceSensitivity.Unknown => (oldContent, newContent, false),
+            _ => (oldContent, newContent, false)
+        };
+    }
+
+    /// <summary>
+    /// Collapses all whitespace in content: multiple spaces/tabs become single space, leading/trailing trimmed per line.
+    /// </summary>
+    /// <param name="content">The content to process.</param>
+    /// <returns>The content with collapsed whitespace.</returns>
+    private static string CollapseWhitespace(string content)
+    {
+        // Process line by line to preserve line structure
+        var lines = content.Split('\n');
+        for (var i = 0; i < lines.Length; i++)
+        {
+            // Remove carriage returns and collapse whitespace
+            var line = lines[i].TrimEnd('\r');
+            // Collapse multiple whitespace characters to single space
+            line = Regex.Replace(line, @"\s+", " ");
+            // Trim leading and trailing whitespace
+            lines[i] = line.Trim();
+        }
+        return string.Join("\n", lines);
     }
 }
