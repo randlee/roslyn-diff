@@ -104,4 +104,15 @@ public record Change
     /// the impact might be understated or where further review is recommended.
     /// </remarks>
     public IReadOnlyList<string>? Caveats { get; init; }
+
+    /// <summary>
+    /// Gets the whitespace issues detected in this change.
+    /// </summary>
+    /// <remarks>
+    /// This property is populated when using <see cref="DiffOptions.WhitespaceMode"/> with
+    /// <see cref="WhitespaceMode.LanguageAware"/> mode. It flags potential whitespace-related
+    /// problems such as indentation changes in whitespace-significant languages, mixed tabs
+    /// and spaces, trailing whitespace, or line ending differences.
+    /// </remarks>
+    public WhitespaceIssue WhitespaceIssues { get; init; } = WhitespaceIssue.None;
 }

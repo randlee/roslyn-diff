@@ -1,0 +1,7 @@
+Line with no trailing whitespace
+Line with trailing space
+Line with trailing tab
+Line with multiple trailing spaces
+Normal line again
+Line with trailing space and tab
+Last line no trailing

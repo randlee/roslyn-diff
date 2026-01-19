@@ -2,7 +2,7 @@
 
 **Document ID:** DESIGN-005
 **Date:** 2026-01-18
-**Status:** PROPOSED
+**Status:** COMPLETE (Phase 1-7 Complete, 2026-01-19)
 **Worktree:** `/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/line-diff-whitespace`
 **Branch:** `feature/line-diff-whitespace` (based on `develop`)
 
@@ -652,69 +652,73 @@ tests/
 
 ## 8. Implementation Checklist
 
-### Phase 1: Core Types (Est: 2 hours)
+### Phase 1: Core Types (Est: 2 hours) ✅ COMPLETE
 
-- [ ] Create `WhitespaceMode.cs` enum
-- [ ] Create `WhitespaceSensitivity.cs` enum
-- [ ] Create `WhitespaceIssue.cs` flags enum
-- [ ] Update `DiffOptions.cs` with `WhitespaceMode` property
-- [ ] Add `WhitespaceIssues` property to `Change.cs`
-- [ ] **QA Gate:** Run `dotnet test` - must be 100% pass
-- [ ] **QA Gate:** Stage, commit, push, create PR to develop
+- [x] Create `WhitespaceMode.cs` enum
+- [x] Create `WhitespaceSensitivity.cs` enum
+- [x] Create `WhitespaceIssue.cs` flags enum
+- [x] Update `DiffOptions.cs` with `WhitespaceMode` property
+- [x] Add `WhitespaceIssues` property to `Change.cs`
+- [x] **QA Gate:** Run `dotnet test` - must be 100% pass (906/906 passed)
+- [x] **QA Gate:** Stage, commit, push, create PR to develop (PR #37)
 
-### Phase 2: Language Classification (Est: 1 hour)
+### Phase 2: Language Classification (Est: 1 hour) ✅ COMPLETE
 
-- [ ] Create `LanguageClassifier.cs`
-- [ ] Add comprehensive extension mappings
-- [ ] Add unit tests for classification
-- [ ] **QA Gate:** Run `dotnet test` - must be 100% pass
-- [ ] **QA Gate:** Stage, commit, push to PR
+- [x] Create `LanguageClassifier.cs`
+- [x] Add comprehensive extension mappings (15 significant, 31 insignificant)
+- [x] Add unit tests for classification (76 tests)
+- [x] **QA Gate:** Run `dotnet test` - must be 100% pass (327/327 passed)
+- [x] **QA Gate:** Stage, commit, push to PR
 
-### Phase 3: LineDiffer Updates (Est: 4 hours)
+### Phase 3: LineDiffer Updates (Est: 4 hours) ✅ COMPLETE
 
-- [ ] Implement `WhitespaceMode.Exact` (verify matches `diff`)
-- [ ] Implement `WhitespaceMode.IgnoreLeadingTrailing` (existing behavior)
-- [ ] Implement `WhitespaceMode.IgnoreAll` (collapse whitespace)
-- [ ] Implement `WhitespaceMode.LanguageAware` routing
-- [ ] Add whitespace issue detection for significant languages
-- [ ] **QA Gate:** Run `dotnet test` - must be 100% pass
-- [ ] **QA Gate:** Stage, commit, push to PR
+- [x] Implement `WhitespaceMode.Exact` (verify matches `diff`)
+- [x] Implement `WhitespaceMode.IgnoreLeadingTrailing` (existing behavior)
+- [x] Implement `WhitespaceMode.IgnoreAll` (collapse whitespace)
+- [x] Implement `WhitespaceMode.LanguageAware` routing
+- [x] Add whitespace issue detection for significant languages
+- [x] **QA Gate:** Run `dotnet test` - must be 100% pass (1,027/1,027 passed)
+- [x] **QA Gate:** Stage, commit cf40c07, push to PR
 
-### Phase 4: WhitespaceAnalyzer (Est: 3 hours)
+### Phase 4: WhitespaceAnalyzer (Est: 3 hours) ✅ COMPLETE
 
-- [ ] Create `WhitespaceAnalyzer.cs`
-- [ ] Implement indentation change detection
-- [ ] Implement mixed tabs/spaces detection
-- [ ] Implement trailing whitespace detection
-- [ ] Add comprehensive unit tests
-- [ ] **QA Gate:** Run `dotnet test` - must be 100% pass
-- [ ] **QA Gate:** Stage, commit, push to PR
+- [x] Create `WhitespaceAnalyzer.cs`
+- [x] Implement indentation change detection
+- [x] Implement mixed tabs/spaces detection
+- [x] Implement trailing whitespace detection
+- [x] Add comprehensive unit tests (63 tests)
+- [x] **QA Gate:** Run `dotnet test` - must be 100% pass (1,090/1,090 passed)
+- [x] **QA Gate:** Stage, commit 12ee977, push to PR
 
-### Phase 5: CLI Integration (Est: 2 hours)
+### Phase 5: CLI Integration (Est: 2 hours) ✅ COMPLETE
 
-- [ ] Add `--whitespace-mode` option to `DiffCommand`
-- [ ] Ensure `-w` backward compatibility
-- [ ] Update help text and examples
-- [ ] **QA Gate:** Run `dotnet test` - must be 100% pass
-- [ ] **QA Gate:** Stage, commit, push to PR
+- [x] Add `--whitespace-mode` option to `DiffCommand`
+- [x] Ensure `-w` backward compatibility
+- [x] Update help text and examples
+- [x] Add CLI validation for whitespace mode values
+- [x] Add comprehensive CLI tests (40 tests)
+- [x] **QA Gate:** Run `dotnet test` - must be 100% pass (1,130/1,130 passed)
+- [x] **QA Gate:** Stage, commit 46f1687, push to PR
 
-### Phase 6: Output Formatting (Est: 2 hours)
+### Phase 6: Output Formatting (Est: 2 hours) ✅ COMPLETE
 
-- [ ] Update `ConsoleFormatter` to display whitespace warnings
-- [ ] Update `TextFormatter` with warnings
-- [ ] Update `HtmlFormatter` with visual indicators
-- [ ] Update `JsonFormatter` with issue data
-- [ ] **QA Gate:** Run `dotnet test` - must be 100% pass
-- [ ] **QA Gate:** Stage, commit, push to PR
+- [x] Update `SpectreConsoleFormatter` to display yellow whitespace warnings
+- [x] Update `PlainTextFormatter` with WARNING text
+- [x] Update `HtmlFormatter` with visual warning indicators and tooltips
+- [x] Update `JsonFormatter` with whitespaceIssues array
+- [x] Add comprehensive formatter whitespace tests (26 tests)
+- [x] **QA Gate:** Run `dotnet test` - must be 100% pass (1,156/1,156 passed)
+- [x] **QA Gate:** Stage, commit c6caa58, push to PR
 
-### Phase 7: Testing & Documentation (Est: 3 hours)
+### Phase 7: Testing & Documentation (Est: 3 hours) ✅ COMPLETE
 
-- [ ] Create standard diff compatibility tests
-- [ ] Create language-aware mode tests
-- [ ] Create test data files
-- [ ] Update CLI help documentation
-- [ ] **QA Gate:** Run `dotnet test` - must be 100% pass
-- [ ] **QA Gate:** Final commit, push, PR ready for merge
+- [x] Create standard diff compatibility tests
+- [x] Create language-aware mode tests (Python, YAML, C#, Java)
+- [x] Create test data files in `tests/RoslynDiff.Integration.Tests/TestData/Whitespace/`
+- [x] Complete WhitespaceAnalyzer.Analyze() integration in LineDiffer
+- [x] Add 29 integration tests covering all whitespace modes
+- [x] **QA Gate:** Run `dotnet test` - must be 100% pass (1,185/1,185 passed)
+- [x] **QA Gate:** Stage, commit 4d48db9, push to PR
 
 ### Total Estimated Time: 17 hours
 

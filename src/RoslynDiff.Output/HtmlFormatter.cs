@@ -786,6 +786,23 @@ public partial class HtmlFormatter : IOutputFormatter
             margin-top: 4px;
         }
 
+        /* Whitespace warnings */
+        .whitespace-warning {
+            font-size: 11px;
+            color: #b45309;
+            background-color: #fef3c7;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .whitespace-warning-icon {
+            font-size: 12px;
+        }
+
         /* Muted styling for non-breaking changes */
         .change-nonbreaking {
             opacity: 0.7;
@@ -1292,6 +1309,17 @@ public partial class HtmlFormatter : IOutputFormatter
             {
                 sb.AppendLine($"                        <div>\u26a0\ufe0f {HtmlEncode(caveat)}</div>");
             }
+            sb.AppendLine("                    </div>");
+        }
+
+        // Display whitespace warnings if present
+        if (change.WhitespaceIssues != WhitespaceIssue.None)
+        {
+            var issueNames = GetWhitespaceIssueNames(change.WhitespaceIssues);
+            var issueList = string.Join(", ", issueNames);
+            sb.AppendLine($"                    <div class=\"whitespace-warning\" title=\"Whitespace issues detected: {HtmlEncode(issueList)}\">");
+            sb.AppendLine($"                        <span class=\"whitespace-warning-icon\">\u26a0</span>");
+            sb.AppendLine($"                        <span>Whitespace: {HtmlEncode(issueList)}</span>");
             sb.AppendLine("                    </div>");
         }
 
@@ -1948,4 +1976,21 @@ public partial class HtmlFormatter : IOutputFormatter
 
     [GeneratedRegex(@"\b(String|Integer|Long|Boolean|Object|Double|Single|Decimal|Byte|Char|Date|TimeSpan|Guid|Task|List|Dictionary|IEnumerable|ICollection|IList|Action|Func|Exception|ArgumentException|InvalidOperationException|StringBuilder|Regex)\b")]
     private static partial Regex VbTypeRegex();
+
+    /// <summary>
+    /// Converts WhitespaceIssue flags to a list of issue names.
+    /// </summary>
+    private static IEnumerable<string> GetWhitespaceIssueNames(WhitespaceIssue issues)
+    {
+        if (issues.HasFlag(WhitespaceIssue.IndentationChanged))
+            yield return "IndentationChanged";
+        if (issues.HasFlag(WhitespaceIssue.MixedTabsSpaces))
+            yield return "MixedTabsSpaces";
+        if (issues.HasFlag(WhitespaceIssue.TrailingWhitespace))
+            yield return "TrailingWhitespace";
+        if (issues.HasFlag(WhitespaceIssue.LineEndingChanged))
+            yield return "LineEndingChanged";
+        if (issues.HasFlag(WhitespaceIssue.AmbiguousTabWidth))
+            yield return "AmbiguousTabWidth";
+    }
 }

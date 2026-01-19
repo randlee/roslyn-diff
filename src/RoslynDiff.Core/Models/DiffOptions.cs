@@ -17,7 +17,25 @@ public record DiffOptions
     /// <summary>
     /// Gets a value indicating whether whitespace differences should be ignored.
     /// </summary>
+    /// <remarks>
+    /// This property is retained for backward compatibility with the CLI.
+    /// For more fine-grained control, use <see cref="WhitespaceMode"/> instead.
+    /// </remarks>
     public bool IgnoreWhitespace { get; init; }
+
+    /// <summary>
+    /// Gets the whitespace handling mode for diff comparison.
+    /// </summary>
+    /// <remarks>
+    /// Controls how whitespace differences are treated during comparison:
+    /// <list type="bullet">
+    /// <item><description><see cref="Models.WhitespaceMode.Exact"/>: Character-by-character comparison (default)</description></item>
+    /// <item><description><see cref="Models.WhitespaceMode.IgnoreLeadingTrailing"/>: Ignore leading/trailing whitespace</description></item>
+    /// <item><description><see cref="Models.WhitespaceMode.IgnoreAll"/>: Collapse and ignore all whitespace</description></item>
+    /// <item><description><see cref="Models.WhitespaceMode.LanguageAware"/>: Language-specific whitespace handling</description></item>
+    /// </list>
+    /// </remarks>
+    public WhitespaceMode WhitespaceMode { get; init; } = WhitespaceMode.Exact;
 
     /// <summary>
     /// Gets a value indicating whether comment differences should be ignored.

@@ -16,6 +16,12 @@
     <None Include="GoldenSnapshots\**\*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <!-- Include test data files for whitespace mode tests -->
+  <ItemGroup>
+    <Compile Remove="TestData\**\*.cs" />
+    <None Include="TestData\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\RoslynDiff.Cli\RoslynDiff.Cli.csproj" />
     <ProjectReference Include="..\RoslynDiff.TestUtilities\RoslynDiff.TestUtilities.csproj" />

@@ -40,6 +40,7 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
     /// <item>roslyn-diff diff old.cs new.cs --git output.patch</item>
     /// <item>roslyn-diff diff old.cs new.cs -w -c --mode roslyn --text</item>
     /// <item>roslyn-diff diff old.txt new.txt --mode line --quiet</item>
+    /// <item>roslyn-diff diff old.py new.py --whitespace-mode language-aware</item>
     /// </list>
     /// </para>
     /// </remarks>
@@ -81,6 +82,22 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
         [Description("Ignore whitespace differences")]
         [DefaultValue(false)]
         public bool IgnoreWhitespace { get; set; }
+
+        /// <summary>
+        /// Gets or sets the whitespace handling mode.
+        /// </summary>
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item>exact: Exact character-by-character comparison (default)</item>
+        /// <item>ignore-leading-trailing: Ignore leading and trailing whitespace</item>
+        /// <item>ignore-all: Ignore all whitespace differences</item>
+        /// <item>language-aware: Language-aware whitespace handling</item>
+        /// </list>
+        /// </remarks>
+        [CommandOption("--whitespace-mode <mode>")]
+        [Description("Whitespace handling: exact (default), ignore-leading-trailing, ignore-all, language-aware")]
+        [DefaultValue("exact")]
+        public string WhitespaceMode { get; set; } = "exact";
 
         /// <summary>
         /// Gets or sets the number of context lines.
@@ -209,6 +226,13 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
                 return ValidationResult.Error("--html requires a file path");
             }
 
+            // Validate --whitespace-mode
+            var validModes = new[] { "exact", "ignore-leading-trailing", "ignore-all", "language-aware" };
+            if (!validModes.Contains(WhitespaceMode.ToLowerInvariant()))
+            {
+                return ValidationResult.Error($"Invalid whitespace mode: '{WhitespaceMode}'. Valid modes: exact, ignore-leading-trailing, ignore-all, language-aware");
+            }
+
             return ValidationResult.Success();
         }
     }
@@ -268,6 +292,22 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             effectiveImpactLevel = ChangeImpact.FormattingOnly;
         }
 
+        // Parse whitespace mode
+        var whitespaceMode = settings.WhitespaceMode.ToLowerInvariant() switch
+        {
+            "exact" => Core.Models.WhitespaceMode.Exact,
+            "ignore-leading-trailing" => Core.Models.WhitespaceMode.IgnoreLeadingTrailing,
+            "ignore-all" => Core.Models.WhitespaceMode.IgnoreAll,
+            "language-aware" => Core.Models.WhitespaceMode.LanguageAware,
+            _ => Core.Models.WhitespaceMode.Exact // Invalid mode will be caught in validation
+        };
+
+        // -w/--ignore-whitespace takes precedence (backward compatibility)
+        if (settings.IgnoreWhitespace)
+        {
+            whitespaceMode = Core.Models.WhitespaceMode.IgnoreLeadingTrailing;
+        }
+
         try
         {
             // Read file contents
@@ -280,7 +320,8 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             var options = new DiffOptions
             {
                 Mode = diffMode,
-                IgnoreWhitespace = settings.IgnoreWhitespace,
+                WhitespaceMode = whitespaceMode,
+                IgnoreWhitespace = settings.IgnoreWhitespace, // Keep for backward compat
                 ContextLines = settings.ContextLines,
                 OldPath = Path.GetFullPath(settings.OldPath),
                 NewPath = Path.GetFullPath(settings.NewPath),
