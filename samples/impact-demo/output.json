@@ -1,0 +1,291 @@
+{
+  "$schema": "roslyn-diff-output-v2",
+  "metadata": {
+    "version": "0.8.0\u002B6713f3fd3e6a32940376fb288ec74898e59cbf8c",
+    "timestamp": "2026-01-19T22:44:12.552034+00:00",
+    "mode": "roslyn",
+    "options": {
+      "includeContent": true,
+      "contextLines": 3,
+      "includeNonImpactful": false
+    }
+  },
+  "summary": {
+    "totalChanges": 16,
+    "additions": 5,
+    "deletions": 5,
+    "modifications": 6,
+    "renames": 0,
+    "moves": 0,
+    "impactBreakdown": {
+      "breakingPublicApi": 16,
+      "breakingInternalApi": 0,
+      "nonBreaking": 0,
+      "formattingOnly": 0
+    }
+  },
+  "files": [
+    {
+      "oldPath": "/Users/randlee/Documents/github/roslyn-diff/samples/impact-demo/old.cs",
+      "newPath": "/Users/randlee/Documents/github/roslyn-diff/samples/impact-demo/new.cs",
+      "changes": [
+        {
+          "type": "modified",
+          "kind": "namespace",
+          "name": "Samples.ImpactDemo",
+          "impact": "breakingPublicApi",
+          "location": {
+            "startLine": 1,
+            "endLine": 117,
+            "startColumn": 1,
+            "endColumn": 2
+          },
+          "oldLocation": {
+            "startLine": 1,
+            "endLine": 106,
+            "startColumn": 1,
+            "endColumn": 2
+          },
+          "content": "namespace Samples.ImpactDemo;\r\n/// \u003Csummary\u003E\n/// Payment service for processing transactions.\n/// Enhanced with comprehensive logging and validation.\n/// \u003C/summary\u003E\npublic class PaymentService\r\n{\r\n    // Renamed private field (non-breaking, but with reflection caveat)\r\n    private string _merchantIdentifier;\r\n    private readonly IPaymentGateway _gateway;\r\n    private int _transactionCount;\r\n    /// \u003Csummary\u003E\n    /// Gets or sets the payment timeout in seconds.\n    /// \u003C/summary\u003E\n    public int TimeoutSeconds { get; set; } = 30;\r\n    /// \u003Csummary\u003E\n    /// Gets the current transaction count.\n    /// \u003C/summary\u003E\n    public int TransactionCount =\u003E _transactionCount;\r\n\r\n    /// \u003Csummary\u003E\n    /// Initializes a new instance of the \u003Csee cref = \u0022PaymentService\u0022/\u003E class.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022gateway\u0022\u003EThe payment gateway.\u003C/param\u003E\n    /// \u003Cparam name = \u0022merchantId\u0022\u003EThe merchant identifier.\u003C/param\u003E\n    public PaymentService(IPaymentGateway gateway, string merchantId)\r\n    {\r\n        _gateway = gateway;\r\n        _merchantIdentifier = merchantId;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Processes a payment transaction with optional description.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022amount\u0022\u003EThe payment amount.\u003C/param\u003E\n    /// \u003Cparam name = \u0022currency\u0022\u003EThe currency code.\u003C/param\u003E\n    /// \u003Cparam name = \u0022description\u0022\u003EOptional payment description.\u003C/param\u003E\n    /// \u003Creturns\u003EThe transaction result.\u003C/returns\u003E\n    public PaymentResult ProcessPayment(decimal amount, string currency, string description = \u0022\u0022)\r\n    {\r\n        ValidateAmount(amount);\r\n        _transactionCount\u002B\u002B;\r\n        // Added comment for clarity\r\n        var request = CreatePaymentRequest(amount, currency, description);\r\n        return _gateway.Process(request);\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Refunds a payment transaction.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022transactionId\u0022\u003EThe transaction ID to refund.\u003C/param\u003E\n    /// \u003Creturns\u003EThe refund result.\u003C/returns\u003E\n    public RefundResult RefundPayment(string transactionId)\r\n    {\r\n        return _gateway.Refund(transactionId);\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Gets transaction details.\n    /// \u003C/summary\u003E\n    internal TransactionDetails GetTransactionDetails(string transactionId)\r\n    {\r\n        return _gateway.GetDetails(transactionId);\r\n    }\r\n\r\n    // Breaking: Renamed internal method\r\n    internal void ConfigureMerchantSettings(string merchantId)\r\n    {\r\n        _merchantIdentifier = merchantId;\r\n        LogSettingsUpdate();\r\n    }\r\n\r\n    // Parameter renamed (non-breaking, but with named argument caveat)\r\n    private void ValidateAmount(decimal paymentAmount)\r\n    {\r\n        if (paymentAmount \u003C= 0)\r\n            throw new ArgumentException(\u0022Amount must be positive\u0022, nameof(paymentAmount));\r\n    }\r\n\r\n    // Added parameter, updated to match ProcessPayment signature change\r\n    private PaymentRequest CreatePaymentRequest(decimal amount, string currency, string description)\r\n    {\r\n        return new PaymentRequest\r\n        {\r\n            Amount = amount,\r\n            Currency = currency,\r\n            MerchantId = _merchantIdentifier,\r\n            Timestamp = DateTime.UtcNow,\r\n            Description = description\r\n        };\r\n    }\r\n\r\n    private void LogSettingsUpdate()\r\n    {\r\n        // Formatting change: added blank line for readability\r\n        Console.WriteLine($\u0022Settings updated for merchant: {_merchantIdentifier}\u0022);\r\n    }\r\n}\r\n\r\ninternal class InternalHelper\r\n{\r\n    // Breaking internal: renamed method\r\n    internal static string FormatCurrencyDisplay(decimal amount, string code)\r\n    {\r\n        return $\u0022{code} {amount:F2}\u0022;\r\n    }\r\n\r\n    internal static bool ValidateCurrencyCode(string code)\r\n    {\r\n        return code?.Length == 3;\r\n    }\r\n}",
+          "oldContent": "namespace Samples.ImpactDemo;\r\n/// \u003Csummary\u003E\n/// Payment service for processing transactions.\n/// \u003C/summary\u003E\npublic class PaymentService\r\n{\r\n    private string _merchantId;\r\n    private readonly IPaymentGateway _gateway;\r\n    private int _transactionCount;\r\n    /// \u003Csummary\u003E\n    /// Gets or sets the payment timeout in seconds.\n    /// \u003C/summary\u003E\n    public int TimeoutSeconds { get; set; } = 30;\r\n    /// \u003Csummary\u003E\n    /// Gets the current transaction count.\n    /// \u003C/summary\u003E\n    public int TransactionCount =\u003E _transactionCount;\r\n\r\n    /// \u003Csummary\u003E\n    /// Initializes a new instance of the \u003Csee cref = \u0022PaymentService\u0022/\u003E class.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022gateway\u0022\u003EThe payment gateway.\u003C/param\u003E\n    /// \u003Cparam name = \u0022merchantId\u0022\u003EThe merchant identifier.\u003C/param\u003E\n    public PaymentService(IPaymentGateway gateway, string merchantId)\r\n    {\r\n        _gateway = gateway;\r\n        _merchantId = merchantId;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Processes a payment transaction.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022amount\u0022\u003EThe payment amount.\u003C/param\u003E\n    /// \u003Cparam name = \u0022currency\u0022\u003EThe currency code.\u003C/param\u003E\n    /// \u003Creturns\u003EThe transaction result.\u003C/returns\u003E\n    public PaymentResult ProcessPayment(decimal amount, string currency)\r\n    {\r\n        ValidateAmount(amount);\r\n        _transactionCount\u002B\u002B;\r\n        var request = CreatePaymentRequest(amount, currency);\r\n        return _gateway.Process(request);\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Refunds a payment transaction.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022transactionId\u0022\u003EThe transaction ID to refund.\u003C/param\u003E\n    /// \u003Creturns\u003EThe refund result.\u003C/returns\u003E\n    public RefundResult RefundPayment(string transactionId)\r\n    {\r\n        return _gateway.Refund(transactionId);\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Gets transaction details.\n    /// \u003C/summary\u003E\n    internal TransactionDetails GetTransactionDetails(string transactionId)\r\n    {\r\n        return _gateway.GetDetails(transactionId);\r\n    }\r\n\r\n    internal void UpdateMerchantSettings(string merchantId)\r\n    {\r\n        _merchantId = merchantId;\r\n        LogSettingsUpdate();\r\n    }\r\n\r\n    private void ValidateAmount(decimal amount)\r\n    {\r\n        if (amount \u003C= 0)\r\n            throw new ArgumentException(\u0022Amount must be positive\u0022, nameof(amount));\r\n    }\r\n\r\n    private PaymentRequest CreatePaymentRequest(decimal amount, string currency)\r\n    {\r\n        return new PaymentRequest\r\n        {\r\n            Amount = amount,\r\n            Currency = currency,\r\n            MerchantId = _merchantId,\r\n            Timestamp = DateTime.UtcNow\r\n        };\r\n    }\r\n\r\n    private void LogSettingsUpdate()\r\n    {\r\n        Console.WriteLine($\u0022Settings updated for merchant: {_merchantId}\u0022);\r\n    }\r\n}\r\n\r\ninternal class InternalHelper\r\n{\r\n    internal static string FormatCurrency(decimal amount, string code)\r\n    {\r\n        return $\u0022{code} {amount:F2}\u0022;\r\n    }\r\n\r\n    internal static bool ValidateCurrencyCode(string code)\r\n    {\r\n        return code?.Length == 3;\r\n    }\r\n}",
+          "children": [
+            {
+              "type": "modified",
+              "kind": "class",
+              "name": "PaymentService",
+              "impact": "breakingPublicApi",
+              "location": {
+                "startLine": 7,
+                "endLine": 103,
+                "startColumn": 1,
+                "endColumn": 2
+              },
+              "oldLocation": {
+                "startLine": 6,
+                "endLine": 93,
+                "startColumn": 1,
+                "endColumn": 2
+              },
+              "content": "public class PaymentService\r\n{\r\n    // Renamed private field (non-breaking, but with reflection caveat)\r\n    private string _merchantIdentifier;\r\n    private readonly IPaymentGateway _gateway;\r\n    private int _transactionCount;\r\n    /// \u003Csummary\u003E\n    /// Gets or sets the payment timeout in seconds.\n    /// \u003C/summary\u003E\n    public int TimeoutSeconds { get; set; } = 30;\r\n    /// \u003Csummary\u003E\n    /// Gets the current transaction count.\n    /// \u003C/summary\u003E\n    public int TransactionCount =\u003E _transactionCount;\r\n\r\n    /// \u003Csummary\u003E\n    /// Initializes a new instance of the \u003Csee cref = \u0022PaymentService\u0022/\u003E class.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022gateway\u0022\u003EThe payment gateway.\u003C/param\u003E\n    /// \u003Cparam name = \u0022merchantId\u0022\u003EThe merchant identifier.\u003C/param\u003E\n    public PaymentService(IPaymentGateway gateway, string merchantId)\r\n    {\r\n        _gateway = gateway;\r\n        _merchantIdentifier = merchantId;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Processes a payment transaction with optional description.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022amount\u0022\u003EThe payment amount.\u003C/param\u003E\n    /// \u003Cparam name = \u0022currency\u0022\u003EThe currency code.\u003C/param\u003E\n    /// \u003Cparam name = \u0022description\u0022\u003EOptional payment description.\u003C/param\u003E\n    /// \u003Creturns\u003EThe transaction result.\u003C/returns\u003E\n    public PaymentResult ProcessPayment(decimal amount, string currency, string description = \u0022\u0022)\r\n    {\r\n        ValidateAmount(amount);\r\n        _transactionCount\u002B\u002B;\r\n        // Added comment for clarity\r\n        var request = CreatePaymentRequest(amount, currency, description);\r\n        return _gateway.Process(request);\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Refunds a payment transaction.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022transactionId\u0022\u003EThe transaction ID to refund.\u003C/param\u003E\n    /// \u003Creturns\u003EThe refund result.\u003C/returns\u003E\n    public RefundResult RefundPayment(string transactionId)\r\n    {\r\n        return _gateway.Refund(transactionId);\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Gets transaction details.\n    /// \u003C/summary\u003E\n    internal TransactionDetails GetTransactionDetails(string transactionId)\r\n    {\r\n        return _gateway.GetDetails(transactionId);\r\n    }\r\n\r\n    // Breaking: Renamed internal method\r\n    internal void ConfigureMerchantSettings(string merchantId)\r\n    {\r\n        _merchantIdentifier = merchantId;\r\n        LogSettingsUpdate();\r\n    }\r\n\r\n    // Parameter renamed (non-breaking, but with named argument caveat)\r\n    private void ValidateAmount(decimal paymentAmount)\r\n    {\r\n        if (paymentAmount \u003C= 0)\r\n            throw new ArgumentException(\u0022Amount must be positive\u0022, nameof(paymentAmount));\r\n    }\r\n\r\n    // Added parameter, updated to match ProcessPayment signature change\r\n    private PaymentRequest CreatePaymentRequest(decimal amount, string currency, string description)\r\n    {\r\n        return new PaymentRequest\r\n        {\r\n            Amount = amount,\r\n            Currency = currency,\r\n            MerchantId = _merchantIdentifier,\r\n            Timestamp = DateTime.UtcNow,\r\n            Description = description\r\n        };\r\n    }\r\n\r\n    private void LogSettingsUpdate()\r\n    {\r\n        // Formatting change: added blank line for readability\r\n        Console.WriteLine($\u0022Settings updated for merchant: {_merchantIdentifier}\u0022);\r\n    }\r\n}",
+              "oldContent": "public class PaymentService\r\n{\r\n    private string _merchantId;\r\n    private readonly IPaymentGateway _gateway;\r\n    private int _transactionCount;\r\n    /// \u003Csummary\u003E\n    /// Gets or sets the payment timeout in seconds.\n    /// \u003C/summary\u003E\n    public int TimeoutSeconds { get; set; } = 30;\r\n    /// \u003Csummary\u003E\n    /// Gets the current transaction count.\n    /// \u003C/summary\u003E\n    public int TransactionCount =\u003E _transactionCount;\r\n\r\n    /// \u003Csummary\u003E\n    /// Initializes a new instance of the \u003Csee cref = \u0022PaymentService\u0022/\u003E class.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022gateway\u0022\u003EThe payment gateway.\u003C/param\u003E\n    /// \u003Cparam name = \u0022merchantId\u0022\u003EThe merchant identifier.\u003C/param\u003E\n    public PaymentService(IPaymentGateway gateway, string merchantId)\r\n    {\r\n        _gateway = gateway;\r\n        _merchantId = merchantId;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Processes a payment transaction.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022amount\u0022\u003EThe payment amount.\u003C/param\u003E\n    /// \u003Cparam name = \u0022currency\u0022\u003EThe currency code.\u003C/param\u003E\n    /// \u003Creturns\u003EThe transaction result.\u003C/returns\u003E\n    public PaymentResult ProcessPayment(decimal amount, string currency)\r\n    {\r\n        ValidateAmount(amount);\r\n        _transactionCount\u002B\u002B;\r\n        var request = CreatePaymentRequest(amount, currency);\r\n        return _gateway.Process(request);\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Refunds a payment transaction.\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022transactionId\u0022\u003EThe transaction ID to refund.\u003C/param\u003E\n    /// \u003Creturns\u003EThe refund result.\u003C/returns\u003E\n    public RefundResult RefundPayment(string transactionId)\r\n    {\r\n        return _gateway.Refund(transactionId);\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Gets transaction details.\n    /// \u003C/summary\u003E\n    internal TransactionDetails GetTransactionDetails(string transactionId)\r\n    {\r\n        return _gateway.GetDetails(transactionId);\r\n    }\r\n\r\n    internal void UpdateMerchantSettings(string merchantId)\r\n    {\r\n        _merchantId = merchantId;\r\n        LogSettingsUpdate();\r\n    }\r\n\r\n    private void ValidateAmount(decimal amount)\r\n    {\r\n        if (amount \u003C= 0)\r\n            throw new ArgumentException(\u0022Amount must be positive\u0022, nameof(amount));\r\n    }\r\n\r\n    private PaymentRequest CreatePaymentRequest(decimal amount, string currency)\r\n    {\r\n        return new PaymentRequest\r\n        {\r\n            Amount = amount,\r\n            Currency = currency,\r\n            MerchantId = _merchantId,\r\n            Timestamp = DateTime.UtcNow\r\n        };\r\n    }\r\n\r\n    private void LogSettingsUpdate()\r\n    {\r\n        Console.WriteLine($\u0022Settings updated for merchant: {_merchantId}\u0022);\r\n    }\r\n}",
+              "children": [
+                {
+                  "type": "removed",
+                  "kind": "field",
+                  "name": "_merchantId",
+                  "impact": "breakingPublicApi",
+                  "location": {
+                    "startLine": 8,
+                    "endLine": 8,
+                    "startColumn": 5,
+                    "endColumn": 32
+                  },
+                  "content": "private string _merchantId;"
+                },
+                {
+                  "type": "added",
+                  "kind": "field",
+                  "name": "_merchantIdentifier",
+                  "impact": "breakingPublicApi",
+                  "location": {
+                    "startLine": 10,
+                    "endLine": 10,
+                    "startColumn": 5,
+                    "endColumn": 40
+                  },
+                  "content": "private string _merchantIdentifier;"
+                },
+                {
+                  "type": "modified",
+                  "kind": "method",
+                  "name": "PaymentService",
+                  "impact": "breakingPublicApi",
+                  "location": {
+                    "startLine": 29,
+                    "endLine": 33,
+                    "startColumn": 5,
+                    "endColumn": 6
+                  },
+                  "oldLocation": {
+                    "startLine": 27,
+                    "endLine": 31,
+                    "startColumn": 5,
+                    "endColumn": 6
+                  },
+                  "content": "public PaymentService(IPaymentGateway gateway, string merchantId)\r\n{\r\n    _gateway = gateway;\r\n    _merchantIdentifier = merchantId;\r\n}",
+                  "oldContent": "public PaymentService(IPaymentGateway gateway, string merchantId)\r\n{\r\n    _gateway = gateway;\r\n    _merchantId = merchantId;\r\n}"
+                },
+                {
+                  "type": "removed",
+                  "kind": "method",
+                  "name": "ProcessPayment",
+                  "impact": "breakingPublicApi",
+                  "location": {
+                    "startLine": 39,
+                    "endLine": 46,
+                    "startColumn": 5,
+                    "endColumn": 6
+                  },
+                  "content": "public PaymentResult ProcessPayment(decimal amount, string currency)\r\n{\r\n    ValidateAmount(amount);\r\n    _transactionCount\u002B\u002B;\r\n    var request = CreatePaymentRequest(amount, currency);\r\n    return _gateway.Process(request);\r\n}"
+                },
+                {
+                  "type": "added",
+                  "kind": "method",
+                  "name": "ProcessPayment",
+                  "impact": "breakingPublicApi",
+                  "location": {
+                    "startLine": 42,
+                    "endLine": 50,
+                    "startColumn": 5,
+                    "endColumn": 6
+                  },
+                  "content": "public PaymentResult ProcessPayment(decimal amount, string currency, string description = \u0022\u0022)\r\n{\r\n    ValidateAmount(amount);\r\n    _transactionCount\u002B\u002B;\r\n    // Added comment for clarity\r\n    var request = CreatePaymentRequest(amount, currency, description);\r\n    return _gateway.Process(request);\r\n}"
+                },
+                {
+                  "type": "removed",
+                  "kind": "method",
+                  "name": "UpdateMerchantSettings",
+                  "impact": "breakingPublicApi",
+                  "location": {
+                    "startLine": 66,
+                    "endLine": 70,
+                    "startColumn": 5,
+                    "endColumn": 6
+                  },
+                  "content": "internal void UpdateMerchantSettings(string merchantId)\r\n{\r\n    _merchantId = merchantId;\r\n    LogSettingsUpdate();\r\n}"
+                },
+                {
+                  "type": "added",
+                  "kind": "method",
+                  "name": "ConfigureMerchantSettings",
+                  "impact": "breakingPublicApi",
+                  "location": {
+                    "startLine": 71,
+                    "endLine": 75,
+                    "startColumn": 5,
+                    "endColumn": 6
+                  },
+                  "content": "internal void ConfigureMerchantSettings(string merchantId)\r\n{\r\n    _merchantIdentifier = merchantId;\r\n    LogSettingsUpdate();\r\n}"
+                },
+                {
+                  "type": "modified",
+                  "kind": "method",
+                  "name": "ValidateAmount",
+                  "impact": "breakingPublicApi",
+                  "location": {
+                    "startLine": 78,
+                    "endLine": 82,
+                    "startColumn": 5,
+                    "endColumn": 6
+                  },
+                  "oldLocation": {
+                    "startLine": 72,
+                    "endLine": 76,
+                    "startColumn": 5,
+                    "endColumn": 6
+                  },
+                  "content": "private void ValidateAmount(decimal paymentAmount)\r\n{\r\n    if (paymentAmount \u003C= 0)\r\n        throw new ArgumentException(\u0022Amount must be positive\u0022, nameof(paymentAmount));\r\n}",
+                  "oldContent": "private void ValidateAmount(decimal amount)\r\n{\r\n    if (amount \u003C= 0)\r\n        throw new ArgumentException(\u0022Amount must be positive\u0022, nameof(amount));\r\n}"
+                },
+                {
+                  "type": "removed",
+                  "kind": "method",
+                  "name": "CreatePaymentRequest",
+                  "impact": "breakingPublicApi",
+                  "location": {
+                    "startLine": 78,
+                    "endLine": 87,
+                    "startColumn": 5,
+                    "endColumn": 6
+                  },
+                  "content": "private PaymentRequest CreatePaymentRequest(decimal amount, string currency)\r\n{\r\n    return new PaymentRequest\r\n    {\r\n        Amount = amount,\r\n        Currency = currency,\r\n        MerchantId = _merchantId,\r\n        Timestamp = DateTime.UtcNow\r\n    };\r\n}"
+                },
+                {
+                  "type": "added",
+                  "kind": "method",
+                  "name": "CreatePaymentRequest",
+                  "impact": "breakingPublicApi",
+                  "location": {
+                    "startLine": 85,
+                    "endLine": 95,
+                    "startColumn": 5,
+                    "endColumn": 6
+                  },
+                  "content": "private PaymentRequest CreatePaymentRequest(decimal amount, string currency, string description)\r\n{\r\n    return new PaymentRequest\r\n    {\r\n        Amount = amount,\r\n        Currency = currency,\r\n        MerchantId = _merchantIdentifier,\r\n        Timestamp = DateTime.UtcNow,\r\n        Description = description\r\n    };\r\n}"
+                },
+                {
+                  "type": "modified",
+                  "kind": "method",
+                  "name": "LogSettingsUpdate",
+                  "impact": "breakingPublicApi",
+                  "location": {
+                    "startLine": 97,
+                    "endLine": 102,
+                    "startColumn": 5,
+                    "endColumn": 6
+                  },
+                  "oldLocation": {
+                    "startLine": 89,
+                    "endLine": 92,
+                    "startColumn": 5,
+                    "endColumn": 6
+                  },
+                  "content": "private void LogSettingsUpdate()\r\n{\r\n    // Formatting change: added blank line for readability\r\n    Console.WriteLine($\u0022Settings updated for merchant: {_merchantIdentifier}\u0022);\r\n}",
+                  "oldContent": "private void LogSettingsUpdate()\r\n{\r\n    Console.WriteLine($\u0022Settings updated for merchant: {_merchantId}\u0022);\r\n}"
+                }
+              ]
+            },
+            {
+              "type": "modified",
+              "kind": "class",
+              "name": "InternalHelper",
+              "impact": "breakingPublicApi",
+              "location": {
+                "startLine": 105,
+                "endLine": 117,
+                "startColumn": 1,
+                "endColumn": 2
+              },
+              "oldLocation": {
+                "startLine": 95,
+                "endLine": 106,
+                "startColumn": 1,
+                "endColumn": 2
+              },
+              "content": "internal class InternalHelper\r\n{\r\n    // Breaking internal: renamed method\r\n    internal static string FormatCurrencyDisplay(decimal amount, string code)\r\n    {\r\n        return $\u0022{code} {amount:F2}\u0022;\r\n    }\r\n\r\n    internal static bool ValidateCurrencyCode(string code)\r\n    {\r\n        return code?.Length == 3;\r\n    }\r\n}",
+              "oldContent": "internal class InternalHelper\r\n{\r\n    internal static string FormatCurrency(decimal amount, string code)\r\n    {\r\n        return $\u0022{code} {amount:F2}\u0022;\r\n    }\r\n\r\n    internal static bool ValidateCurrencyCode(string code)\r\n    {\r\n        return code?.Length == 3;\r\n    }\r\n}",
+              "children": [
+                {
+                  "type": "removed",
+                  "kind": "method",
+                  "name": "FormatCurrency",
+                  "impact": "breakingPublicApi",
+                  "location": {
+                    "startLine": 97,
+                    "endLine": 100,
+                    "startColumn": 5,
+                    "endColumn": 6
+                  },
+                  "content": "internal static string FormatCurrency(decimal amount, string code)\r\n{\r\n    return $\u0022{code} {amount:F2}\u0022;\r\n}"
+                },
+                {
+                  "type": "added",
+                  "kind": "method",
+                  "name": "FormatCurrencyDisplay",
+                  "impact": "breakingPublicApi",
+                  "location": {
+                    "startLine": 108,
+                    "endLine": 111,
+                    "startColumn": 5,
+                    "endColumn": 6
+                  },
+                  "content": "internal static string FormatCurrencyDisplay(decimal amount, string code)\r\n{\r\n    return $\u0022{code} {amount:F2}\u0022;\r\n}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

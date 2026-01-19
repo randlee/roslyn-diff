@@ -1,0 +1,185 @@
+TODO: Screenshot Required - JSON Impact Breakdown
+==================================================
+
+Status: PENDING
+Priority: HIGH
+Estimated Time: 5-10 minutes
+
+DESCRIPTION
+-----------
+This file is a placeholder for the JSON output screenshot that demonstrates
+the structured impact classification data in roslyn-diff's JSON output format.
+
+WHAT THIS SCREENSHOT SHOULD CONTAIN
+------------------------------------
+
+1. SCHEMA AND METADATA (Top section):
+   ```json
+   {
+     "$schema": "roslyn-diff-output-v2",
+     "metadata": {
+       "version": "0.8.0+...",
+       "timestamp": "2026-01-19T...",
+       "mode": "roslyn",
+       "options": {
+         "includeContent": true,
+         "contextLines": 3,
+         "includeNonImpactful": false
+       }
+     }
+   ```
+   - Show the v2 schema indicator
+   - Highlight the "includeNonImpactful" option
+
+2. SUMMARY WITH IMPACT BREAKDOWN (Critical - must be visible):
+   ```json
+   "summary": {
+     "totalChanges": 16,
+     "additions": 5,
+     "deletions": 5,
+     "modifications": 6,
+     "renames": 0,
+     "moves": 0,
+     "impactBreakdown": {
+       "breakingPublicApi": 16,
+       "breakingInternalApi": 0,
+       "nonBreaking": 0,
+       "formattingOnly": 0
+     }
+   }
+   ```
+   - The impactBreakdown object is the key feature to highlight
+
+3. SAMPLE CHANGE OBJECT (Show at least one):
+   ```json
+   {
+     "type": "modified",
+     "kind": "namespace",
+     "name": "Samples.ImpactDemo",
+     "impact": "breakingPublicApi",  // <-- Key field to show
+     "location": { ... },
+     "oldLocation": { ... },
+     "content": "...",
+     "children": [...]
+   }
+   ```
+   - Must clearly show the "impact" field
+   - Show enough context to understand the structure
+
+4. OPTIONAL - NESTED CHANGE WITH IMPACT:
+   If space allows, show a child change object that also has impact classification
+
+SOURCE FILE
+-----------
+/Users/randlee/Documents/github/roslyn-diff/samples/impact-demo/output.json
+
+RECOMMENDED CAPTURE METHOD
+---------------------------
+
+METHOD 1: VS Code Screenshot (Best for syntax highlighting)
+1. Open output.json in Visual Studio Code
+2. Enable JSON formatting (should be automatic)
+3. Use a dark theme for better contrast:
+   - File → Preferences → Color Theme
+   - Select "Dark+ (default dark)" or "One Dark Pro"
+4. Set font to Consolas, Monaco, or Fira Code at 12-14pt
+5. Scroll to show metadata → summary → first change object
+6. Zoom to comfortable reading size (100-125%)
+7. Select the region or use full window
+8. Take screenshot:
+   - macOS: Cmd+Shift+4 (select area)
+   - Windows: Snipping Tool
+   - Linux: gnome-screenshot
+9. Save as: json-impact-breakdown.png
+
+METHOD 2: Browser with Formatted JSON
+1. Open Chrome or Firefox
+2. Install a JSON viewer extension (e.g., "JSON Formatter" for Chrome)
+3. Open the file: file:///Users/randlee/Documents/github/roslyn-diff/samples/impact-demo/output.json
+4. The extension will format it with syntax highlighting
+5. Zoom to appropriate size
+6. Capture metadata + summary + one change object
+7. Save as: json-impact-breakdown.png
+
+METHOD 3: Terminal with jq and screenshot
+1. Use jq to format and colorize:
+   ```bash
+   jq '.' /Users/randlee/Documents/github/roslyn-diff/samples/impact-demo/output.json | head -80
+   ```
+2. Make terminal window large enough to show desired section
+3. Use a screenshot tool to capture terminal output
+4. Note: May be harder to get good quality
+
+METHOD 4: Online JSON Formatter
+1. Copy contents of output.json
+2. Go to https://jsonformatter.org/ or similar
+3. Paste and format
+4. Use dark theme if available
+5. Take screenshot of the formatted output
+6. Save as: json-impact-breakdown.png
+
+SPECIFICATIONS
+--------------
+- Dimensions: 1200-1600px width x 1000-1200px height
+- Format: PNG (lossless)
+- Target file size: < 400KB
+- DPI: 72-96 (web standard)
+- Quality: Code/text must be sharp and readable
+- Syntax highlighting: Preferred (makes it easier to read)
+
+KEY SECTIONS TO HIGHLIGHT
+--------------------------
+In order of importance:
+1. The "impactBreakdown" object within "summary" (MUST SHOW)
+2. The "$schema": "roslyn-diff-output-v2" (shows version)
+3. The "includeNonImpactful": false option (shows filtering feature)
+4. At least one change object with "impact": "breakingPublicApi" field
+5. Type breakdown (additions, deletions, modifications)
+
+VISUAL GUIDANCE
+---------------
+Ideal framing should show:
+- Lines 1-10: Schema and start of metadata
+- Lines 10-30: Full summary with impactBreakdown highlighted
+- Lines 30-70: At least one complete change object showing impact field
+- Total: About 70-80 lines of JSON visible
+
+QUALITY CHECKLIST
+-----------------
+Before saving, verify:
+[ ] impactBreakdown object is clearly visible
+[ ] impact field is shown in at least one change object
+[ ] JSON syntax is properly formatted (indented)
+[ ] Syntax highlighting is applied (if using editor/extension)
+[ ] Text is sharp and readable at expected documentation size
+[ ] No truncated objects (complete braces shown)
+[ ] File size is optimized (< 400KB)
+[ ] Color scheme has good contrast
+[ ] No personal paths or sensitive info visible
+
+NEXT STEPS
+----------
+1. Generate the screenshot using one of the methods above
+2. Save it as: docs/images/json-impact-breakdown.png
+3. Delete this .TODO file
+4. Update docs/images/README.md to mark this screenshot as complete
+
+ALTERNATIVE: Programmatic Screenshot with Code Snippet
+-------------------------------------------------------
+If you prefer to show the JSON in a code block with annotations,
+you could create a diagram or infographic highlighting:
+- The impactBreakdown section with arrows/labels
+- The change object impact field with annotation
+- Color-coded boxes around key features
+
+Tools for this approach:
+- Excalidraw (https://excalidraw.com)
+- Carbon (https://carbon.now.sh) - for beautiful code screenshots
+- Draw.io / diagrams.net
+
+NEED HELP?
+----------
+- See detailed guide: /docs/screenshot-requirements.md
+- Check the actual output.json file for exact structure
+- Open a GitHub issue with tag "documentation" if you need assistance
+- Consider using Carbon.now.sh for a quick, professional-looking screenshot
