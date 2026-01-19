@@ -824,4 +824,128 @@ public class HtmlFormatterTests
         html.Should().Contain(">2<");
         html.Should().Contain(">3<");
     }
+
+
+    #region Impact Classification (P0 Critical Tests)
+
+    [Fact]
+    public void FormatResult_WithImpact_AppliesCorrectCssClass()
+    {
+        // Arrange - Create changes with different impact levels
+        var result = new DiffResult
+        {
+            FileChanges =
+            [
+                new FileChange
+                {
+                    Path = "Test.cs",
+                    Changes =
+                    [
+                        new Change
+                        {
+                            Type = ChangeType.Removed,
+                            Kind = ChangeKind.Method,
+                            Name = "BreakingPublicMethod",
+                            Impact = ChangeImpact.BreakingPublicApi,
+                            OldContent = "public void BreakingPublicMethod() { }",
+                            OldLocation = new Location { StartLine = 10, EndLine = 10 }
+                        },
+                        new Change
+                        {
+                            Type = ChangeType.Removed,
+                            Kind = ChangeKind.Method,
+                            Name = "BreakingInternalMethod",
+                            Impact = ChangeImpact.BreakingInternalApi,
+                            OldContent = "internal void BreakingInternalMethod() { }",
+                            OldLocation = new Location { StartLine = 20, EndLine = 20 }
+                        },
+                        new Change
+                        {
+                            Type = ChangeType.Modified,
+                            Kind = ChangeKind.Method,
+                            Name = "NonBreakingMethod",
+                            Impact = ChangeImpact.NonBreaking,
+                            OldContent = "private void NonBreakingMethod() { }",
+                            NewContent = "private void NonBreakingMethod() { /* comment */ }",
+                            OldLocation = new Location { StartLine = 30, EndLine = 30 },
+                            NewLocation = new Location { StartLine = 30, EndLine = 30 }
+                        },
+                        new Change
+                        {
+                            Type = ChangeType.Modified,
+                            Kind = ChangeKind.Method,
+                            Name = "FormattingMethod",
+                            Impact = ChangeImpact.FormattingOnly,
+                            OldContent = "public void FormattingMethod() {}",
+                            NewContent = "public void FormattingMethod() { }",
+                            OldLocation = new Location { StartLine = 40, EndLine = 40 },
+                            NewLocation = new Location { StartLine = 40, EndLine = 40 }
+                        }
+                    ]
+                }
+            ],
+            Stats = new DiffStats { Deletions = 2, Modifications = 2 }
+        };
+
+        // Act
+        var html = _formatter.FormatResult(result);
+
+        // Assert - Verify CSS classes for each impact level are present
+        html.Should().Contain("impact-breaking-public", "HTML should include CSS class for breaking public API changes");
+        html.Should().Contain("impact-breaking-internal", "HTML should include CSS class for breaking internal API changes");
+        html.Should().Contain("impact-nonbreaking", "HTML should include CSS class for non-breaking changes");
+        html.Should().Contain("impact-formatting", "HTML should include CSS class for formatting-only changes");
+
+        // Verify impact badge text is present
+        html.Should().Contain("BREAKING PUBLIC API", "HTML should display 'BREAKING PUBLIC API' badge text");
+        html.Should().Contain("BREAKING INTERNAL", "HTML should display 'BREAKING INTERNAL' badge text");
+        html.Should().Contain("NON-BREAKING", "HTML should display 'NON-BREAKING' badge text");
+        html.Should().Contain("FORMATTING", "HTML should display 'FORMATTING' badge text");
+    }
+
+    [Fact]
+    public void FormatResult_WithCaveats_DisplaysWarningBox()
+    {
+        // Arrange
+        var result = new DiffResult
+        {
+            FileChanges =
+            [
+                new FileChange
+                {
+                    Path = "Test.cs",
+                    Changes =
+                    [
+                        new Change
+                        {
+                            Type = ChangeType.Modified,
+                            Kind = ChangeKind.Method,
+                            Name = "MethodWithCaveats",
+                            Impact = ChangeImpact.NonBreaking,
+                            Caveats = new List<string>
+                            {
+                                "Method is virtual - derived classes may be affected",
+                                "Method signature is used in reflection scenarios"
+                            },
+                            OldContent = "public virtual void MethodWithCaveats() { }",
+                            NewContent = "public virtual void MethodWithCaveats() { /* modified */ }",
+                            OldLocation = new Location { StartLine = 15, EndLine = 15 },
+                            NewLocation = new Location { StartLine = 15, EndLine = 15 }
+                        }
+                    ]
+                }
+            ],
+            Stats = new DiffStats { Modifications = 1 }
+        };
+
+        // Act
+        var html = _formatter.FormatResult(result);
+
+        // Assert - Verify caveat warning box is displayed
+        html.Should().Contain("change-caveats", "HTML should include caveat warning container");
+        html.Should().Contain("virtual", "HTML should display first caveat about virtual method");
+        html.Should().Contain("reflection", "HTML should display second caveat about reflection");
+    }
+
+    #endregion
 }

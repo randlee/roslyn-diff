@@ -621,5 +621,197 @@ public class JsonFormatterTests
         json.Should().NotContain("\"StartLine\"");
     }
 
+
+    #endregion
+
+    #region Impact Classification (P0 Critical Tests)
+
+    [Fact]
+    public void FormatResult_WithImpactProperty_IncludesImpactField()
+    {
+        // Arrange
+        var result = new DiffResult
+        {
+            FileChanges =
+            [
+                new FileChange
+                {
+                    Path = "test.cs",
+                    Changes =
+                    [
+                        new Change
+                        {
+                            Type = ChangeType.Removed,
+                            Kind = ChangeKind.Method,
+                            Name = "PublicMethod",
+                            Impact = ChangeImpact.BreakingPublicApi,
+                            OldContent = "public void PublicMethod() { }",
+                            OldLocation = new Location { StartLine = 10, EndLine = 10 }
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Act
+        var json = _formatter.FormatResult(result);
+        using var doc = JsonDocument.Parse(json);
+
+        // Assert
+        var change = doc.RootElement.GetProperty("files")[0].GetProperty("changes")[0];
+        change.TryGetProperty("impact", out var impact).Should().BeTrue("JSON output should include 'impact' field");
+        impact.GetString().Should().Be("breakingPublicApi", "impact should be serialized in camelCase");
+    }
+
+    [Fact]
+    public void FormatResult_WithVisibility_IncludesVisibilityField()
+    {
+        // Arrange
+        var result = new DiffResult
+        {
+            FileChanges =
+            [
+                new FileChange
+                {
+                    Path = "test.cs",
+                    Changes =
+                    [
+                        new Change
+                        {
+                            Type = ChangeType.Modified,
+                            Kind = ChangeKind.Method,
+                            Name = "InternalMethod",
+                            Impact = ChangeImpact.BreakingInternalApi,
+                            Visibility = Visibility.Internal,
+                            OldContent = "internal void InternalMethod() { }",
+                            NewContent = "internal void InternalMethod(int x) { }",
+                            OldLocation = new Location { StartLine = 5, EndLine = 5 },
+                            NewLocation = new Location { StartLine = 5, EndLine = 5 }
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Act
+        var json = _formatter.FormatResult(result);
+        using var doc = JsonDocument.Parse(json);
+
+        // Assert
+        var change = doc.RootElement.GetProperty("files")[0].GetProperty("changes")[0];
+        change.TryGetProperty("visibility", out var visibility).Should().BeTrue("JSON output should include 'visibility' field");
+        visibility.GetString().Should().Be("internal", "visibility should be serialized in lowercase");
+    }
+
+    [Fact]
+    public void FormatResult_WithCaveats_IncludesCaveatsArray()
+    {
+        // Arrange
+        var result = new DiffResult
+        {
+            FileChanges =
+            [
+                new FileChange
+                {
+                    Path = "test.cs",
+                    Changes =
+                    [
+                        new Change
+                        {
+                            Type = ChangeType.Modified,
+                            Kind = ChangeKind.Method,
+                            Name = "MethodWithCaveats",
+                            Impact = ChangeImpact.NonBreaking,
+                            Caveats = new List<string>
+                            {
+                                "Method is virtual - derived classes may be affected",
+                                "Method is used in reflection scenarios"
+                            },
+                            OldContent = "public virtual void MethodWithCaveats() { }",
+                            NewContent = "public virtual void MethodWithCaveats() { /* comment */ }",
+                            OldLocation = new Location { StartLine = 15, EndLine = 15 },
+                            NewLocation = new Location { StartLine = 15, EndLine = 15 }
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // We must explicitly include non-impactful changes since the default is IncludeNonImpactful=false
+        var options = new OutputOptions { IncludeNonImpactful = true };
+
+        // Act
+        var json = _formatter.FormatResult(result, options);
+        using var doc = JsonDocument.Parse(json);
+
+        // Assert
+        var change = doc.RootElement.GetProperty("files")[0].GetProperty("changes")[0];
+        change.TryGetProperty("caveats", out var caveats).Should().BeTrue("JSON output should include 'caveats' array when present");
+        caveats.ValueKind.Should().Be(JsonValueKind.Array, "caveats should be an array");
+        caveats.GetArrayLength().Should().Be(2, "caveats array should contain 2 items");
+        caveats[0].GetString().Should().Contain("virtual", "first caveat should mention virtual");
+        caveats[1].GetString().Should().Contain("reflection", "second caveat should mention reflection");
+    }
+
+    [Fact]
+    public void FormatResult_WithIncludeNonImpactfulFalse_FiltersNonBreaking()
+    {
+        // Arrange
+        var result = new DiffResult
+        {
+            FileChanges =
+            [
+                new FileChange
+                {
+                    Path = "test.cs",
+                    Changes =
+                    [
+                        new Change
+                        {
+                            Type = ChangeType.Removed,
+                            Kind = ChangeKind.Method,
+                            Name = "BreakingChange",
+                            Impact = ChangeImpact.BreakingPublicApi,
+                            OldContent = "public void BreakingChange() { }",
+                            OldLocation = new Location { StartLine = 10, EndLine = 10 }
+                        },
+                        new Change
+                        {
+                            Type = ChangeType.Modified,
+                            Kind = ChangeKind.Method,
+                            Name = "NonBreakingChange",
+                            Impact = ChangeImpact.NonBreaking,
+                            OldContent = "private void NonBreakingChange() { }",
+                            NewContent = "private void NonBreakingChange() { /* comment */ }",
+                            OldLocation = new Location { StartLine = 20, EndLine = 20 },
+                            NewLocation = new Location { StartLine = 20, EndLine = 20 }
+                        },
+                        new Change
+                        {
+                            Type = ChangeType.Modified,
+                            Kind = ChangeKind.Method,
+                            Name = "FormattingChange",
+                            Impact = ChangeImpact.FormattingOnly,
+                            OldContent = "public void FormattingChange() {}",
+                            NewContent = "public void FormattingChange() { }",
+                            OldLocation = new Location { StartLine = 30, EndLine = 30 },
+                            NewLocation = new Location { StartLine = 30, EndLine = 30 }
+                        }
+                    ]
+                }
+            ]
+        };
+        var options = new OutputOptions { IncludeNonImpactful = false };
+
+        // Act
+        var json = _formatter.FormatResult(result, options);
+        using var doc = JsonDocument.Parse(json);
+
+        // Assert
+        var changes = doc.RootElement.GetProperty("files")[0].GetProperty("changes");
+        changes.GetArrayLength().Should().Be(1, "only breaking changes should be included when IncludeNonImpactful=false");
+        changes[0].GetProperty("name").GetString().Should().Be("BreakingChange", "the breaking change should be included");
+    }
+
     #endregion
 }
