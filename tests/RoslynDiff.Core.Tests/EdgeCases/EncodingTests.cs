@@ -6,6 +6,8 @@ using RoslynDiff.Core.Differ;
 using RoslynDiff.Core.Models;
 using Xunit;
 
+// For Flatten() extension method
+
 /// <summary>
 /// Tests for handling various file encodings and Unicode content.
 /// </summary>
@@ -454,7 +456,8 @@ public class EncodingTests
 
         // Assert
         result.FileChanges.Should().HaveCount(1);
-        var changes = result.FileChanges[0].Changes;
+        // Use Flatten() because changes are now hierarchical (nested under namespace)
+        var changes = result.FileChanges[0].Changes.Flatten().ToList();
         changes.Should().Contain(c => c.Type == ChangeType.Removed && c.Name == "Foo");
         changes.Should().Contain(c => c.Type == ChangeType.Added && c.Name == "Bar");
     }

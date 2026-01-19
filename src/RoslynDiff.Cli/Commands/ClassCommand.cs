@@ -382,12 +382,14 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
             // to avoid duplicate reporting of both class and member changes.
             // When comparing two classes, we want to show individual member changes,
             // not the entire class as "Modified" alongside those member changes.
+#pragma warning disable CS0618 // Type or member is obsolete
             var oldNodes = nodeMatcher.ExtractStructuralNodes(oldClass)
                 .Where(n => n.Node != oldClass)  // Exclude the class itself
                 .ToList();
             var newNodes = nodeMatcher.ExtractStructuralNodes(newClass)
                 .Where(n => n.Node != newClass)  // Exclude the class itself
                 .ToList();
+#pragma warning restore CS0618 // Type or member is obsolete
 
             var matchResult = nodeMatcher.MatchNodes(oldNodes, newNodes);
 

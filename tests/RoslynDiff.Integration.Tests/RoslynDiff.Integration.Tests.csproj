@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\RoslynDiff.Cli\RoslynDiff.Cli.csproj" />
+    <ProjectReference Include="..\RoslynDiff.TestUtilities\RoslynDiff.TestUtilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -365,6 +365,54 @@ var output = formatter.FormatResult(result, new OutputOptions
 
 See [docs/api.md](docs/api.md) for complete API documentation.
 
+## Migration Notes
+
+### Hierarchical Output (v2.0+)
+
+The diff engine now uses a recursive tree algorithm that produces **hierarchical output**. Changes to nested members (methods, properties) appear in the `Children` property of their parent change.
+
+**Before (flat output):**
+```json
+{
+  "changes": [
+    { "kind": "Class", "name": "Calculator", "type": "Modified" },
+    { "kind": "Method", "name": "Add", "type": "Modified" },
+    { "kind": "Method", "name": "Multiply", "type": "Added" }
+  ]
+}
+```
+
+**After (hierarchical output):**
+```json
+{
+  "changes": [
+    {
+      "kind": "Class",
+      "name": "Calculator",
+      "type": "Modified",
+      "children": [
+        { "kind": "Method", "name": "Add", "type": "Modified" },
+        { "kind": "Method", "name": "Multiply", "type": "Added" }
+      ]
+    }
+  ]
+}
+```
+
+**For backward compatibility**, use `Flatten()` to get flat output:
+
+```csharp
+using RoslynDiff.Core.Models;
+
+// Get hierarchical changes
+var changes = differ.Compare(oldContent, newContent, options).FileChanges[0].Changes;
+
+// Flatten for backward compatibility
+var flatChanges = changes.Flatten().ToList();
+```
+
+This change fixes BUG-003 where duplicate nodes could be reported when using the old flat extraction method.
+
 ## Documentation
 
 - [Usage Guide](docs/usage.md) - Detailed CLI usage and examples

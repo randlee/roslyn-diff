@@ -160,6 +160,40 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
         [DefaultValue(false)]
         public bool NoColor { get; init; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to include non-impactful changes in output.
+        /// </summary>
+        /// <remarks>
+        /// Non-impactful changes include formatting-only and non-breaking changes.
+        /// By default, JSON output excludes these for cleaner API consumption.
+        /// </remarks>
+        [CommandOption("--include-non-impactful")]
+        [Description("Include non-impactful changes in JSON output")]
+        [DefaultValue(false)]
+        public bool IncludeNonImpactful { get; init; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to include formatting-only changes.
+        /// </summary>
+        /// <remarks>
+        /// Formatting-only changes are whitespace and comment changes that don't affect code behavior.
+        /// </remarks>
+        [CommandOption("--include-formatting")]
+        [Description("Include formatting-only changes (whitespace, comments)")]
+        [DefaultValue(false)]
+        public bool IncludeFormatting { get; init; }
+
+        /// <summary>
+        /// Gets or sets the minimum impact level to include in output.
+        /// </summary>
+        /// <remarks>
+        /// Valid values: breaking-public, breaking-internal, non-breaking, all.
+        /// Default is 'all' for HTML output and 'breaking-internal' for JSON output.
+        /// </remarks>
+        [CommandOption("--impact-level <level>")]
+        [Description("Minimum impact level: breaking-public, breaking-internal, non-breaking, all [[default: all for HTML, breaking-internal for JSON]]")]
+        public string? ImpactLevel { get; init; }
+
         /// <inheritdoc/>
         public override ValidationResult Validate()
         {
@@ -210,6 +244,30 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             return OutputOrchestrator.ExitCodeError;
         }
 
+        // Parse and validate impact level
+        var (impactLevel, impactError) = ParseImpactLevel(settings.ImpactLevel);
+        if (impactError is not null)
+        {
+            AnsiConsole.MarkupLine($"[red]Error: {impactError}[/]");
+            return OutputOrchestrator.ExitCodeError;
+        }
+
+        // Determine effective minimum impact level based on output type
+        // Default: 'all' (FormattingOnly) for HTML, 'breaking-internal' for JSON
+        var effectiveImpactLevel = impactLevel ?? (settings.JsonOutput?.IsSet == true && settings.HtmlOutput is null
+            ? ChangeImpact.BreakingInternalApi
+            : ChangeImpact.FormattingOnly);
+
+        // Adjust for include flags which can override to include more
+        if (settings.IncludeNonImpactful)
+        {
+            effectiveImpactLevel = ChangeImpact.NonBreaking;
+        }
+        if (settings.IncludeFormatting)
+        {
+            effectiveImpactLevel = ChangeImpact.FormattingOnly;
+        }
+
         try
         {
             // Read file contents
@@ -225,7 +283,9 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
                 IgnoreWhitespace = settings.IgnoreWhitespace,
                 ContextLines = settings.ContextLines,
                 OldPath = Path.GetFullPath(settings.OldPath),
-                NewPath = Path.GetFullPath(settings.NewPath)
+                NewPath = Path.GetFullPath(settings.NewPath),
+                IncludeNonImpactful = settings.IncludeNonImpactful || settings.IncludeFormatting,
+                MinimumImpactLevel = effectiveImpactLevel
             };
 
             // Get the appropriate differ
@@ -243,7 +303,10 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
                 GitOutput = settings.GitOutput?.IsSet == true ? (settings.GitOutput.Value ?? "") : null,
                 OpenInBrowser = settings.OpenInBrowser,
                 Quiet = settings.Quiet,
-                NoColor = settings.NoColor
+                NoColor = settings.NoColor,
+                IncludeNonImpactful = settings.IncludeNonImpactful || settings.IncludeFormatting,
+                IncludeFormatting = settings.IncludeFormatting,
+                MinimumImpactLevel = effectiveImpactLevel
             };
 
             // Use OutputOrchestrator to handle all output logic
@@ -254,5 +317,27 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             AnsiConsole.MarkupLine($"[red]Error: {ex.Message}[/]");
             return OutputOrchestrator.ExitCodeError;
         }
+    }
+
+    /// <summary>
+    /// Parses the impact level string to a ChangeImpact enum value.
+    /// </summary>
+    /// <param name="impactLevel">The impact level string from CLI.</param>
+    /// <returns>A tuple containing the parsed impact level (or null for default) and any error message.</returns>
+    private static (ChangeImpact? Level, string? Error) ParseImpactLevel(string? impactLevel)
+    {
+        if (string.IsNullOrEmpty(impactLevel))
+        {
+            return (null, null); // Use default behavior
+        }
+
+        return impactLevel.ToLowerInvariant() switch
+        {
+            "breaking-public" => (ChangeImpact.BreakingPublicApi, null),
+            "breaking-internal" => (ChangeImpact.BreakingInternalApi, null),
+            "non-breaking" => (ChangeImpact.NonBreaking, null),
+            "all" => (ChangeImpact.FormattingOnly, null),
+            _ => (null, $"Invalid impact level: '{impactLevel}'. Valid values: breaking-public, breaking-internal, non-breaking, all")
+        };
     }
 }

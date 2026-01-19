@@ -69,7 +69,7 @@ public class JsonFormatter : IOutputFormatter
         return new JsonOutputModel
         {
             Metadata = CreateMetadata(result, options),
-            Summary = CreateSummary(result.Stats),
+            Summary = CreateSummary(result),
             Files = CreateFiles(result, options)
         };
     }
@@ -84,13 +84,17 @@ public class JsonFormatter : IOutputFormatter
             Options = new JsonMetadataOptions
             {
                 IncludeContent = options.IncludeContent,
-                ContextLines = options.ContextLines
+                ContextLines = options.ContextLines,
+                IncludeNonImpactful = options.IncludeNonImpactful
             }
         };
     }
 
-    private static JsonSummary CreateSummary(DiffStats stats)
+    private static JsonSummary CreateSummary(DiffResult result)
     {
+        var stats = result.Stats;
+        var impactBreakdown = ComputeImpactBreakdown(result);
+
         return new JsonSummary
         {
             TotalChanges = stats.TotalChanges,
@@ -98,8 +102,37 @@ public class JsonFormatter : IOutputFormatter
             Deletions = stats.Deletions,
             Modifications = stats.Modifications,
             Renames = stats.Renames,
-            Moves = stats.Moves
+            Moves = stats.Moves,
+            ImpactBreakdown = impactBreakdown
         };
+    }
+
+    private static JsonImpactBreakdown ComputeImpactBreakdown(DiffResult result)
+    {
+        var allChanges = result.FileChanges.SelectMany(fc => GetAllChangesRecursive(fc.Changes)).ToList();
+
+        return new JsonImpactBreakdown
+        {
+            BreakingPublicApi = allChanges.Count(c => c.Impact == ChangeImpact.BreakingPublicApi),
+            BreakingInternalApi = allChanges.Count(c => c.Impact == ChangeImpact.BreakingInternalApi),
+            NonBreaking = allChanges.Count(c => c.Impact == ChangeImpact.NonBreaking),
+            FormattingOnly = allChanges.Count(c => c.Impact == ChangeImpact.FormattingOnly)
+        };
+    }
+
+    private static IEnumerable<Change> GetAllChangesRecursive(IEnumerable<Change> changes)
+    {
+        foreach (var change in changes)
+        {
+            yield return change;
+            if (change.Children != null)
+            {
+                foreach (var child in GetAllChangesRecursive(change.Children))
+                {
+                    yield return child;
+                }
+            }
+        }
     }
 
     private static List<JsonFileChange> CreateFiles(DiffResult result, OutputOptions options)
@@ -110,11 +143,12 @@ public class JsonFormatter : IOutputFormatter
         if (!string.IsNullOrEmpty(result.OldPath) || !string.IsNullOrEmpty(result.NewPath))
         {
             var allChanges = result.FileChanges.SelectMany(fc => fc.Changes).ToList();
+            var filteredChanges = FilterChanges(allChanges, options);
             files.Add(new JsonFileChange
             {
                 OldPath = result.OldPath,
                 NewPath = result.NewPath,
-                Changes = allChanges.Select(c => CreateChange(c, options)).ToList()
+                Changes = filteredChanges.Select(c => CreateChange(c, options)).ToList()
             });
         }
         else
@@ -122,11 +156,12 @@ public class JsonFormatter : IOutputFormatter
             // Multiple file changes
             foreach (var fileChange in result.FileChanges)
             {
+                var filteredChanges = FilterChanges(fileChange.Changes, options);
                 files.Add(new JsonFileChange
                 {
                     OldPath = fileChange.Path,
                     NewPath = fileChange.Path,
-                    Changes = fileChange.Changes.Select(c => CreateChange(c, options)).ToList()
+                    Changes = filteredChanges.Select(c => CreateChange(c, options)).ToList()
                 });
             }
         }
@@ -134,13 +169,34 @@ public class JsonFormatter : IOutputFormatter
         return files;
     }
 
+    private static IEnumerable<Change> FilterChanges(IEnumerable<Change> changes, OutputOptions options)
+    {
+        if (options.IncludeNonImpactful)
+        {
+            return changes;
+        }
+
+        return changes.Where(IsImpactful);
+    }
+
     private static JsonChange CreateChange(Change change, OutputOptions options)
     {
+        // Filter children based on IncludeNonImpactful option
+        var filteredChildren = change.Children?.Count > 0
+            ? change.Children
+                .Where(c => options.IncludeNonImpactful || IsImpactful(c))
+                .Select(c => CreateChange(c, options))
+                .ToList()
+            : null;
+
         return new JsonChange
         {
             Type = change.Type.ToString().ToLowerInvariant(),
             Kind = change.Kind.ToString().ToLowerInvariant(),
             Name = change.Name,
+            Impact = ConvertImpactToCamelCase(change.Impact),
+            Visibility = change.Visibility?.ToString().ToLowerInvariant(),
+            Caveats = change.Caveats?.Count > 0 ? change.Caveats.ToList() : null,
             Location = (change.NewLocation ?? change.OldLocation) is not null
                 ? CreateLocation((change.NewLocation ?? change.OldLocation)!)
                 : null,
@@ -149,10 +205,25 @@ public class JsonFormatter : IOutputFormatter
                 : null,
             Content = options.IncludeContent ? (change.NewContent ?? change.OldContent) : null,
             OldContent = options.IncludeContent && change.Type == ChangeType.Modified ? change.OldContent : null,
-            Children = change.Children?.Count > 0
-                ? change.Children.Select(c => CreateChange(c, options)).ToList()
-                : null
+            Children = filteredChildren?.Count > 0 ? filteredChildren : null
         };
+    }
+
+    private static string ConvertImpactToCamelCase(ChangeImpact impact)
+    {
+        return impact switch
+        {
+            ChangeImpact.BreakingPublicApi => "breakingPublicApi",
+            ChangeImpact.BreakingInternalApi => "breakingInternalApi",
+            ChangeImpact.NonBreaking => "nonBreaking",
+            ChangeImpact.FormattingOnly => "formattingOnly",
+            _ => impact.ToString().ToLowerInvariant()
+        };
+    }
+
+    private static bool IsImpactful(Change change)
+    {
+        return change.Impact != ChangeImpact.NonBreaking && change.Impact != ChangeImpact.FormattingOnly;
     }
 
     private static JsonLocation CreateLocation(Location location)
@@ -174,7 +245,7 @@ public class JsonFormatter : IOutputFormatter
     internal sealed class JsonOutputModel
     {
         [JsonPropertyName("$schema")]
-        public string Schema { get; init; } = "roslyn-diff-output-v1";
+        public string Schema { get; init; } = "roslyn-diff-output-v2";
 
         public required JsonMetadata Metadata { get; init; }
         public required JsonSummary Summary { get; init; }
@@ -199,6 +270,7 @@ public class JsonFormatter : IOutputFormatter
     {
         public bool IncludeContent { get; init; }
         public int ContextLines { get; init; }
+        public bool IncludeNonImpactful { get; init; }
     }
 
     /// <summary>
@@ -212,6 +284,18 @@ public class JsonFormatter : IOutputFormatter
         public int Modifications { get; init; }
         public int Renames { get; init; }
         public int Moves { get; init; }
+        public JsonImpactBreakdown? ImpactBreakdown { get; init; }
+    }
+
+    /// <summary>
+    /// Impact breakdown in the JSON output summary.
+    /// </summary>
+    internal sealed class JsonImpactBreakdown
+    {
+        public int BreakingPublicApi { get; init; }
+        public int BreakingInternalApi { get; init; }
+        public int NonBreaking { get; init; }
+        public int FormattingOnly { get; init; }
     }
 
     /// <summary>
@@ -232,6 +316,9 @@ public class JsonFormatter : IOutputFormatter
         public required string Type { get; init; }
         public required string Kind { get; init; }
         public string? Name { get; init; }
+        public required string Impact { get; init; }
+        public string? Visibility { get; init; }
+        public List<string>? Caveats { get; init; }
         public JsonLocation? Location { get; init; }
         public JsonLocation? OldLocation { get; init; }
         public string? Content { get; init; }

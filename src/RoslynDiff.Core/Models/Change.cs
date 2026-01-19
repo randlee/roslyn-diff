@@ -78,4 +78,30 @@ public record Change
     /// can have child changes representing modified methods, properties, or fields within it.
     /// </remarks>
     public IReadOnlyList<Change>? Children { get; init; }
+
+    /// <summary>
+    /// Gets the impact level of this change.
+    /// </summary>
+    /// <remarks>
+    /// Indicates whether this change affects public API, internal API, or is non-breaking.
+    /// </remarks>
+    public ChangeImpact Impact { get; init; }
+
+    /// <summary>
+    /// Gets the visibility/accessibility of the affected symbol.
+    /// </summary>
+    /// <remarks>
+    /// This is <c>null</c> for changes that don't involve symbols with visibility modifiers
+    /// (e.g., line-based diffs or certain statement-level changes).
+    /// </remarks>
+    public Visibility? Visibility { get; init; }
+
+    /// <summary>
+    /// Gets any caveats or warnings about the impact classification.
+    /// </summary>
+    /// <remarks>
+    /// Caveats provide additional context about the impact analysis, such as cases where
+    /// the impact might be understated or where further review is recommended.
+    /// </remarks>
+    public IReadOnlyList<string>? Caveats { get; init; }
 }
