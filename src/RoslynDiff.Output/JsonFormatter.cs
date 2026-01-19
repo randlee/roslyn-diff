@@ -189,6 +189,13 @@ public class JsonFormatter : IOutputFormatter
                 .ToList()
             : null;
 
+        // Convert whitespace issues to list of names
+        List<string>? whitespaceIssueNames = null;
+        if (change.WhitespaceIssues != WhitespaceIssue.None)
+        {
+            whitespaceIssueNames = GetWhitespaceIssueNames(change.WhitespaceIssues).ToList();
+        }
+
         return new JsonChange
         {
             Type = change.Type.ToString().ToLowerInvariant(),
@@ -197,6 +204,7 @@ public class JsonFormatter : IOutputFormatter
             Impact = ConvertImpactToCamelCase(change.Impact),
             Visibility = change.Visibility?.ToString().ToLowerInvariant(),
             Caveats = change.Caveats?.Count > 0 ? change.Caveats.ToList() : null,
+            WhitespaceIssues = whitespaceIssueNames,
             Location = (change.NewLocation ?? change.OldLocation) is not null
                 ? CreateLocation((change.NewLocation ?? change.OldLocation)!)
                 : null,
@@ -235,6 +243,23 @@ public class JsonFormatter : IOutputFormatter
             StartColumn = location.StartColumn,
             EndColumn = location.EndColumn
         };
+    }
+
+    /// <summary>
+    /// Converts WhitespaceIssue flags to a list of issue names.
+    /// </summary>
+    private static IEnumerable<string> GetWhitespaceIssueNames(WhitespaceIssue issues)
+    {
+        if (issues.HasFlag(WhitespaceIssue.IndentationChanged))
+            yield return "IndentationChanged";
+        if (issues.HasFlag(WhitespaceIssue.MixedTabsSpaces))
+            yield return "MixedTabsSpaces";
+        if (issues.HasFlag(WhitespaceIssue.TrailingWhitespace))
+            yield return "TrailingWhitespace";
+        if (issues.HasFlag(WhitespaceIssue.LineEndingChanged))
+            yield return "LineEndingChanged";
+        if (issues.HasFlag(WhitespaceIssue.AmbiguousTabWidth))
+            yield return "AmbiguousTabWidth";
     }
 
     #region JSON Output Models
@@ -319,6 +344,7 @@ public class JsonFormatter : IOutputFormatter
         public required string Impact { get; init; }
         public string? Visibility { get; init; }
         public List<string>? Caveats { get; init; }
+        public List<string>? WhitespaceIssues { get; init; }
         public JsonLocation? Location { get; init; }
         public JsonLocation? OldLocation { get; init; }
         public string? Content { get; init; }
