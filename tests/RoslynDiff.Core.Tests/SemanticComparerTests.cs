@@ -554,4 +554,166 @@ public class SemanticComparerTests
     }
 
     #endregion
+
+    #region Impact Classification
+
+    [Fact]
+    public void EnhanceWithSemantics_PublicMethodRenamed_ClassifiesAsBreakingPublicApi()
+    {
+        var oldCode = """
+            namespace Test;
+            public class Calculator
+            {
+                public int OldMethod(int a, int b) => a + b;
+            }
+            """;
+        var newCode = """
+            namespace Test;
+            public class Calculator
+            {
+                public int NewMethod(int a, int b) => a + b;
+            }
+            """;
+        var options = new DiffOptions();
+
+        var syntaxChanges = _syntaxComparer.CompareSource(oldCode, newCode, options);
+        var result = _semanticComparer.EnhanceWithSemantics(syntaxChanges, oldCode, newCode, options);
+
+        var allChanges = FlattenAllChanges(result);
+        var renamed = allChanges.FirstOrDefault(c => c.Type == ChangeType.Renamed && c.Kind == ChangeKind.Method);
+
+        renamed.Should().NotBeNull();
+        renamed!.Impact.Should().Be(ChangeImpact.BreakingPublicApi);
+        renamed.Visibility.Should().Be(Visibility.Public);
+        renamed.Caveats.Should().BeNullOrEmpty();
+    }
+
+    [Fact]
+    public void EnhanceWithSemantics_PrivateMethodRenamed_ClassifiesAsNonBreaking()
+    {
+        var oldCode = """
+            namespace Test;
+            public class Calculator
+            {
+                private int OldPrivateMethod(int a, int b) => a + b;
+            }
+            """;
+        var newCode = """
+            namespace Test;
+            public class Calculator
+            {
+                private int NewPrivateMethod(int a, int b) => a + b;
+            }
+            """;
+        var options = new DiffOptions();
+
+        var syntaxChanges = _syntaxComparer.CompareSource(oldCode, newCode, options);
+        var result = _semanticComparer.EnhanceWithSemantics(syntaxChanges, oldCode, newCode, options);
+
+        var allChanges = FlattenAllChanges(result);
+        var renamed = allChanges.FirstOrDefault(c => c.Type == ChangeType.Renamed && c.Kind == ChangeKind.Method);
+
+        renamed.Should().NotBeNull();
+        renamed!.Impact.Should().Be(ChangeImpact.NonBreaking);
+        renamed.Visibility.Should().Be(Visibility.Private);
+        renamed.Caveats.Should().NotBeNull();
+        renamed.Caveats.Should().Contain(c => c.Contains("reflection") || c.Contains("serialization"));
+    }
+
+    [Fact]
+    public void EnhanceWithSemantics_InternalMethodRenamed_ClassifiesAsBreakingInternalApi()
+    {
+        var oldCode = """
+            namespace Test;
+            internal class Calculator
+            {
+                internal int OldMethod(int a, int b) => a + b;
+            }
+            """;
+        var newCode = """
+            namespace Test;
+            internal class Calculator
+            {
+                internal int NewMethod(int a, int b) => a + b;
+            }
+            """;
+        var options = new DiffOptions();
+
+        var syntaxChanges = _syntaxComparer.CompareSource(oldCode, newCode, options);
+        var result = _semanticComparer.EnhanceWithSemantics(syntaxChanges, oldCode, newCode, options);
+
+        var allChanges = FlattenAllChanges(result);
+        var renamed = allChanges.FirstOrDefault(c => c.Type == ChangeType.Renamed && c.Kind == ChangeKind.Method);
+
+        renamed.Should().NotBeNull();
+        renamed!.Impact.Should().Be(ChangeImpact.BreakingInternalApi);
+        renamed.Visibility.Should().Be(Visibility.Internal);
+    }
+
+    [Fact]
+    public void EnhanceWithSemantics_MethodMovedWithinSameClass_ClassifiesAsNonBreaking()
+    {
+        var oldCode = """
+            namespace Test;
+            public class Calculator
+            {
+                public int Add(int a, int b) => a + b;
+                public int Multiply(int a, int b) => a * b;
+            }
+            """;
+        // Same class, just reordered
+        var newCode = """
+            namespace Test;
+            public class Calculator
+            {
+                public int Multiply(int a, int b) => a * b;
+                public int Add(int a, int b) => a + b;
+            }
+            """;
+        var options = new DiffOptions();
+
+        var syntaxChanges = _syntaxComparer.CompareSource(oldCode, newCode, options);
+        var result = _semanticComparer.EnhanceWithSemantics(syntaxChanges, oldCode, newCode, options);
+
+        var allChanges = FlattenAllChanges(result);
+
+        // Reordering within the same class should produce either no changes or Moved with NonBreaking
+        var moved = allChanges.FirstOrDefault(c => c.Type == ChangeType.Moved);
+        if (moved is not null)
+        {
+            moved.Impact.Should().Be(ChangeImpact.NonBreaking);
+        }
+    }
+
+    [Fact]
+    public void EnhanceWithSemantics_PublicClassRenamed_ClassifiesAsBreakingPublicApi()
+    {
+        var oldCode = """
+            namespace Test;
+            public class OldClassName
+            {
+                public int Value { get; set; }
+            }
+            """;
+        var newCode = """
+            namespace Test;
+            public class NewClassName
+            {
+                public int Value { get; set; }
+            }
+            """;
+        var options = new DiffOptions();
+
+        var syntaxChanges = _syntaxComparer.CompareSource(oldCode, newCode, options);
+        var result = _semanticComparer.EnhanceWithSemantics(syntaxChanges, oldCode, newCode, options);
+
+        var allChanges = FlattenAllChanges(result);
+        var renamed = allChanges.FirstOrDefault(c => c.Type == ChangeType.Renamed && c.Kind == ChangeKind.Class);
+
+        renamed.Should().NotBeNull();
+        renamed!.Impact.Should().Be(ChangeImpact.BreakingPublicApi);
+        renamed.Visibility.Should().Be(Visibility.Public);
+    }
+
+    #endregion
 }

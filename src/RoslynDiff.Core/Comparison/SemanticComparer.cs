@@ -299,7 +299,7 @@ public sealed class SemanticComparer
                 continue;
             }
 
-            // Create a Renamed change
+            // Create a Renamed change (without impact initially for classification)
             var renamedChange = new Change
             {
                 Type = ChangeType.Renamed,
@@ -310,6 +310,15 @@ public sealed class SemanticComparer
                 NewLocation = candidate.AddedChange.NewLocation,
                 OldContent = candidate.RemovedChange.OldContent,
                 NewContent = candidate.AddedChange.NewContent
+            };
+
+            // Classify the impact of the rename
+            var (impact, visibility, caveats) = ClassifyChangeImpact(renamedChange, oldTree, newTree);
+            renamedChange = renamedChange with
+            {
+                Impact = impact,
+                Visibility = visibility,
+                Caveats = caveats
             };
 
             replacements[candidate.RemovedChange] = renamedChange;
@@ -342,7 +351,7 @@ public sealed class SemanticComparer
                 continue;
             }
 
-            // Create a Moved change
+            // Create a Moved change (without impact initially for classification)
             var movedChange = new Change
             {
                 Type = ChangeType.Moved,
@@ -354,9 +363,82 @@ public sealed class SemanticComparer
                 NewContent = candidate.AddedChange.NewContent
             };
 
+            // Classify the impact of the move (same-parent moves are non-breaking)
+            var (impact, visibility, caveats) = ClassifyChangeImpact(
+                movedChange,
+                oldTree,
+                newTree,
+                isSameScopeMove: candidate.IsSameParent);
+            movedChange = movedChange with
+            {
+                Impact = impact,
+                Visibility = visibility,
+                Caveats = caveats
+            };
+
             replacements[candidate.RemovedChange] = movedChange;
             matchedRemoved.Add(candidate.RemovedChange);
             matchedAdded.Add(candidate.AddedChange);
         }
+    }
+
+    /// <summary>
+    /// Maps a ChangeKind to the corresponding SymbolKind for impact classification.
+    /// </summary>
+    private static Models.SymbolKind MapToSymbolKind(ChangeKind changeKind)
+    {
+        return changeKind switch
+        {
+            ChangeKind.Namespace => Models.SymbolKind.Namespace,
+            ChangeKind.Class => Models.SymbolKind.Type,
+            ChangeKind.Method => Models.SymbolKind.Method,
+            ChangeKind.Property => Models.SymbolKind.Property,
+            ChangeKind.Field => Models.SymbolKind.Field,
+            ChangeKind.Statement => Models.SymbolKind.Local,
+            ChangeKind.Line => Models.SymbolKind.Unknown,
+            ChangeKind.File => Models.SymbolKind.Unknown,
+            _ => Models.SymbolKind.Unknown
+        };
+    }
+
+    /// <summary>
+    /// Classifies the impact of a change and returns updated Impact, Visibility, and Caveats.
+    /// </summary>
+    private static (ChangeImpact Impact, Visibility Visibility, IReadOnlyList<string>? Caveats) ClassifyChangeImpact(
+        Change change,
+        SyntaxTree? oldTree,
+        SyntaxTree? newTree,
+        bool isSameScopeMove = false)
+    {
+        // Try to get the syntax node for visibility extraction
+        SyntaxNode? node = null;
+
+        // For renames and moves, prefer the old location for visibility (original declaration)
+        if (oldTree is not null && change.OldLocation is not null)
+        {
+            node = SymbolMatcher.FindNodeAtLocation(oldTree, change.OldLocation);
+        }
+        else if (newTree is not null && change.NewLocation is not null)
+        {
+            node = SymbolMatcher.FindNodeAtLocation(newTree, change.NewLocation);
+        }
+
+        // Extract visibility (default to Private if no node found)
+        var visibility = node is not null
+            ? VisibilityExtractor.Extract(node)
+            : Visibility.Private;
+
+        // Map ChangeKind to SymbolKind
+        var symbolKind = MapToSymbolKind(change.Kind);
+
+        // Classify the impact
+        var (impact, caveats) = ImpactClassifier.Classify(
+            change.Type,
+            symbolKind,
+            visibility,
+            isSignatureChange: true, // Renames/moves are treated as signature changes
+            isSameScopeMove: isSameScopeMove);
+
+        return (impact, visibility, caveats.Count > 0 ? caveats : null);
     }
 }
