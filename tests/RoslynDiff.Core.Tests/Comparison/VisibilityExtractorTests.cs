@@ -430,6 +430,136 @@ public class VisibilityExtractorTests
 
     #endregion
 
+    #region Edge Case Tests
+
+    [Fact]
+    public void Extract_ExpressionBodiedMethod_ReturnsCorrectVisibility()
+    {
+        // Arrange
+        var code = @"
+            public class MyClass
+            {
+                public int GetValue() => 42;
+            }";
+        var methodNode = ParseAndGetFirstDescendant<MethodDeclarationSyntax>(code);
+
+        // Act
+        var visibility = VisibilityExtractor.Extract(methodNode);
+
+        // Assert
+        visibility.Should().Be(Visibility.Public);
+    }
+
+    [Fact]
+    public void Extract_StaticClass_ReturnsCorrectVisibility()
+    {
+        // Arrange
+        var code = "public static class MyStaticClass { }";
+        var classNode = ParseAndGetFirstDescendant<ClassDeclarationSyntax>(code);
+
+        // Act
+        var visibility = VisibilityExtractor.Extract(classNode);
+
+        // Assert
+        visibility.Should().Be(Visibility.Public);
+    }
+
+    [Fact]
+    public void Extract_NullNode_ReturnsDefaultVisibility()
+    {
+        // Arrange - Create a simple statement that doesn't have visibility modifiers
+        var code = @"
+            public class MyClass
+            {
+                public void Method()
+                {
+                    int x = 5;
+                }
+            }";
+        // Get an expression statement (which doesn't have visibility modifiers)
+        var tree = CSharpSyntaxTree.ParseText(code);
+        var root = tree.GetCompilationUnitRoot();
+        var expressionStatement = root.DescendantNodes()
+            .OfType<ExpressionStatementSyntax>()
+            .FirstOrDefault();
+
+        // Act - Pass a node type that falls into the default case
+        // If no expression statement found, test with a literal expression
+        if (expressionStatement is not null)
+        {
+            var visibility = VisibilityExtractor.Extract(expressionStatement);
+            // Assert - Default for unknown nodes should be Private
+            visibility.Should().Be(Visibility.Private);
+        }
+        else
+        {
+            // Alternative test: pass a simple literal which hits default case
+            var literalCode = "public class C { public int X = 1; }";
+            var literalTree = CSharpSyntaxTree.ParseText(literalCode);
+            var literalRoot = literalTree.GetCompilationUnitRoot();
+            var equalsClause = literalRoot.DescendantNodes()
+                .OfType<EqualsValueClauseSyntax>()
+                .First();
+
+            var visibility = VisibilityExtractor.Extract(equalsClause);
+            visibility.Should().Be(Visibility.Private);
+        }
+    }
+
+    [Fact]
+    public void Extract_InitOnlyProperty_ReturnsCorrectVisibility()
+    {
+        // Arrange - init-only properties are a C# 9+ feature
+        var code = @"
+            public class MyClass
+            {
+                public int Value { get; init; }
+            }";
+        var propertyNode = ParseAndGetFirstDescendant<PropertyDeclarationSyntax>(code);
+
+        // Act
+        var visibility = VisibilityExtractor.Extract(propertyNode);
+
+        // Assert
+        visibility.Should().Be(Visibility.Public);
+    }
+
+    [Fact]
+    public void Extract_FileScopedType_ReturnsInternalVisibility()
+    {
+        // Arrange - file-scoped types use the 'file' modifier (C# 11+)
+        // Note: Roslyn treats 'file' as internal for visibility purposes
+        var code = "file class MyFileClass { }";
+        var classNode = ParseAndGetFirstDescendant<ClassDeclarationSyntax>(code);
+
+        // Act
+        var visibility = VisibilityExtractor.Extract(classNode);
+
+        // Assert - File-scoped types default to internal when no other modifier is present
+        // The 'file' keyword doesn't map to a standard visibility, so it falls back to default
+        visibility.Should().Be(Visibility.Internal);
+    }
+
+    [Fact]
+    public void Extract_PropertyWithDifferentAccessorVisibility_ReturnsHigherVisibility()
+    {
+        // Arrange - property is public but has a private setter
+        var code = @"
+            public class MyClass
+            {
+                public int Value { get; private set; }
+            }";
+        var propertyNode = ParseAndGetFirstDescendant<PropertyDeclarationSyntax>(code);
+
+        // Act - Extract visibility returns the property's visibility, not the accessor's
+        var visibility = VisibilityExtractor.Extract(propertyNode);
+
+        // Assert - The property itself is public
+        visibility.Should().Be(Visibility.Public);
+    }
+
+    #endregion
+
     #region Helper Methods
 
     private static T ParseAndGetFirstDescendant<T>(string code) where T : Microsoft.CodeAnalysis.SyntaxNode

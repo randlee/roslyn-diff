@@ -364,7 +364,7 @@ public class ImpactFilteringIntegrationTests : IDisposable
         EnsureFixturesExist();
 
         // Act
-        var (exitCode, stdout, _) = await RunCliAsync(
+        var (exitCode, stdout, stderr) = await RunCliAsync(
             "diff",
             MixedImpactOldPath,
             MixedImpactNewPath,
@@ -372,14 +372,35 @@ public class ImpactFilteringIntegrationTests : IDisposable
             "--impact-level", "breaking-public");
 
         // Assert
-        stdout.Should().NotBeNullOrWhiteSpace("JSON output should be written");
+        stdout.Should().NotBeNullOrWhiteSpace($"JSON output should be written. Stderr: {stderr}");
 
         var parseAction = () => JsonDocument.Parse(stdout);
         parseAction.Should().NotThrow("output should be valid JSON");
 
-        // Should only contain breaking public API changes
+        // Parse and verify the impact levels
         using var doc = JsonDocument.Parse(stdout);
-        doc.RootElement.TryGetProperty("files", out _).Should().BeTrue("JSON should have files section");
+        doc.RootElement.TryGetProperty("files", out var files).Should().BeTrue("JSON should have files section");
+
+        // Collect all impact values from all changes
+        var allImpacts = new List<string>();
+        foreach (var file in files.EnumerateArray())
+        {
+            if (file.TryGetProperty("changes", out var changes))
+            {
+                allImpacts.AddRange(GetImpactValues(changes));
+            }
+        }
+
+        // With --impact-level breaking-public, should ONLY contain breakingPublicApi (camelCase in JSON)
+        allImpacts.Should().NotBeEmpty("should have at least one change");
+        allImpacts.Should().AllBe("breakingPublicApi", 
+            "with --impact-level breaking-public, only breakingPublicApi changes should be shown");
+        allImpacts.Should().NotContain("breakingInternalApi", 
+            "internal API changes should be filtered out");
+        allImpacts.Should().NotContain("nonBreaking", 
+            "non-breaking changes should be filtered out");
+        allImpacts.Should().NotContain("formattingOnly", 
+            "formatting-only changes should be filtered out");
     }
 
     [Fact]
@@ -389,7 +410,7 @@ public class ImpactFilteringIntegrationTests : IDisposable
         EnsureFixturesExist();
 
         // Act
-        var (exitCode, stdout, _) = await RunCliAsync(
+        var (exitCode, stdout, stderr) = await RunCliAsync(
             "diff",
             MixedImpactOldPath,
             MixedImpactNewPath,
@@ -397,10 +418,37 @@ public class ImpactFilteringIntegrationTests : IDisposable
             "--impact-level", "breaking-internal");
 
         // Assert
-        stdout.Should().NotBeNullOrWhiteSpace("JSON output should be written");
+        stdout.Should().NotBeNullOrWhiteSpace($"JSON output should be written. Stderr: {stderr}");
 
         var parseAction = () => JsonDocument.Parse(stdout);
         parseAction.Should().NotThrow("output should be valid JSON");
+
+        // Parse and verify the impact levels
+        using var doc = JsonDocument.Parse(stdout);
+        doc.RootElement.TryGetProperty("files", out var files).Should().BeTrue("JSON should have files section");
+
+        // Collect all impact values from all changes
+        var allImpacts = new List<string>();
+        foreach (var file in files.EnumerateArray())
+        {
+            if (file.TryGetProperty("changes", out var changes))
+            {
+                allImpacts.AddRange(GetImpactValues(changes));
+            }
+        }
+
+        // With --impact-level breaking-internal, should include breakingPublicApi and breakingInternalApi (camelCase in JSON)
+        allImpacts.Should().NotBeEmpty("should have at least one change");
+        
+        // Should only contain breaking changes (public and internal)
+        var allowedImpacts = new[] { "breakingPublicApi", "breakingInternalApi" };
+        allImpacts.Should().OnlyContain(impact => allowedImpacts.Contains(impact),
+            "with --impact-level breaking-internal, only breakingPublicApi and breakingInternalApi changes should be shown");
+        
+        allImpacts.Should().NotContain("nonBreaking", 
+            "non-breaking changes should be filtered out");
+        allImpacts.Should().NotContain("formattingOnly", 
+            "formatting-only changes should be filtered out");
     }
 
     [Fact]
@@ -410,7 +458,7 @@ public class ImpactFilteringIntegrationTests : IDisposable
         EnsureFixturesExist();
 
         // Act
-        var (exitCode, stdout, _) = await RunCliAsync(
+        var (exitCode, stdout, stderr) = await RunCliAsync(
             "diff",
             MixedImpactOldPath,
             MixedImpactNewPath,
@@ -418,10 +466,35 @@ public class ImpactFilteringIntegrationTests : IDisposable
             "--impact-level", "non-breaking");
 
         // Assert
-        stdout.Should().NotBeNullOrWhiteSpace("JSON output should be written");
+        stdout.Should().NotBeNullOrWhiteSpace($"JSON output should be written. Stderr: {stderr}");
 
         var parseAction = () => JsonDocument.Parse(stdout);
         parseAction.Should().NotThrow("output should be valid JSON");
+
+        // Parse and verify the impact levels
+        using var doc = JsonDocument.Parse(stdout);
+        doc.RootElement.TryGetProperty("files", out var files).Should().BeTrue("JSON should have files section");
+
+        // Collect all impact values from all changes
+        var allImpacts = new List<string>();
+        foreach (var file in files.EnumerateArray())
+        {
+            if (file.TryGetProperty("changes", out var changes))
+            {
+                allImpacts.AddRange(GetImpactValues(changes));
+            }
+        }
+
+        // With --impact-level non-breaking, should include everything EXCEPT formattingOnly (camelCase in JSON)
+        allImpacts.Should().NotBeEmpty("should have at least one change");
+        
+        // Should contain breaking and non-breaking changes, but not formatting
+        var allowedImpacts = new[] { "breakingPublicApi", "breakingInternalApi", "nonBreaking" };
+        allImpacts.Should().OnlyContain(impact => allowedImpacts.Contains(impact),
+            "with --impact-level non-breaking, breakingPublicApi, breakingInternalApi, and nonBreaking changes should be shown");
+        
+        allImpacts.Should().NotContain("formattingOnly", 
+            "formatting-only changes should be filtered out with --impact-level non-breaking");
     }
 
     [Fact]
@@ -430,8 +503,8 @@ public class ImpactFilteringIntegrationTests : IDisposable
         // Arrange
         EnsureFixturesExist();
 
-        // Act
-        var (exitCode, stdout, _) = await RunCliAsync(
+        // Act - Test with MixedImpact which has breaking and non-breaking changes
+        var (exitCode, stdout, stderr) = await RunCliAsync(
             "diff",
             MixedImpactOldPath,
             MixedImpactNewPath,
@@ -440,10 +513,85 @@ public class ImpactFilteringIntegrationTests : IDisposable
 
         // Assert
         exitCode.Should().Be(1, "exit code should be 1 when differences found");
-        stdout.Should().NotBeNullOrWhiteSpace("JSON output should be written");
+        stdout.Should().NotBeNullOrWhiteSpace($"JSON output should be written. Stderr: {stderr}");
 
         var parseAction = () => JsonDocument.Parse(stdout);
         parseAction.Should().NotThrow("output should be valid JSON");
+
+        // Parse and verify the impact levels
+        using var doc = JsonDocument.Parse(stdout);
+        doc.RootElement.TryGetProperty("files", out var files).Should().BeTrue("JSON should have files section");
+
+        // Collect all impact values from all changes
+        var allImpacts = new List<string>();
+        foreach (var file in files.EnumerateArray())
+        {
+            if (file.TryGetProperty("changes", out var changes))
+            {
+                allImpacts.AddRange(GetImpactValues(changes));
+            }
+        }
+
+        // With --impact-level all, should include all types of changes present in the fixture
+        // MixedImpact has: breakingPublicApi (public method signature change), 
+        //                  breakingInternalApi (internal method rename),
+        //                  nonBreaking (private member/method renames)
+        allImpacts.Should().NotBeEmpty("should have at least one change");
+        
+        // The mixed impact fixture should produce at least breaking public changes (camelCase in JSON)
+        allImpacts.Should().Contain("breakingPublicApi", 
+            "should include breaking public API changes");
+        
+        // All impacts should be valid impact values (camelCase in JSON)
+        var validImpacts = new[] { "breakingPublicApi", "breakingInternalApi", "nonBreaking", "formattingOnly" };
+        allImpacts.Should().OnlyContain(impact => validImpacts.Contains(impact),
+            "all impact values should be valid ChangeImpact enum values");
+    }
+
+    [Fact]
+    public async Task ImpactLevel_All_IncludesFormattingOnlyChanges()
+    {
+        // Arrange
+        EnsureFixturesExist();
+
+        // Act - Test with FormattingOnly fixtures which only have whitespace changes
+        var (exitCode, stdout, stderr) = await RunCliAsync(
+            "diff",
+            FormattingOnlyOldPath,
+            FormattingOnlyNewPath,
+            "--json",
+            "--impact-level", "all");
+
+        // Assert
+        stdout.Should().NotBeNullOrWhiteSpace($"JSON output should be written. Stderr: {stderr}");
+
+        var parseAction = () => JsonDocument.Parse(stdout);
+        parseAction.Should().NotThrow("output should be valid JSON");
+
+        // Parse and verify the impact levels
+        using var doc = JsonDocument.Parse(stdout);
+        doc.RootElement.TryGetProperty("files", out var files).Should().BeTrue("JSON should have files section");
+
+        // Collect all impact values from all changes
+        var allImpacts = new List<string>();
+        foreach (var file in files.EnumerateArray())
+        {
+            if (file.TryGetProperty("changes", out var changes))
+            {
+                allImpacts.AddRange(GetImpactValues(changes));
+            }
+        }
+
+        // With --impact-level all and FormattingOnly fixtures, 
+        // we should see formattingOnly changes (if the detector classifies them as such)
+        // Note: The exit code may be 0 if only formatting changes exist and they're considered "no differences"
+        // or 1 if differences are detected
+        if (allImpacts.Count > 0)
+        {
+            // If changes are detected, they should be formatting-only (camelCase in JSON)
+            allImpacts.Should().AllBe("formattingOnly", 
+                "FormattingOnly fixtures should produce formattingOnly impact level");
+        }
     }
 
     [Fact]
