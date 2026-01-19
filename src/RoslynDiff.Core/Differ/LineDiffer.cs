@@ -68,15 +68,16 @@ public sealed class LineDiffer : IDiffer
 
         // Determine effective whitespace mode (backward compatibility with IgnoreWhitespace)
         var effectiveMode = ResolveWhitespaceMode(options);
+        var filePath = options.NewPath ?? options.OldPath;
 
         // Preprocess content and determine DiffPlex ignoreWhitespace flag based on mode
         var (processedOld, processedNew, diffPlexIgnoreWs) = PrepareContentForComparison(
-            oldContent, newContent, effectiveMode, options.NewPath ?? options.OldPath);
+            oldContent, newContent, effectiveMode, filePath);
 
         var diffBuilder = new InlineDiffBuilder(_differ);
         var diff = diffBuilder.BuildDiffModel(processedOld, processedNew, diffPlexIgnoreWs);
 
-        var changes = BuildChanges(diff, options);
+        var changes = BuildChanges(diff, options, oldContent, newContent, effectiveMode, filePath);
         var stats = CalculateStats(changes);
 
         return new DiffResult
@@ -86,14 +87,20 @@ public sealed class LineDiffer : IDiffer
             Mode = DiffMode.Line,
             FileChanges = [new FileChange
             {
-                Path = options.NewPath ?? options.OldPath,
+                Path = filePath,
                 Changes = changes
             }],
             Stats = stats
         };
     }
 
-    private static List<Change> BuildChanges(DiffPaneModel diff, DiffOptions options)
+    private static List<Change> BuildChanges(
+        DiffPaneModel diff, 
+        DiffOptions options, 
+        string oldContent, 
+        string newContent,
+        WhitespaceMode effectiveMode,
+        string? filePath)
     {
         // Filter out trailing empty lines that result from files ending with newlines
         // This matches standard diff behavior which doesn't count trailing newlines as lines
@@ -102,6 +109,14 @@ public sealed class LineDiffer : IDiffer
         {
             diffLines.RemoveAt(diffLines.Count - 1);
         }
+
+        // Determine if we should analyze whitespace issues (only for significant languages in LanguageAware mode)
+        var analyzeWhitespaceIssues = effectiveMode == WhitespaceMode.LanguageAware &&
+                                       LanguageClassifier.GetSensitivity(filePath) == WhitespaceSensitivity.Significant;
+
+        // Parse original content into lines for whitespace analysis
+        var oldLines = oldContent.Split('\n').Select(l => l.TrimEnd('\r')).ToArray();
+        var newLines = newContent.Split('\n').Select(l => l.TrimEnd('\r')).ToArray();
 
         // First pass: Collect all lines with their positions and types
         var allLines = new List<(DiffPiece Piece, int? OldLine, int? NewLine, bool IsChange)>();
@@ -210,7 +225,8 @@ public sealed class LineDiffer : IDiffer
                 else
                 {
                     // Unchanged or Modified - flush any pending changes first
-                    FlushPendingChanges(changes, pendingDeletions, pendingAdditions);
+                    FlushPendingChanges(changes, pendingDeletions, pendingAdditions, 
+                                       analyzeWhitespaceIssues, oldLines, newLines);
                     pendingDeletions.Clear();
                     pendingAdditions.Clear();
 
@@ -232,7 +248,8 @@ public sealed class LineDiffer : IDiffer
             }
 
             // Flush any remaining pending changes
-            FlushPendingChanges(changes, pendingDeletions, pendingAdditions);
+            FlushPendingChanges(changes, pendingDeletions, pendingAdditions,
+                               analyzeWhitespaceIssues, oldLines, newLines);
         }
 
         return changes;
@@ -241,11 +258,33 @@ public sealed class LineDiffer : IDiffer
     private static void FlushPendingChanges(
         List<Change> changes,
         List<(DiffPiece Piece, int? OldLine, int? NewLine)> deletions,
-        List<(DiffPiece Piece, int? OldLine, int? NewLine)> additions)
+        List<(DiffPiece Piece, int? OldLine, int? NewLine)> additions,
+        bool analyzeWhitespaceIssues,
+        string[] oldLines,
+        string[] newLines)
     {
+        // Try to pair deletions with additions for whitespace analysis
+        // When a deletion is followed by an addition, they likely represent a modification
+        var pairedCount = Math.Min(deletions.Count, additions.Count);
+
         // Add all deletions first
-        foreach (var (piece, oldLine, newLine) in deletions)
+        for (var i = 0; i < deletions.Count; i++)
         {
+            var (piece, oldLine, newLine) = deletions[i];
+            var whitespaceIssues = WhitespaceIssue.None;
+
+            // If this deletion is paired with an addition, analyze whitespace issues
+            if (analyzeWhitespaceIssues && i < pairedCount)
+            {
+                var oldIdx = oldLine.GetValueOrDefault() - 1;
+                var newIdx = additions[i].NewLine.GetValueOrDefault() - 1;
+                var oldLineContent = oldLine.HasValue && oldIdx >= 0 && oldIdx < oldLines.Length
+                    ? oldLines[oldIdx] : null;
+                var newLineContent = additions[i].NewLine.HasValue && newIdx >= 0 && newIdx < newLines.Length
+                    ? newLines[newIdx] : null;
+                whitespaceIssues = WhitespaceAnalyzer.Analyze(oldLineContent, newLineContent);
+            }
+
             changes.Add(new Change
             {
                 Type = Models.ChangeType.Removed,
@@ -253,13 +292,37 @@ public sealed class LineDiffer : IDiffer
                 OldContent = piece.Text,
                 NewContent = null,
                 OldLocation = oldLine.HasValue ? new Location { StartLine = oldLine.Value, EndLine = oldLine.Value } : null,
-                NewLocation = null
+                NewLocation = null,
+                WhitespaceIssues = whitespaceIssues
             });
         }
 
         // Then add all additions
-        foreach (var (piece, oldLine, newLine) in additions)
+        for (var i = 0; i < additions.Count; i++)
         {
+            var (piece, oldLine, newLine) = additions[i];
+            var whitespaceIssues = WhitespaceIssue.None;
+
+            // If this addition is paired with a deletion, analyze whitespace issues
+            if (analyzeWhitespaceIssues && i < pairedCount)
+            {
+                var oldIdx = deletions[i].OldLine.GetValueOrDefault() - 1;
+                var newIdx = newLine.GetValueOrDefault() - 1;
+                var oldLineContent = deletions[i].OldLine.HasValue && oldIdx >= 0 && oldIdx < oldLines.Length
+                    ? oldLines[oldIdx] : null;
+                var newLineContent = newLine.HasValue && newIdx >= 0 && newIdx < newLines.Length
+                    ? newLines[newIdx] : null;
+                whitespaceIssues = WhitespaceAnalyzer.Analyze(oldLineContent, newLineContent);
+            }
+            else if (analyzeWhitespaceIssues)
+            {
+                // Pure addition - check for whitespace issues in the new line
+                var newIdx = newLine.GetValueOrDefault() - 1;
+                var newLineContent = newLine.HasValue && newIdx >= 0 && newIdx < newLines.Length
+                    ? newLines[newIdx] : null;
+                whitespaceIssues = WhitespaceAnalyzer.Analyze(null, newLineContent);
+            }
+
             changes.Add(new Change
             {
                 Type = Models.ChangeType.Added,
@@ -267,7 +330,8 @@ public sealed class LineDiffer : IDiffer
                 OldContent = null,
                 NewContent = piece.Text,
                 OldLocation = null,
-                NewLocation = newLine.HasValue ? new Location { StartLine = newLine.Value, EndLine = newLine.Value } : null
+                NewLocation = newLine.HasValue ? new Location { StartLine = newLine.Value, EndLine = newLine.Value } : null,
+                WhitespaceIssues = whitespaceIssues
             });
         }
     }

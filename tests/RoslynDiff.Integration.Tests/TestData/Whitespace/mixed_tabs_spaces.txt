@@ -1,0 +1,7 @@
+Line with spaces at start
+	Line with tab at start
+    Line with 4 spaces
+	    Line with tab then 4 spaces
+    	Line with 4 spaces then tab
+		Double tab indented
+        Eight spaces indented
