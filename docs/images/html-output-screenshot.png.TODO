@@ -1,0 +1,141 @@
+TODO: Screenshot Required - HTML Output Report
+==============================================
+
+Status: PENDING
+Priority: HIGH
+Estimated Time: 5-10 minutes
+
+DESCRIPTION
+-----------
+This file is a placeholder for the HTML output screenshot that should showcase
+the roslyn-diff HTML report with all key features visible.
+
+WHAT THIS SCREENSHOT SHOULD CONTAIN
+------------------------------------
+
+1. HEADER SECTION (Top of page):
+   - Page title: "Diff: old.cs → new.cs"
+   - Timestamp showing when diff was generated
+   - Summary statistics badges:
+     * Total changes count
+     * Additions count (green badge)
+     * Deletions count (red badge)
+     * Modifications count (yellow badge)
+     * Impact breakdown counts
+
+2. IMPACT BADGES (Critical - must be visible):
+   - At least 2-3 change sections showing impact indicator badges
+   - "BREAKING PUBLIC API" badges (red background, white text)
+   - Contrast between different impact levels if possible
+   - Located on the right side of each change header
+
+3. CHANGE SECTIONS (Show multiple):
+   - Change type badges: "MODIFIED", "ADDED", "REMOVED"
+   - Symbol kinds: "Namespace", "Class", "Method", "Field"
+   - Symbol names and line number locations
+   - At least one section expanded to show diff content
+
+4. SIDE-BY-SIDE DIFF VIEW (One expanded section):
+   - LEFT SIDE: Old code with red background for deletions
+   - RIGHT SIDE: New code with green background for additions
+   - Line numbers visible on both sides
+   - Syntax highlighting for C# code (keywords in blue/purple, comments in green)
+
+5. NAVIGATION PANEL (If visible):
+   - Fixed position at bottom-right corner
+   - Up arrow, Previous/Next, Expand/Collapse buttons
+
+6. CAVEAT WARNINGS (Optional but desired):
+   - Yellow warning boxes if present
+   - Example text like: "Parameter rename may break callers using named arguments"
+
+SOURCE FILE
+-----------
+/Users/randlee/Documents/github/roslyn-diff/samples/impact-demo/output.html
+
+RECOMMENDED CAPTURE METHOD
+---------------------------
+
+METHOD 1: Manual Screenshot (Easiest)
+1. Open the HTML file in Chrome or Firefox
+2. Set browser window to 1920px width minimum
+3. Zoom level: 100% (no zoom)
+4. Scroll to show header + first 2-3 change sections
+5. Expand at least one change section to show the diff
+6. Use browser screenshot tool or OS screenshot:
+   - macOS: Cmd+Shift+4 (select area)
+   - Windows: Snipping Tool or Win+Shift+S
+   - Linux: gnome-screenshot or Flameshot
+7. Save as: html-output-screenshot.png
+
+METHOD 2: Browser Automation (Playwright - Node.js)
+```javascript
+const { chromium } = require('playwright');
+
+(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  await page.setViewportSize({ width: 1920, height: 1400 });
+  await page.goto('file:///Users/randlee/Documents/github/roslyn-diff/samples/impact-demo/output.html');
+
+  // Optional: Expand a specific change section
+  // await page.click('[data-change-id="change-d4338f82"]'); // Example change ID
+
+  await page.screenshot({
+    path: 'docs/images/html-output-screenshot.png',
+    fullPage: false
+  });
+  await browser.close();
+  console.log('Screenshot saved!');
+})();
+```
+
+METHOD 3: Browser DevTools
+1. Open HTML file in Chrome
+2. Press F12 to open DevTools
+3. Click the device toolbar icon (or Ctrl+Shift+M)
+4. Set dimensions to 1920x1400
+5. Press Cmd+Shift+P (Mac) or Ctrl+Shift+P (Windows/Linux)
+6. Type "screenshot" and select "Capture screenshot"
+7. Rename to html-output-screenshot.png
+
+SPECIFICATIONS
+--------------
+- Dimensions: 1920px width x 1200-1400px height
+- Format: PNG (lossless)
+- Target file size: < 500KB (use compression like pngquant if needed)
+- DPI: 72-96 (web standard)
+- Quality: Text must be sharp and readable
+
+FOCUS AREAS
+-----------
+Recommended sections from the impact-demo file to show:
+- The "Samples.ImpactDemo" namespace change (has BREAKING PUBLIC API badge)
+- The "PaymentService" class change (shows nested changes)
+- Field changes (_merchantId → _merchantIdentifier)
+- At least one method showing impact classification
+
+QUALITY CHECKLIST
+-----------------
+Before saving, verify:
+[ ] Header with summary stats is visible at top
+[ ] At least 2 impact badges are clearly visible
+[ ] Color coding is clear (red for breaking, green for additions, etc.)
+[ ] At least one side-by-side diff section is expanded and legible
+[ ] Text is sharp and readable (no blur)
+[ ] File size is optimized
+[ ] No personal/sensitive info visible
+[ ] Syntax highlighting is properly rendered
+
+NEXT STEPS
+----------
+1. Generate the screenshot using one of the methods above
+2. Save it as: docs/images/html-output-screenshot.png
+3. Delete this .TODO file
+4. Update docs/images/README.md to mark this screenshot as complete
+
+NEED HELP?
+----------
+- See detailed guide: /docs/screenshot-requirements.md
+- Open a GitHub issue with tag "documentation" if you need assistance
+- Consider using browser automation for consistent results

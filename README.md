@@ -9,16 +9,67 @@ A semantic diff tool for .NET source code using Roslyn.
 
 roslyn-diff provides semantic-aware diffing capabilities for .NET source code. Unlike traditional line-by-line diff tools, roslyn-diff understands code structure using the Roslyn compiler platform, enabling it to detect and report changes at the semantic level (classes, methods, properties, etc.).
 
+### Why Roslyn over tree-sitter?
+
+For .NET languages (C# and Visual Basic), roslyn-diff uses Microsoft's Roslyn compiler instead of generic syntax parsers like tree-sitter:
+
+- **Full semantic understanding** - Roslyn provides complete type information, symbol resolution, and semantic analysis, not just syntax trees
+- **Rename detection** - Can distinguish between a renamed method vs. delete+add because Roslyn tracks symbol identity
+- **Visibility tracking** - Knows if a member is public, internal, private, or protected for impact analysis
+- **Type-aware comparisons** - Understands that `int` and `System.Int32` are the same type
+- **Reference resolution** - Tracks cross-file dependencies and inheritance hierarchies
+- **Official .NET tooling** - Same compiler used by Visual Studio, ensuring 100% compatibility with C# and VB.NET language features
+
+tree-sitter is excellent for general-purpose syntax highlighting and basic structural analysis, but Roslyn provides the deep semantic insight needed for accurate impact classification and change analysis in .NET codebases.
+
 ## Features
 
+### Impact Classification (v0.7.0) 🎯
+
+Automatically categorizes every code change by its potential impact on consumers:
+
+- **Breaking Public API** - Changes that break external consumers (method signature changes, removed public members)
+- **Breaking Internal API** - Changes that break internal consumers (internal method renames, parameter changes)
+- **Non-Breaking** - Safe changes with no execution impact (private field renames, code reordering)
+- **Formatting Only** - Pure whitespace/comment changes
+
+Each change includes visibility tracking, caveat warnings (e.g., "parameter rename may break named arguments"), and smart filtering. See [Impact Classification Guide](docs/impact-classification.md) for details.
+
+### Whitespace Intelligence (v0.8.0) 🔍
+
+Fine-grained whitespace handling with language-aware detection:
+
+- **4 whitespace modes**: Exact, IgnoreLeadingTrailing, IgnoreAll, LanguageAware
+- **Automatic issue detection**: Indentation changes, mixed tabs/spaces, trailing whitespace, line ending changes
+- **Language-specific handling**: Exact mode for Python/YAML (whitespace-significant), normalized for C#/Java
+
+See [Whitespace Handling Guide](docs/whitespace-handling.md) for comprehensive details.
+
+### Core Features
+
 - **Semantic Diff** - Understands code structure, not just text changes
-- **C# and VB.NET Support** - Full semantic analysis for both languages
+- **C# and VB.NET Support** - Full semantic analysis using Roslyn compiler platform
 - **Structural Change Detection** - Identifies changes to classes, methods, properties, and fields
 - **Rename Detection** - Detects when symbols are renamed (not just added/removed)
 - **Move Detection** - Identifies code that has been moved within a file
-- **Multiple Output Formats** - JSON, HTML, text, terminal
+- **Multiple Output Formats** - JSON (schema v2), HTML (interactive), text, terminal
 - **Class-to-Class Comparison** - Compare specific classes between files with flexible matching
 - **Line-by-Line Fallback** - Supports non-.NET files with traditional diff
+
+## Screenshots
+
+### HTML Output with Impact Classification
+
+*Coming soon* - Interactive HTML report showing side-by-side diff with color-coded impact badges, caveat warnings, and IDE integration links. See [docs/images/](docs/images/) for screenshot specifications.
+
+### JSON Output with Impact Breakdown
+
+*Coming soon* - JSON Schema v2 output showing `impactBreakdown` statistics and per-change impact classification. See [docs/images/](docs/images/) for screenshot specifications.
+
+For examples of what the output looks like, check out the [sample outputs](samples/):
+- [samples/impact-demo/output.html](samples/impact-demo/output.html) - Full HTML report with impact indicators
+- [samples/impact-demo/output.json](samples/impact-demo/output.json) - JSON with impact classification
+- [samples/output-example.html](samples/output-example.html) - Calculator example HTML report
 
 ## Installation
 
@@ -109,11 +160,25 @@ roslyn-diff diff <old-file> <new-file> [options]
 | `--quiet` | Suppress default console output (for scripting) |
 | `--no-color` | Disable colored output even if terminal supports it |
 
+**Impact Filtering Options (v0.7.0):**
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--impact-level <level>` | Filter by impact: `breaking-public`, `breaking-internal`, `non-breaking`, `all` | Format-dependent* |
+| `--include-non-impactful` | Include non-breaking and formatting changes (JSON only) | `false` |
+| `--include-formatting` | Include formatting-only changes | `false` |
+
+\* JSON defaults to `breaking-internal` (shows breaking changes only), HTML defaults to `all` (shows everything for review)
+
+**Whitespace Options (v0.8.0):**
+| Option | Short | Description | Default |
+|--------|-------|-------------|---------|
+| `--whitespace-mode <mode>` | | Whitespace handling: `exact`, `ignore-leading-trailing`, `ignore-all`, `language-aware` | `exact` |
+| `--ignore-whitespace` | `-w` | Shortcut for `--whitespace-mode ignore-all` | `false` |
+
 **Diff Mode Options:**
 | Option | Short | Description | Default |
 |--------|-------|-------------|---------|
 | `--mode <mode>` | `-m` | Diff mode: `auto`, `roslyn`, `line` | `auto` |
-| `--ignore-whitespace` | `-w` | Ignore whitespace differences | `false` |
 | `--context <lines>` | `-C` | Lines of context to show | `3` |
 
 **Default Behavior:**
@@ -179,36 +244,63 @@ roslyn-diff diff old.cs new.cs --json analysis.json
 
 ```json
 {
-  "$schema": "roslyn-diff-output-v1",
+  "$schema": "roslyn-diff-output-v2",
   "metadata": {
-    "tool": "roslyn-diff",
+    "version": "0.8.0",
+    "timestamp": "2026-01-19T22:45:12Z",
     "mode": "roslyn",
-    "oldPath": "old/Calculator.cs",
-    "newPath": "new/Calculator.cs"
+    "options": {
+      "includeNonImpactful": false
+    }
   },
   "summary": {
-    "totalChanges": 3,
+    "totalChanges": 4,
     "additions": 2,
     "deletions": 0,
-    "modifications": 1
+    "modifications": 2,
+    "impactBreakdown": {
+      "breakingPublicApi": 4,
+      "breakingInternalApi": 0,
+      "nonBreaking": 0,
+      "formattingOnly": 0
+    }
   },
-  "changes": [...]
+  "files": [{
+    "changes": [{
+      "type": "modified",
+      "kind": "method",
+      "name": "Process",
+      "impact": "breakingPublicApi",
+      "visibility": "public",
+      "caveats": ["Parameter rename may break callers using named arguments"]
+    }]
+  }]
 }
 ```
+
+See [Output Formats Guide](docs/output-formats.md) for complete schema documentation.
 
 ### HTML (`--html`)
 
 Interactive HTML report with:
-- Side-by-side diff view
-- Syntax highlighting
+- **Impact classification badges** - Color-coded indicators (Breaking Public API, Breaking Internal API, Non-Breaking, Formatting Only)
+- **Caveat warnings** - Yellow warning boxes for edge cases (e.g., "Parameter rename may break named arguments")
+- **Whitespace issue indicators** - Warnings for indentation changes, mixed tabs/spaces, etc.
+- Side-by-side diff view with syntax highlighting
+- Keyboard navigation (Ctrl+J/K for next/previous change)
 - Collapsible sections with copy buttons
 - IDE integration links (VS Code, Rider, PyCharm, Zed)
-- Navigation and summary statistics
+- Navigation panel and summary statistics
 
 ```bash
 # Generate and open in browser
 roslyn-diff diff old.cs new.cs --html report.html --open
+
+# Filter to show only breaking changes in HTML
+roslyn-diff diff old.cs new.cs --html report.html --impact-level breaking-public
 ```
+
+See [Output Formats Guide](docs/output-formats.md) for details on all HTML features.
 
 ### Text (`--text`)
 
@@ -413,12 +505,35 @@ var flatChanges = changes.Flatten().ToList();
 
 This change fixes BUG-003 where duplicate nodes could be reported when using the old flat extraction method.
 
+## Synaptic Canvas Integration
+
+roslyn-diff is available as a skill in the Synaptic Canvas Claude Code plugin marketplace:
+
+**[sc-roslyn-diff](https://github.com/randlee/synaptic-canvas/blob/develop/packages/sc-roslyn-diff/README.md)** - Claude Code integration for semantic .NET diff analysis
+
+This plugin enables AI-powered code review and impact analysis:
+- Automatically analyzes pull requests for semantic changes
+- Generates natural language summaries of code modifications
+- Highlights breaking changes and potential impact on consumers
+- Integrates with GitHub workflows for automated code review
+
+See the [Synaptic Canvas documentation](https://github.com/randlee/synaptic-canvas) for installation and usage instructions.
+
 ## Documentation
 
+### Feature Guides
+
+- **[Impact Classification Guide](docs/impact-classification.md)** - Complete guide to impact levels, filtering, caveats, and use cases (v0.7.0)
+- **[Whitespace Handling Guide](docs/whitespace-handling.md)** - Whitespace modes, language-aware detection, and best practices (v0.8.0)
+- [Output Formats](docs/output-formats.md) - Format specifications, JSON Schema v2, and feature comparison
+- [Sample Outputs](samples/README.md) - Example diffs with impact classification
+
+### Reference Documentation
+
 - [Usage Guide](docs/usage.md) - Detailed CLI usage and examples
-- [Output Formats](docs/output-formats.md) - Format specifications and schemas
 - [API Reference](docs/api.md) - Programmatic API documentation
 - [Architecture](docs/architecture.md) - Project structure and design
+- [Screenshot Requirements](docs/screenshot-requirements.md) - Documentation screenshot specifications
 
 ## Requirements
 
