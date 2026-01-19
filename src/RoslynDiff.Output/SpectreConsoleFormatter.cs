@@ -130,6 +130,14 @@ public class SpectreConsoleFormatter : IOutputFormatter
         var markup = GetChangeMarkup(change);
         var node = parent.AddNode(markup);
 
+        // Add whitespace warnings if present
+        if (change.WhitespaceIssues != WhitespaceIssue.None)
+        {
+            var issueNames = GetWhitespaceIssueNames(change.WhitespaceIssues);
+            var issueList = string.Join(", ", issueNames);
+            node.AddNode($"[yellow]⚠ Whitespace: {issueList}[/]");
+        }
+
         // Add modification details
         if (change.Type == ChangeType.Modified && !options.Compact)
         {
@@ -215,5 +223,22 @@ public class SpectreConsoleFormatter : IOutputFormatter
         return text
             .Replace("[", "[[")
             .Replace("]", "]]");
+    }
+
+    /// <summary>
+    /// Converts WhitespaceIssue flags to a list of issue names.
+    /// </summary>
+    private static IEnumerable<string> GetWhitespaceIssueNames(WhitespaceIssue issues)
+    {
+        if (issues.HasFlag(WhitespaceIssue.IndentationChanged))
+            yield return "IndentationChanged";
+        if (issues.HasFlag(WhitespaceIssue.MixedTabsSpaces))
+            yield return "MixedTabsSpaces";
+        if (issues.HasFlag(WhitespaceIssue.TrailingWhitespace))
+            yield return "TrailingWhitespace";
+        if (issues.HasFlag(WhitespaceIssue.LineEndingChanged))
+            yield return "LineEndingChanged";
+        if (issues.HasFlag(WhitespaceIssue.AmbiguousTabWidth))
+            yield return "AmbiguousTabWidth";
     }
 }

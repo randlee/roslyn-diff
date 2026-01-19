@@ -117,6 +117,14 @@ public class PlainTextFormatter : IOutputFormatter
 
         sb.AppendLine($"{prefix}[{marker}] {kindLabel}: {name}{location}");
 
+        // Add whitespace warnings if present
+        if (change.WhitespaceIssues != WhitespaceIssue.None)
+        {
+            var issueNames = GetWhitespaceIssueNames(change.WhitespaceIssues);
+            var issueList = string.Join(", ", issueNames);
+            sb.AppendLine($"{prefix}  WARNING: Whitespace issues: {issueList}");
+        }
+
         // Add details for modifications
         if (change.Type == ChangeType.Modified && !options.Compact)
         {
@@ -186,5 +194,22 @@ public class PlainTextFormatter : IOutputFormatter
             // For now, just indicate it was modified
             sb.AppendLine($"{prefix}Body modified");
         }
+    }
+
+    /// <summary>
+    /// Converts WhitespaceIssue flags to a list of issue names.
+    /// </summary>
+    private static IEnumerable<string> GetWhitespaceIssueNames(WhitespaceIssue issues)
+    {
+        if (issues.HasFlag(WhitespaceIssue.IndentationChanged))
+            yield return "IndentationChanged";
+        if (issues.HasFlag(WhitespaceIssue.MixedTabsSpaces))
+            yield return "MixedTabsSpaces";
+        if (issues.HasFlag(WhitespaceIssue.TrailingWhitespace))
+            yield return "TrailingWhitespace";
+        if (issues.HasFlag(WhitespaceIssue.LineEndingChanged))
+            yield return "LineEndingChanged";
+        if (issues.HasFlag(WhitespaceIssue.AmbiguousTabWidth))
+            yield return "AmbiguousTabWidth";
     }
 }

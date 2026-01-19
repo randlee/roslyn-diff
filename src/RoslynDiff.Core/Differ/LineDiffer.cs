@@ -1,5 +1,6 @@
 namespace RoslynDiff.Core.Differ;
 
+using System.Text.RegularExpressions;
 using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
 using RoslynDiff.Core.Models;
@@ -58,16 +59,25 @@ public sealed class LineDiffer : IDiffer
     }
 
     /// <inheritdoc/>
+    /// <inheritdoc/>
     public DiffResult Compare(string oldContent, string newContent, DiffOptions options)
     {
         ArgumentNullException.ThrowIfNull(oldContent);
         ArgumentNullException.ThrowIfNull(newContent);
         ArgumentNullException.ThrowIfNull(options);
 
-        var diffBuilder = new InlineDiffBuilder(_differ);
-        var diff = diffBuilder.BuildDiffModel(oldContent, newContent, options.IgnoreWhitespace);
+        // Determine effective whitespace mode (backward compatibility with IgnoreWhitespace)
+        var effectiveMode = ResolveWhitespaceMode(options);
+        var filePath = options.NewPath ?? options.OldPath;
 
-        var changes = BuildChanges(diff, options);
+        // Preprocess content and determine DiffPlex ignoreWhitespace flag based on mode
+        var (processedOld, processedNew, diffPlexIgnoreWs) = PrepareContentForComparison(
+            oldContent, newContent, effectiveMode, filePath);
+
+        var diffBuilder = new InlineDiffBuilder(_differ);
+        var diff = diffBuilder.BuildDiffModel(processedOld, processedNew, diffPlexIgnoreWs);
+
+        var changes = BuildChanges(diff, options, oldContent, newContent, effectiveMode, filePath);
         var stats = CalculateStats(changes);
 
         return new DiffResult
@@ -77,14 +87,20 @@ public sealed class LineDiffer : IDiffer
             Mode = DiffMode.Line,
             FileChanges = [new FileChange
             {
-                Path = options.NewPath ?? options.OldPath,
+                Path = filePath,
                 Changes = changes
             }],
             Stats = stats
         };
     }
 
-    private static List<Change> BuildChanges(DiffPaneModel diff, DiffOptions options)
+    private static List<Change> BuildChanges(
+        DiffPaneModel diff, 
+        DiffOptions options, 
+        string oldContent, 
+        string newContent,
+        WhitespaceMode effectiveMode,
+        string? filePath)
     {
         // Filter out trailing empty lines that result from files ending with newlines
         // This matches standard diff behavior which doesn't count trailing newlines as lines
@@ -93,6 +109,14 @@ public sealed class LineDiffer : IDiffer
         {
             diffLines.RemoveAt(diffLines.Count - 1);
         }
+
+        // Determine if we should analyze whitespace issues (only for significant languages in LanguageAware mode)
+        var analyzeWhitespaceIssues = effectiveMode == WhitespaceMode.LanguageAware &&
+                                       LanguageClassifier.GetSensitivity(filePath) == WhitespaceSensitivity.Significant;
+
+        // Parse original content into lines for whitespace analysis
+        var oldLines = oldContent.Split('\n').Select(l => l.TrimEnd('\r')).ToArray();
+        var newLines = newContent.Split('\n').Select(l => l.TrimEnd('\r')).ToArray();
 
         // First pass: Collect all lines with their positions and types
         var allLines = new List<(DiffPiece Piece, int? OldLine, int? NewLine, bool IsChange)>();
@@ -201,7 +225,8 @@ public sealed class LineDiffer : IDiffer
                 else
                 {
                     // Unchanged or Modified - flush any pending changes first
-                    FlushPendingChanges(changes, pendingDeletions, pendingAdditions);
+                    FlushPendingChanges(changes, pendingDeletions, pendingAdditions, 
+                                       analyzeWhitespaceIssues, oldLines, newLines);
                     pendingDeletions.Clear();
                     pendingAdditions.Clear();
 
@@ -223,7 +248,8 @@ public sealed class LineDiffer : IDiffer
             }
 
             // Flush any remaining pending changes
-            FlushPendingChanges(changes, pendingDeletions, pendingAdditions);
+            FlushPendingChanges(changes, pendingDeletions, pendingAdditions,
+                               analyzeWhitespaceIssues, oldLines, newLines);
         }
 
         return changes;
@@ -232,11 +258,33 @@ public sealed class LineDiffer : IDiffer
     private static void FlushPendingChanges(
         List<Change> changes,
         List<(DiffPiece Piece, int? OldLine, int? NewLine)> deletions,
-        List<(DiffPiece Piece, int? OldLine, int? NewLine)> additions)
+        List<(DiffPiece Piece, int? OldLine, int? NewLine)> additions,
+        bool analyzeWhitespaceIssues,
+        string[] oldLines,
+        string[] newLines)
     {
+        // Try to pair deletions with additions for whitespace analysis
+        // When a deletion is followed by an addition, they likely represent a modification
+        var pairedCount = Math.Min(deletions.Count, additions.Count);
+
         // Add all deletions first
-        foreach (var (piece, oldLine, newLine) in deletions)
+        for (var i = 0; i < deletions.Count; i++)
         {
+            var (piece, oldLine, newLine) = deletions[i];
+            var whitespaceIssues = WhitespaceIssue.None;
+
+            // If this deletion is paired with an addition, analyze whitespace issues
+            if (analyzeWhitespaceIssues && i < pairedCount)
+            {
+                var oldIdx = oldLine.GetValueOrDefault() - 1;
+                var newIdx = additions[i].NewLine.GetValueOrDefault() - 1;
+                var oldLineContent = oldLine.HasValue && oldIdx >= 0 && oldIdx < oldLines.Length
+                    ? oldLines[oldIdx] : null;
+                var newLineContent = additions[i].NewLine.HasValue && newIdx >= 0 && newIdx < newLines.Length
+                    ? newLines[newIdx] : null;
+                whitespaceIssues = WhitespaceAnalyzer.Analyze(oldLineContent, newLineContent);
+            }
+
             changes.Add(new Change
             {
                 Type = Models.ChangeType.Removed,
@@ -244,13 +292,37 @@ public sealed class LineDiffer : IDiffer
                 OldContent = piece.Text,
                 NewContent = null,
                 OldLocation = oldLine.HasValue ? new Location { StartLine = oldLine.Value, EndLine = oldLine.Value } : null,
-                NewLocation = null
+                NewLocation = null,
+                WhitespaceIssues = whitespaceIssues
             });
         }
 
         // Then add all additions
-        foreach (var (piece, oldLine, newLine) in additions)
+        for (var i = 0; i < additions.Count; i++)
         {
+            var (piece, oldLine, newLine) = additions[i];
+            var whitespaceIssues = WhitespaceIssue.None;
+
+            // If this addition is paired with a deletion, analyze whitespace issues
+            if (analyzeWhitespaceIssues && i < pairedCount)
+            {
+                var oldIdx = deletions[i].OldLine.GetValueOrDefault() - 1;
+                var newIdx = newLine.GetValueOrDefault() - 1;
+                var oldLineContent = deletions[i].OldLine.HasValue && oldIdx >= 0 && oldIdx < oldLines.Length
+                    ? oldLines[oldIdx] : null;
+                var newLineContent = newLine.HasValue && newIdx >= 0 && newIdx < newLines.Length
+                    ? newLines[newIdx] : null;
+                whitespaceIssues = WhitespaceAnalyzer.Analyze(oldLineContent, newLineContent);
+            }
+            else if (analyzeWhitespaceIssues)
+            {
+                // Pure addition - check for whitespace issues in the new line
+                var newIdx = newLine.GetValueOrDefault() - 1;
+                var newLineContent = newLine.HasValue && newIdx >= 0 && newIdx < newLines.Length
+                    ? newLines[newIdx] : null;
+                whitespaceIssues = WhitespaceAnalyzer.Analyze(null, newLineContent);
+            }
+
             changes.Add(new Change
             {
                 Type = Models.ChangeType.Added,
@@ -258,7 +330,8 @@ public sealed class LineDiffer : IDiffer
                 OldContent = null,
                 NewContent = piece.Text,
                 OldLocation = null,
-                NewLocation = newLine.HasValue ? new Location { StartLine = newLine.Value, EndLine = newLine.Value } : null
+                NewLocation = newLine.HasValue ? new Location { StartLine = newLine.Value, EndLine = newLine.Value } : null,
+                WhitespaceIssues = whitespaceIssues
             });
         }
     }
@@ -293,5 +366,99 @@ public sealed class LineDiffer : IDiffer
             Moves = 0,
             Renames = 0
         };
+    }
+
+    /// <summary>
+    /// Resolves the effective whitespace mode, accounting for backward compatibility with IgnoreWhitespace.
+    /// </summary>
+    /// <param name="options">The diff options.</param>
+    /// <returns>The effective whitespace mode to use.</returns>
+    private static WhitespaceMode ResolveWhitespaceMode(DiffOptions options)
+    {
+        // If WhitespaceMode is explicitly set to something other than default, use it
+        if (options.WhitespaceMode != WhitespaceMode.Exact)
+        {
+            return options.WhitespaceMode;
+        }
+
+        // Backward compatibility: map IgnoreWhitespace to IgnoreLeadingTrailing
+        // This matches the previous DiffPlex ignoreWhitespace=true behavior
+        if (options.IgnoreWhitespace)
+        {
+            return WhitespaceMode.IgnoreLeadingTrailing;
+        }
+
+        return WhitespaceMode.Exact;
+    }
+
+    /// <summary>
+    /// Prepares content for comparison based on the whitespace mode.
+    /// </summary>
+    /// <param name="oldContent">The original content.</param>
+    /// <param name="newContent">The new content.</param>
+    /// <param name="mode">The whitespace handling mode.</param>
+    /// <param name="filePath">The file path for language-aware processing.</param>
+    /// <returns>A tuple of (processedOld, processedNew, diffPlexIgnoreWhitespace).</returns>
+    private static (string ProcessedOld, string ProcessedNew, bool DiffPlexIgnoreWs) PrepareContentForComparison(
+        string oldContent,
+        string newContent,
+        WhitespaceMode mode,
+        string? filePath)
+    {
+        return mode switch
+        {
+            WhitespaceMode.Exact => (oldContent, newContent, false),
+            WhitespaceMode.IgnoreLeadingTrailing => (oldContent, newContent, true),
+            WhitespaceMode.IgnoreAll => (CollapseWhitespace(oldContent), CollapseWhitespace(newContent), false),
+            WhitespaceMode.LanguageAware => HandleLanguageAware(oldContent, newContent, filePath),
+            _ => (oldContent, newContent, false)
+        };
+    }
+
+    /// <summary>
+    /// Handles language-aware whitespace processing based on the file type.
+    /// </summary>
+    /// <param name="oldContent">The original content.</param>
+    /// <param name="newContent">The new content.</param>
+    /// <param name="filePath">The file path for language classification.</param>
+    /// <returns>A tuple of (processedOld, processedNew, diffPlexIgnoreWhitespace).</returns>
+    private static (string ProcessedOld, string ProcessedNew, bool DiffPlexIgnoreWs) HandleLanguageAware(
+        string oldContent,
+        string newContent,
+        string? filePath)
+    {
+        var sensitivity = LanguageClassifier.GetSensitivity(filePath);
+
+        return sensitivity switch
+        {
+            // Whitespace-significant languages: preserve exact whitespace
+            WhitespaceSensitivity.Significant => (oldContent, newContent, false),
+            // Brace languages: safe to ignore leading/trailing whitespace
+            WhitespaceSensitivity.Insignificant => (oldContent, newContent, true),
+            // Unknown: preserve exact whitespace for safety
+            WhitespaceSensitivity.Unknown => (oldContent, newContent, false),
+            _ => (oldContent, newContent, false)
+        };
+    }
+
+    /// <summary>
+    /// Collapses all whitespace in content: multiple spaces/tabs become single space, leading/trailing trimmed per line.
+    /// </summary>
+    /// <param name="content">The content to process.</param>
+    /// <returns>The content with collapsed whitespace.</returns>
+    private static string CollapseWhitespace(string content)
+    {
+        // Process line by line to preserve line structure
+        var lines = content.Split('\n');
+        for (var i = 0; i < lines.Length; i++)
+        {
+            // Remove carriage returns and collapse whitespace
+            var line = lines[i].TrimEnd('\r');
+            // Collapse multiple whitespace characters to single space
+            line = Regex.Replace(line, @"\s+", " ");
+            // Trim leading and trailing whitespace
+            lines[i] = line.Trim();
+        }
+        return string.Join("\n", lines);
     }
 }
