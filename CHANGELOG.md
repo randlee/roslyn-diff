@@ -13,6 +13,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Git integration (compare commits, branches)
 - F# support via FSharp.Compiler.Service
 
+## [0.9.0] - 2026-01-20
+
+### Added
+
+#### Multi-Target Framework (Multi-TFM) Support
+- **Target Framework Analysis** - Analyze code differences across multiple .NET target frameworks simultaneously
+- **TFM-Specific Change Detection** - Identify which changes apply to specific target frameworks vs. all frameworks
+- **Conditional Compilation Awareness** - Properly handles `#if` directives and framework-specific code
+- **Per-TFM Semantic Analysis** - Runs full Roslyn analysis for each target framework with correct compilation symbols
+
+#### CLI Enhancements
+- `--target-framework` / `-t` - Specify one or more target frameworks for analysis (can be repeated)
+- `-T` / `--target-frameworks` - Specify semicolon-separated list of target frameworks (e.g., "net8.0;net10.0")
+- TFM validation with helpful error messages for invalid framework identifiers
+- Support for common TFM formats: `net8.0`, `net10.0`, `netcoreapp3.1`, `netstandard2.0`, `net462`, etc.
+
+#### Output Format Enhancements
+- **JSON Output** - Added `targetFrameworks` array in metadata and `applicableToTfms` per change
+- **HTML Output** - Displays target frameworks in summary and annotates TFM-specific changes
+- **Text/Plain Output** - Shows TFM annotations like `[.NET 8.0]` for framework-specific changes
+- **Terminal Output** - Rich display of multi-framework analysis results
+
+#### Architecture Improvements
+- `TfmResultMerger` - Intelligent merging of per-TFM analysis results
+- `TfmChangeCorrelator` - Correlates changes across TFMs to identify commonalities
+- Enhanced `DiffResult` model with `TargetFrameworks` and per-change `ApplicableToTfms`
+- Optimized multi-TFM analysis with parallel processing
+
+#### Documentation
+- Comprehensive TFM support guide (`docs/tfm-support.md`)
+- Sample files demonstrating conditional compilation scenarios
+- Usage examples for single and multiple framework analysis
+
+### Changed
+- Enhanced `DiffOptions` with `TargetFrameworks` property
+- Updated all output formatters to handle TFM metadata
+- Improved error messages for TFM-related validation failures
+
+### Performance
+- Multi-TFM overhead is minimal (~2-2.5x for 3 frameworks vs. single framework)
+- Parallel TFM processing where possible
+- Efficient change correlation algorithms
+
 ## [0.5.0] - 2026-01-15
 
 ### Added

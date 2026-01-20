@@ -45,6 +45,19 @@ Fine-grained whitespace handling with language-aware detection:
 
 See [Whitespace Handling Guide](docs/whitespace-handling.md) for comprehensive details.
 
+### Multi-Target Framework Analysis (v0.9.0) 🎯
+
+Analyze code changes across multiple .NET target frameworks simultaneously:
+
+- **Multi-TFM diff support**: Compare code compiled for different target frameworks (net8.0, net10.0, etc.)
+- **Conditional compilation detection**: Identifies changes within `#if`, `#elif`, preprocessor blocks
+- **Symbol resolution**: Automatically resolves TFM-specific symbols (NET8_0, NET10_0_OR_GREATER, etc.)
+- **TFM-specific change tracking**: Each change indicates which frameworks it applies to
+- **Performance optimized**: Pre-scan detects preprocessor directives, skips multi-TFM analysis when not needed
+- **Parallel processing**: Analyzes multiple TFMs concurrently for faster results
+
+See [Multi-TFM Support Guide](docs/tfm-support.md) for comprehensive details.
+
 ### Core Features
 
 - **Semantic Diff** - Understands code structure, not just text changes
@@ -115,6 +128,25 @@ roslyn-diff diff old.cs new.cs --html report.html --open
 roslyn-diff diff old.cs new.cs --git
 ```
 
+### Multi-Target Framework Analysis
+
+```bash
+# Analyze for a single target framework
+roslyn-diff diff old.cs new.cs -t net8.0
+
+# Analyze multiple target frameworks (repeatable flag)
+roslyn-diff diff old.cs new.cs -t net8.0 -t net10.0
+
+# Analyze multiple TFMs (semicolon-separated)
+roslyn-diff diff old.cs new.cs -T "net8.0;net10.0"
+
+# Multi-TFM with JSON output
+roslyn-diff diff old.cs new.cs -t net8.0 -t net10.0 --json
+
+# Multi-TFM with HTML report
+roslyn-diff diff old.cs new.cs -T "net8.0;net9.0;net10.0" --html report.html --open
+```
+
 ### Compare Specific Classes
 
 ```bash
@@ -174,6 +206,12 @@ roslyn-diff diff <old-file> <new-file> [options]
 |--------|-------|-------------|---------|
 | `--whitespace-mode <mode>` | | Whitespace handling: `exact`, `ignore-leading-trailing`, `ignore-all`, `language-aware` | `exact` |
 | `--ignore-whitespace` | `-w` | Shortcut for `--whitespace-mode ignore-all` | `false` |
+
+**Multi-TFM Options (v0.9.0):**
+| Option | Short | Description | Default |
+|--------|-------|-------------|---------|
+| `--target-framework <tfm>` | `-t` | Target framework moniker (repeatable: `-t net8.0 -t net10.0`) | `null` (NET10_0 assumed) |
+| `--target-frameworks <tfms>` | `-T` | Semicolon-separated TFMs (e.g., `"net8.0;net10.0"`) | `null` |
 
 **Diff Mode Options:**
 | Option | Short | Description | Default |
@@ -246,11 +284,13 @@ roslyn-diff diff old.cs new.cs --json analysis.json
 {
   "$schema": "roslyn-diff-output-v2",
   "metadata": {
-    "version": "0.8.0",
+    "version": "0.9.0",
     "timestamp": "2026-01-19T22:45:12Z",
     "mode": "roslyn",
+    "analyzedTfms": ["net8.0", "net10.0"],
     "options": {
-      "includeNonImpactful": false
+      "includeNonImpactful": false,
+      "targetFrameworks": ["net8.0", "net10.0"]
     }
   },
   "summary": {
@@ -272,6 +312,7 @@ roslyn-diff diff old.cs new.cs --json analysis.json
       "name": "Process",
       "impact": "breakingPublicApi",
       "visibility": "public",
+      "applicableToTfms": ["net8.0", "net10.0"],
       "caveats": ["Parameter rename may break callers using named arguments"]
     }]
   }]
@@ -284,6 +325,7 @@ See [Output Formats Guide](docs/output-formats.md) for complete schema documenta
 
 Interactive HTML report with:
 - **Impact classification badges** - Color-coded indicators (Breaking Public API, Breaking Internal API, Non-Breaking, Formatting Only)
+- **TFM badges** - Framework-specific indicators (net8.0, net10.0) showing which TFMs each change applies to
 - **Caveat warnings** - Yellow warning boxes for edge cases (e.g., "Parameter rename may break named arguments")
 - **Whitespace issue indicators** - Warnings for indentation changes, mixed tabs/spaces, etc.
 - Side-by-side diff view with syntax highlighting
@@ -313,13 +355,14 @@ roslyn-diff diff old.cs new.cs --text
 ```
 Diff: old.cs -> new.cs
 Mode: Roslyn (semantic)
+Target Frameworks: net8.0, net10.0
 
 Summary: +2 (2 total changes)
 
 Changes:
   File: new.cs
-    [+] Method: Multiply (line 5-8)
-    [+] Method: Divide (line 10-13)
+    [+] Method: Multiply (line 5-8) [net8.0, net10.0]
+    [+] Method: Divide (line 10-13) [net8.0, net10.0]
 ```
 
 ### Git Unified Diff (`--git`)
@@ -525,6 +568,7 @@ See the [Synaptic Canvas documentation](https://github.com/randlee/synaptic-canv
 
 - **[Impact Classification Guide](docs/impact-classification.md)** - Complete guide to impact levels, filtering, caveats, and use cases (v0.7.0)
 - **[Whitespace Handling Guide](docs/whitespace-handling.md)** - Whitespace modes, language-aware detection, and best practices (v0.8.0)
+- **[Multi-TFM Support Guide](docs/tfm-support.md)** - Multi-target framework analysis, conditional compilation detection, and advanced scenarios (v0.9.0)
 - [Output Formats](docs/output-formats.md) - Format specifications, JSON Schema v2, and feature comparison
 - [Sample Outputs](samples/README.md) - Example diffs with impact classification
 

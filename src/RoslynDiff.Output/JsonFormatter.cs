@@ -86,7 +86,8 @@ public class JsonFormatter : IOutputFormatter
                 IncludeContent = options.IncludeContent,
                 ContextLines = options.ContextLines,
                 IncludeNonImpactful = options.IncludeNonImpactful
-            }
+            },
+            TargetFrameworks = result.AnalyzedTfms
         };
     }
 
@@ -213,7 +214,8 @@ public class JsonFormatter : IOutputFormatter
                 : null,
             Content = options.IncludeContent ? (change.NewContent ?? change.OldContent) : null,
             OldContent = options.IncludeContent && change.Type == ChangeType.Modified ? change.OldContent : null,
-            Children = filteredChildren?.Count > 0 ? filteredChildren : null
+            Children = filteredChildren?.Count > 0 ? filteredChildren : null,
+            ApplicableToTfms = change.ApplicableToTfms?.Count > 0 ? change.ApplicableToTfms.ToList() : null
         };
     }
 
@@ -286,6 +288,35 @@ public class JsonFormatter : IOutputFormatter
         public required DateTimeOffset Timestamp { get; init; }
         public required string Mode { get; init; }
         public required JsonMetadataOptions Options { get; init; }
+
+        /// <summary>
+        /// Gets the Target Framework Monikers (TFMs) that were analyzed during this diff operation.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This property indicates which target frameworks were analyzed when comparing multi-targeted projects.
+        /// The value interpretation is as follows:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// <description>
+        /// <c>null</c> - No TFM analysis was performed. This field will be omitted from the JSON output
+        /// for backward compatibility. This is the default for projects that are not multi-targeted or
+        /// when TFM analysis is not requested.
+        /// </description>
+        /// </item>
+        /// <item>
+        /// <description>
+        /// List with values - The specified TFMs were analyzed during the diff operation. For example,
+        /// <c>["net8.0", "net10.0"]</c> indicates both .NET 8.0 and .NET 10.0 were analyzed.
+        /// Individual changes may specify which TFMs they apply to via
+        /// <see cref="JsonChange.ApplicableToTfms"/>.
+        /// </description>
+        /// </item>
+        /// </list>
+        /// </remarks>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public IReadOnlyList<string>? TargetFrameworks { get; init; }
     }
 
     /// <summary>
@@ -350,6 +381,42 @@ public class JsonFormatter : IOutputFormatter
         public string? Content { get; init; }
         public string? OldContent { get; init; }
         public List<JsonChange>? Children { get; init; }
+
+        /// <summary>
+        /// Gets the Target Framework Monikers (TFMs) to which this change applies.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This property indicates the specific TFMs where this change is applicable when analyzing
+        /// multi-targeted projects. The value interpretation is as follows:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// <description>
+        /// <c>null</c> - No TFM analysis was performed. This field will be omitted from the JSON output
+        /// for backward compatibility. This is the default for projects that are not multi-targeted or
+        /// when TFM analysis is not requested.
+        /// </description>
+        /// </item>
+        /// <item>
+        /// <description>
+        /// Empty list - The change applies to all analyzed TFMs. This indicates the change is
+        /// common across all target frameworks. This field will be omitted from the JSON output
+        /// when the list is empty.
+        /// </description>
+        /// </item>
+        /// <item>
+        /// <description>
+        /// List with values - The change applies only to the specified TFMs. For example,
+        /// <c>["net8.0", "net10.0"]</c> indicates the change exists only in those specific frameworks.
+        /// This occurs when conditional compilation or framework-specific APIs cause changes to appear
+        /// in some TFMs but not others.
+        /// </description>
+        /// </item>
+        /// </list>
+        /// </remarks>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public IReadOnlyList<string>? ApplicableToTfms { get; init; }
     }
 
     /// <summary>

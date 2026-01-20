@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynDiff.Core.Comparison;
 using RoslynDiff.Core.Matching;
 using RoslynDiff.Core.Models;
+using RoslynDiff.Core.Tfm;
 using RoslynDiff.Output;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -29,6 +30,22 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
     /// <summary>
     /// Settings for the class command.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Usage: roslyn-diff class &lt;old-spec&gt; &lt;new-spec&gt; [options]
+    /// </para>
+    /// <para>
+    /// Examples:
+    /// <list type="bullet">
+    /// <item>roslyn-diff class old.cs:MyClass new.cs:MyClass</item>
+    /// <item>roslyn-diff class old.cs new.cs --match-by similarity</item>
+    /// <item>roslyn-diff class old.cs new.cs -t net8.0 -t net9.0</item>
+    /// <item>roslyn-diff class old.cs new.cs -T "net8.0;net9.0;net10.0"</item>
+    /// <item>roslyn-diff class old.cs new.cs --json report.json</item>
+    /// <item>roslyn-diff class old.cs new.cs --html report.html --open</item>
+    /// </list>
+    /// </para>
+    /// </remarks>
     public sealed class Settings : CommandSettings
     {
         /// <summary>
@@ -138,6 +155,28 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
         [DefaultValue(false)]
         public bool NoColor { get; init; }
 
+        /// <summary>
+        /// Gets or sets a single target framework moniker (TFM) to analyze.
+        /// </summary>
+        /// <remarks>
+        /// This option can be specified multiple times to analyze multiple TFMs.
+        /// Example: -t net8.0 -t net9.0
+        /// </remarks>
+        [CommandOption("-t|--target-framework <TFM>")]
+        [Description("Target framework moniker (repeatable: -t net8.0 -t net9.0)")]
+        public string[]? TargetFramework { get; init; }
+
+        /// <summary>
+        /// Gets or sets a semicolon-separated list of target framework monikers (TFMs) to analyze.
+        /// </summary>
+        /// <remarks>
+        /// Alternative to multiple -t options. Accepts semicolon-separated TFMs.
+        /// Example: -T "net8.0;net9.0;net10.0"
+        /// </remarks>
+        [CommandOption("-T|--target-frameworks <TFMS>")]
+        [Description("Semicolon-separated TFMs (-T \"net8.0;net9.0\")")]
+        public string? TargetFrameworks { get; init; }
+
         /// <inheritdoc/>
         public override ValidationResult Validate()
         {
@@ -195,6 +234,18 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
             if (matchStrategy == ClassMatchStrategy.Interface && string.IsNullOrWhiteSpace(settings.InterfaceName))
             {
                 AnsiConsole.MarkupLine("[red]Error: Interface name is required when using interface matching strategy[/]");
+                return OutputOrchestrator.ExitCodeError;
+            }
+
+            // Parse and validate TFMs
+            IReadOnlyList<string>? targetFrameworks = null;
+            try
+            {
+                targetFrameworks = ParseTargetFrameworks(settings.TargetFramework, settings.TargetFrameworks);
+            }
+            catch (ArgumentException ex)
+            {
+                AnsiConsole.MarkupLine($"[red]Error: {ex.Message}[/]");
                 return OutputOrchestrator.ExitCodeError;
             }
 
@@ -273,7 +324,7 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
             }
 
             // Perform comparison
-            var result = CompareClasses(matchedOldClass, matchedNewClass, oldFilePath, newFilePath);
+            var result = CompareClasses(matchedOldClass, matchedNewClass, oldFilePath, newFilePath, targetFrameworks);
 
             // Create output settings from command settings
             var outputSettings = new OutputSettings
@@ -314,6 +365,70 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
         };
     }
 
+    /// <summary>
+    /// Parses and validates target framework monikers from CLI options.
+    /// </summary>
+    /// <param name="singleTfms">Array of individual TFMs from -t/--target-framework option.</param>
+    /// <param name="multipleTfms">Semicolon-separated TFMs from -T/--target-frameworks option.</param>
+    /// <returns>A read-only list of normalized TFMs, or null if no TFMs were specified.</returns>
+    /// <exception cref="ArgumentException">Thrown when both options are specified or when invalid TFMs are provided.</exception>
+    private static IReadOnlyList<string>? ParseTargetFrameworks(string[]? singleTfms, string? multipleTfms)
+    {
+        var hasSingleTfms = singleTfms is not null && singleTfms.Length > 0;
+        var hasMultipleTfms = !string.IsNullOrWhiteSpace(multipleTfms);
+
+        // Both options are mutually exclusive
+        if (hasSingleTfms && hasMultipleTfms)
+        {
+            throw new ArgumentException(
+                "Cannot specify both --target-framework (-t) and --target-frameworks (-T). Use one or the other.");
+        }
+
+        // No TFMs specified - return null (default behavior)
+        if (!hasSingleTfms && !hasMultipleTfms)
+        {
+            return null;
+        }
+
+        var tfmList = new List<string>();
+
+        // Parse single TFMs (-t option, repeatable)
+        if (hasSingleTfms)
+        {
+            foreach (var tfm in singleTfms!)
+            {
+                try
+                {
+                    var normalized = TfmParser.ParseSingle(tfm);
+                    tfmList.Add(normalized);
+                }
+                catch (ArgumentException ex)
+                {
+                    throw new ArgumentException($"Invalid TFM '{tfm}': {ex.Message}");
+                }
+            }
+        }
+
+        // Parse semicolon-separated TFMs (-T option)
+        if (hasMultipleTfms)
+        {
+            try
+            {
+                var parsed = TfmParser.ParseMultiple(multipleTfms!);
+                tfmList.AddRange(parsed);
+            }
+            catch (ArgumentException ex)
+            {
+                throw new ArgumentException($"Invalid TFM list: {ex.Message}");
+            }
+        }
+
+        // Remove duplicates while preserving order
+        var distinctTfms = tfmList.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+
+        return distinctTfms.Count > 0 ? distinctTfms : null;
+    }
+
     private static TypeDeclarationSyntax? FindClass(SyntaxNode root, string? className)
     {
         var classes = root.DescendantNodes()
@@ -334,7 +449,8 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
         TypeDeclarationSyntax? oldClass,
         TypeDeclarationSyntax? newClass,
         string oldFilePath,
-        string newFilePath)
+        string newFilePath,
+        IReadOnlyList<string>? targetFrameworks)
     {
         var changes = new List<Change>();
         var nodeMatcher = new NodeMatcher();
@@ -348,7 +464,8 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
                 NewPath = newFilePath,
                 Mode = DiffMode.Roslyn,
                 FileChanges = [],
-                Stats = new DiffStats()
+                Stats = new DiffStats(),
+                AnalyzedTfms = targetFrameworks
             };
         }
 
@@ -484,7 +601,8 @@ public sealed class ClassCommand : AsyncCommand<ClassCommand.Settings>
             NewPath = newFilePath,
             Mode = DiffMode.Roslyn,
             FileChanges = [fileChange],
-            Stats = stats
+            Stats = stats,
+            AnalyzedTfms = targetFrameworks
         };
     }
 }

@@ -106,6 +106,52 @@ public record Change
     public IReadOnlyList<string>? Caveats { get; init; }
 
     /// <summary>
+    /// Gets the Target Framework Monikers (TFMs) to which this change applies.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This property indicates the specific TFMs where this change is applicable when analyzing
+    /// multi-targeted projects. The value interpretation is as follows:
+    /// </para>
+    /// <list type="bullet">
+    /// <item>
+    /// <description>
+    /// <c>null</c> - No TFM analysis was performed. This is the default for projects that are
+    /// not multi-targeted or when TFM analysis is not requested.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// Empty list - The change applies to all analyzed TFMs. This indicates the change is
+    /// common across all target frameworks.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// List with values - The change applies only to the specified TFMs. For example,
+    /// <c>["net8.0", "net10.0"]</c> indicates the change exists only in those specific frameworks.
+    /// </description>
+    /// </item>
+    /// </list>
+    /// <para>
+    /// This property enables TFM-specific change tracking for projects that use conditional
+    /// compilation or framework-specific APIs.
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// // Change applies only to .NET 8.0 and .NET 10.0
+    /// var change = new Change
+    /// {
+    ///     Type = ChangeType.Added,
+    ///     Name = "NewMethod",
+    ///     ApplicableToTfms = new[] { "net8.0", "net10.0" }
+    /// };
+    /// </code>
+    /// </example>
+    public IReadOnlyList<string>? ApplicableToTfms { get; init; }
+
+    /// <summary>
     /// Gets the whitespace issues detected in this change.
     /// </summary>
     /// <remarks>
