@@ -1,6 +1,6 @@
 # Multi-Target Framework Support Guide
 
-**Version:** 0.9.0+
+**Version:** 0.8.0+
 **Last Updated:** January 2026
 
 roslyn-diff includes comprehensive support for analyzing code changes across multiple .NET target frameworks (TFMs). This allows developers to understand how changes behave differently across framework versions, particularly when using conditional compilation (`#if`, `#elif`) or framework-specific APIs.
@@ -389,7 +389,7 @@ Multi-TFM information appears in two places:
 {
   "$schema": "roslyn-diff-output-v2",
   "metadata": {
-    "version": "0.9.0",
+    "version": "0.8.0",
     "analyzedTfms": ["net8.0", "net10.0"],
     "options": {
       "targetFrameworks": ["net8.0", "net10.0"]

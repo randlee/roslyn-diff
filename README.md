@@ -45,7 +45,7 @@ Fine-grained whitespace handling with language-aware detection:
 
 See [Whitespace Handling Guide](docs/whitespace-handling.md) for comprehensive details.
 
-### Multi-Target Framework Analysis (v0.9.0) 🎯
+### Multi-Target Framework Analysis (v0.8.0) 🎯
 
 Analyze code changes across multiple .NET target frameworks simultaneously:
 
@@ -207,7 +207,7 @@ roslyn-diff diff <old-file> <new-file> [options]
 | `--whitespace-mode <mode>` | | Whitespace handling: `exact`, `ignore-leading-trailing`, `ignore-all`, `language-aware` | `exact` |
 | `--ignore-whitespace` | `-w` | Shortcut for `--whitespace-mode ignore-all` | `false` |
 
-**Multi-TFM Options (v0.9.0):**
+**Multi-TFM Options (v0.8.0):**
 | Option | Short | Description | Default |
 |--------|-------|-------------|---------|
 | `--target-framework <tfm>` | `-t` | Target framework moniker (repeatable: `-t net8.0 -t net10.0`) | `null` (NET10_0 assumed) |
@@ -284,7 +284,7 @@ roslyn-diff diff old.cs new.cs --json analysis.json
 {
   "$schema": "roslyn-diff-output-v2",
   "metadata": {
-    "version": "0.9.0",
+    "version": "0.8.0",
     "timestamp": "2026-01-19T22:45:12Z",
     "mode": "roslyn",
     "analyzedTfms": ["net8.0", "net10.0"],
@@ -568,7 +568,7 @@ See the [Synaptic Canvas documentation](https://github.com/randlee/synaptic-canv
 
 - **[Impact Classification Guide](docs/impact-classification.md)** - Complete guide to impact levels, filtering, caveats, and use cases (v0.7.0)
 - **[Whitespace Handling Guide](docs/whitespace-handling.md)** - Whitespace modes, language-aware detection, and best practices (v0.8.0)
-- **[Multi-TFM Support Guide](docs/tfm-support.md)** - Multi-target framework analysis, conditional compilation detection, and advanced scenarios (v0.9.0)
+- **[Multi-TFM Support Guide](docs/tfm-support.md)** - Multi-target framework analysis, conditional compilation detection, and advanced scenarios (v0.8.0)
 - [Output Formats](docs/output-formats.md) - Format specifications, JSON Schema v2, and feature comparison
 - [Sample Outputs](samples/README.md) - Example diffs with impact classification
 
