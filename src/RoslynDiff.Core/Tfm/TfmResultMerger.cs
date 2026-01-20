@@ -42,15 +42,42 @@ public static class TfmResultMerger
     /// </description>
     /// </item>
     /// </list>
+    /// <para>
+    /// This method is typically used by the differ engine when analyzing multi-targeted projects.
+    /// It consolidates per-TFM results into a single result that clearly indicates which changes
+    /// are universal (present in all TFMs) and which are TFM-specific.
+    /// </para>
     /// </remarks>
     /// <example>
     /// <code>
+    /// // Merge results from multiple TFM analyses
     /// var tfmResults = new List&lt;(string, DiffResult)&gt;
     /// {
-    ///     ("net8.0", result1),
-    ///     ("net10.0", result2)
+    ///     ("net8.0", net8Result),
+    ///     ("net10.0", net10Result)
     /// };
     /// var merged = TfmResultMerger.Merge(tfmResults, options);
+    ///
+    /// // Check which TFMs were analyzed
+    /// Console.WriteLine($"Analyzed: {string.Join(", ", merged.AnalyzedTfms)}");
+    /// // Output: "Analyzed: net8.0, net10.0"
+    ///
+    /// // Inspect changes for TFM applicability
+    /// foreach (var change in merged.FileChanges[0].Changes)
+    /// {
+    ///     if (change.ApplicableToTfms == null)
+    ///     {
+    ///         Console.WriteLine($"{change.Name}: No TFM analysis");
+    ///     }
+    ///     else if (change.ApplicableToTfms.Count == 0)
+    ///     {
+    ///         Console.WriteLine($"{change.Name}: All TFMs");
+    ///     }
+    ///     else
+    ///     {
+    ///         Console.WriteLine($"{change.Name}: Only {string.Join(", ", change.ApplicableToTfms)}");
+    ///     }
+    /// }
     /// </code>
     /// </example>
     public static DiffResult Merge(

@@ -5,6 +5,50 @@ using System.Text.RegularExpressions;
 /// <summary>
 /// Provides parsing and validation functionality for Target Framework Monikers (TFMs).
 /// </summary>
+/// <remarks>
+/// <para>
+/// This class handles the validation and normalization of TFM strings to ensure they conform
+/// to the expected format and naming conventions used by .NET. It supports parsing both single
+/// TFMs and semicolon-separated lists of TFMs.
+/// </para>
+/// <para>
+/// Supported TFM formats:
+/// </para>
+/// <list type="bullet">
+/// <item>
+/// <description>.NET 5+ (modern): netX.0 where X >= 5 (e.g., net5.0, net6.0, net8.0, net10.0)</description>
+/// </item>
+/// <item>
+/// <description>.NET Framework: netXY or netX.Y[.Z] where X &lt;= 4 (e.g., net462, net48, net4.8)</description>
+/// </item>
+/// <item>
+/// <description>.NET Core: netcoreappX.Y (e.g., netcoreapp3.1, netcoreapp2.1)</description>
+/// </item>
+/// <item>
+/// <description>.NET Standard: netstandardX.Y (e.g., netstandard2.0, netstandard2.1)</description>
+/// </item>
+/// </list>
+/// <para>
+/// All TFMs are normalized to lowercase during parsing to ensure consistent handling.
+/// </para>
+/// </remarks>
+/// <example>
+/// <code>
+/// // Parse a single TFM
+/// var normalized = TfmParser.ParseSingle("NET8.0");
+/// // Returns: "net8.0"
+///
+/// // Parse multiple TFMs
+/// var tfms = TfmParser.ParseMultiple("net8.0;net10.0;netstandard2.1");
+/// // Returns: ["net8.0", "net10.0", "netstandard2.1"]
+///
+/// // Validate a TFM format
+/// if (TfmParser.Validate("net8.0"))
+/// {
+///     Console.WriteLine("Valid TFM");
+/// }
+/// </code>
+/// </example>
 public static partial class TfmParser
 {
     private static readonly HashSet<string> ValidFrameworks = new(StringComparer.OrdinalIgnoreCase)
@@ -28,6 +72,49 @@ public static partial class TfmParser
     /// <returns>The normalized TFM string in lowercase with version numbers.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="tfm"/> is null.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="tfm"/> is empty, whitespace, or has an invalid format.</exception>
+    /// <remarks>
+    /// <para>
+    /// This method validates and normalizes a TFM string to ensure it conforms to .NET's TFM
+    /// naming conventions. The normalization process includes:
+    /// </para>
+    /// <list type="number">
+    /// <item>
+    /// <description>Trimming leading and trailing whitespace</description>
+    /// </item>
+    /// <item>
+    /// <description>Converting to lowercase for case-insensitive matching</description>
+    /// </item>
+    /// <item>
+    /// <description>Validating format against TFM patterns</description>
+    /// </item>
+    /// </list>
+    /// <para>
+    /// The method is strict about TFM format requirements. For example, .NET 5+ TFMs must
+    /// include the ".0" suffix (e.g., "net8.0" is valid, "net8" is invalid).
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// // Parse and normalize a TFM
+    /// var normalized = TfmParser.ParseSingle("NET8.0");
+    /// Console.WriteLine(normalized); // Outputs: "net8.0"
+    ///
+    /// // Whitespace is trimmed
+    /// var normalized2 = TfmParser.ParseSingle("  net10.0  ");
+    /// Console.WriteLine(normalized2); // Outputs: "net10.0"
+    ///
+    /// // Invalid TFMs throw ArgumentException
+    /// try
+    /// {
+    ///     var invalid = TfmParser.ParseSingle("net8"); // Missing ".0"
+    /// }
+    /// catch (ArgumentException ex)
+    /// {
+    ///     Console.WriteLine(ex.Message);
+    ///     // "Invalid TFM format: 'net8'. Expected format is 'net8.0'..."
+    /// }
+    /// </code>
+    /// </example>
     public static string ParseSingle(string tfm)
     {
         if (tfm == null)
@@ -56,6 +143,70 @@ public static partial class TfmParser
     /// <returns>An array of normalized TFM strings, with duplicates removed.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="tfms"/> is null.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="tfms"/> is empty, whitespace, or contains invalid TFMs.</exception>
+    /// <remarks>
+    /// <para>
+    /// This method parses a semicolon-delimited list of TFMs, commonly used in MSBuild project
+    /// files (e.g., &lt;TargetFrameworks&gt;net8.0;net10.0&lt;/TargetFrameworks&gt;). Each TFM in the
+    /// list is validated and normalized individually.
+    /// </para>
+    /// <para>
+    /// Processing steps:
+    /// </para>
+    /// <list type="number">
+    /// <item>
+    /// <description>Split on semicolon (;) separator</description>
+    /// </item>
+    /// <item>
+    /// <description>Trim whitespace from each TFM</description>
+    /// </item>
+    /// <item>
+    /// <description>Remove empty entries</description>
+    /// </item>
+    /// <item>
+    /// <description>Validate and normalize each TFM using <see cref="ParseSingle"/></description>
+    /// </item>
+    /// <item>
+    /// <description>Remove duplicates (case-insensitive)</description>
+    /// </item>
+    /// <item>
+    /// <description>Preserve original order</description>
+    /// </item>
+    /// </list>
+    /// <para>
+    /// If any TFM in the list is invalid, an <see cref="ArgumentException"/> is thrown with
+    /// details about all invalid TFMs found.
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// // Parse multiple TFMs from a semicolon-separated string
+    /// var tfms = TfmParser.ParseMultiple("net8.0;net10.0;netstandard2.1");
+    /// // Returns: ["net8.0", "net10.0", "netstandard2.1"]
+    ///
+    /// // Duplicates are removed (case-insensitive)
+    /// var tfms2 = TfmParser.ParseMultiple("net8.0;NET8.0;net10.0");
+    /// // Returns: ["net8.0", "net10.0"]
+    ///
+    /// // Whitespace is handled gracefully
+    /// var tfms3 = TfmParser.ParseMultiple("  net8.0  ;  net10.0  ");
+    /// // Returns: ["net8.0", "net10.0"]
+    ///
+    /// // Empty entries are ignored
+    /// var tfms4 = TfmParser.ParseMultiple("net8.0;;net10.0");
+    /// // Returns: ["net8.0", "net10.0"]
+    ///
+    /// // Invalid TFMs in the list throw ArgumentException
+    /// try
+    /// {
+    ///     var invalid = TfmParser.ParseMultiple("net8.0;invalid;net10.0");
+    /// }
+    /// catch (ArgumentException ex)
+    /// {
+    ///     Console.WriteLine(ex.Message);
+    ///     // "Invalid TFM(s) in list: 'invalid': Invalid TFM format..."
+    /// }
+    /// </code>
+    /// </example>
     public static string[] ParseMultiple(string tfms)
     {
         if (tfms == null)

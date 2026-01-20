@@ -3,6 +3,53 @@ namespace RoslynDiff.Core.Tfm;
 /// <summary>
 /// Resolves Target Framework Monikers (TFMs) to their corresponding preprocessor symbols.
 /// </summary>
+/// <remarks>
+/// <para>
+/// This class provides the mapping between .NET target framework monikers and the preprocessor
+/// symbols that are automatically defined by the compiler for each framework. These symbols
+/// are used in conditional compilation directives to create framework-specific code.
+/// </para>
+/// <para>
+/// Supported TFM families:
+/// </para>
+/// <list type="bullet">
+/// <item>
+/// <description>.NET Framework: net20, net35, net40, net45-net48</description>
+/// </item>
+/// <item>
+/// <description>.NET Core: netcoreapp1.0-netcoreapp3.1</description>
+/// </item>
+/// <item>
+/// <description>.NET 5+: net5.0, net6.0, net7.0, net8.0, net9.0, net10.0</description>
+/// </item>
+/// <item>
+/// <description>.NET Standard: netstandard1.0-netstandard2.1</description>
+/// </item>
+/// </list>
+/// <para>
+/// For .NET 5 and later, the resolver automatically includes OR_GREATER symbols, which match
+/// the compiler's behavior of defining symbols for the current version and all lower versions
+/// (e.g., net8.0 defines NET8_0, NET8_0_OR_GREATER, NET7_0_OR_GREATER, ..., NET5_0_OR_GREATER).
+/// </para>
+/// </remarks>
+/// <example>
+/// <code>
+/// // Get symbols for .NET 8.0
+/// var symbols = TfmSymbolResolver.GetPreprocessorSymbols("net8.0");
+/// // Returns: ["NET8_0", "NET5_0_OR_GREATER", "NET6_0_OR_GREATER",
+/// //           "NET7_0_OR_GREATER", "NET8_0_OR_GREATER"]
+///
+/// // Get symbols for .NET Framework 4.8
+/// var symbols = TfmSymbolResolver.GetPreprocessorSymbols("net48");
+/// // Returns: ["NET48", "NETFRAMEWORK"]
+///
+/// // Get default symbols (NET10.0)
+/// var defaultSymbols = TfmSymbolResolver.GetDefaultSymbols();
+/// // Returns: ["NET10_0", "NET5_0_OR_GREATER", "NET6_0_OR_GREATER",
+/// //           "NET7_0_OR_GREATER", "NET8_0_OR_GREATER", "NET9_0_OR_GREATER",
+/// //           "NET10_0_OR_GREATER"]
+/// </code>
+/// </example>
 public static class TfmSymbolResolver
 {
     private static readonly Dictionary<string, string[]> TfmSymbolMap = new(StringComparer.OrdinalIgnoreCase)
@@ -59,6 +106,45 @@ public static class TfmSymbolResolver
     /// <param name="tfm">The Target Framework Moniker (e.g., "net8.0", "netstandard2.0").</param>
     /// <returns>An array of preprocessor symbols for the specified TFM.</returns>
     /// <exception cref="ArgumentException">Thrown when the TFM is null, empty, or not recognized.</exception>
+    /// <remarks>
+    /// <para>
+    /// This method returns all preprocessor symbols that the .NET compiler automatically defines
+    /// for the specified target framework. These symbols can be used in #if, #elif, and other
+    /// conditional compilation directives.
+    /// </para>
+    /// <para>
+    /// The TFM parameter is case-insensitive and whitespace-tolerant. For .NET 5 and later versions,
+    /// the method automatically includes all applicable OR_GREATER symbols (e.g., NET5_0_OR_GREATER,
+    /// NET6_0_OR_GREATER, etc., up to the specified version).
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// // Get symbols for .NET 8.0 - includes version-specific and OR_GREATER symbols
+    /// var net8Symbols = TfmSymbolResolver.GetPreprocessorSymbols("net8.0");
+    /// // Returns: ["NET8_0", "NET5_0_OR_GREATER", "NET6_0_OR_GREATER",
+    /// //           "NET7_0_OR_GREATER", "NET8_0_OR_GREATER"]
+    ///
+    /// // Get symbols for .NET Standard 2.0
+    /// var netstandardSymbols = TfmSymbolResolver.GetPreprocessorSymbols("netstandard2.0");
+    /// // Returns: ["NETSTANDARD2_0", "NETSTANDARD"]
+    ///
+    /// // Case-insensitive and whitespace-tolerant
+    /// var symbols = TfmSymbolResolver.GetPreprocessorSymbols("  NET8.0  ");
+    /// // Works correctly
+    ///
+    /// // Invalid TFM throws ArgumentException
+    /// try
+    /// {
+    ///     var invalid = TfmSymbolResolver.GetPreprocessorSymbols("invalid-tfm");
+    /// }
+    /// catch (ArgumentException ex)
+    /// {
+    ///     Console.WriteLine(ex.Message);
+    ///     // "Unrecognized TFM: 'invalid-tfm'. Supported TFMs include..."
+    /// }
+    /// </code>
+    /// </example>
     public static string[] GetPreprocessorSymbols(string tfm)
     {
         if (string.IsNullOrWhiteSpace(tfm))
@@ -93,6 +179,28 @@ public static class TfmSymbolResolver
     /// Gets the default preprocessor symbols (NET10_0 with all applicable OR_GREATER symbols).
     /// </summary>
     /// <returns>An array of default preprocessor symbols.</returns>
+    /// <remarks>
+    /// <para>
+    /// This method returns the preprocessor symbols for .NET 10.0, which is the latest version
+    /// supported by this resolver. This is used as the default when no specific TFM is provided.
+    /// </para>
+    /// <para>
+    /// The returned symbols include NET10_0 and all OR_GREATER symbols from .NET 5.0 through .NET 10.0.
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// var defaultSymbols = TfmSymbolResolver.GetDefaultSymbols();
+    /// // Returns: ["NET10_0", "NET5_0_OR_GREATER", "NET6_0_OR_GREATER",
+    /// //           "NET7_0_OR_GREATER", "NET8_0_OR_GREATER", "NET9_0_OR_GREATER",
+    /// //           "NET10_0_OR_GREATER"]
+    ///
+    /// // Use default symbols when TFM is not specified
+    /// var symbols = options.TargetFrameworks?.Any() == true
+    ///     ? TfmSymbolResolver.GetPreprocessorSymbols(options.TargetFrameworks[0])
+    ///     : TfmSymbolResolver.GetDefaultSymbols();
+    /// </code>
+    /// </example>
     public static string[] GetDefaultSymbols()
     {
         return DefaultSymbols;
