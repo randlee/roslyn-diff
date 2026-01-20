@@ -4,6 +4,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.VisualBasic;
 using RoslynDiff.Core.Comparison;
 using RoslynDiff.Core.Models;
+using RoslynDiff.Core.Tfm;
+using System.Collections.Concurrent;
 
 /// <summary>
 /// Performs semantic diff comparison for VB.NET source code using Roslyn.
@@ -63,10 +65,58 @@ public sealed class VisualBasicDiffer : IDiffer
         ArgumentNullException.ThrowIfNull(newContent);
         ArgumentNullException.ThrowIfNull(options);
 
-        // Parse both sources
+        // Pre-scan: Check if source code contains preprocessor directives
+        var hasPreprocessorDirectives =
+            PreprocessorDirectiveDetector.HasPreprocessorDirectives(oldContent) ||
+            PreprocessorDirectiveDetector.HasPreprocessorDirectives(newContent);
+
+        // Determine TFMs to analyze
+        var tfmsToAnalyze = DetermineTfmsToAnalyze(options, hasPreprocessorDirectives);
+
+        // Single TFM path (optimized)
+        if (tfmsToAnalyze.Count == 1)
+        {
+            return CompareSingleTfm(oldContent, newContent, options, tfmsToAnalyze[0]);
+        }
+
+        // Multi-TFM path (parallel processing)
+        return CompareMultipleTfms(oldContent, newContent, options, tfmsToAnalyze);
+    }
+
+    /// <summary>
+    /// Determines which TFMs should be analyzed based on options and content.
+    /// </summary>
+    private static List<string> DetermineTfmsToAnalyze(DiffOptions options, bool hasPreprocessorDirectives)
+    {
+        // If no TFMs specified in options, use default (NET10_0)
+        if (options.TargetFrameworks == null || options.TargetFrameworks.Count == 0)
+        {
+            return new List<string> { "net10.0" };
+        }
+
+        // If no preprocessor directives detected, only analyze first TFM (optimization)
+        if (!hasPreprocessorDirectives)
+        {
+            return new List<string> { options.TargetFrameworks[0] };
+        }
+
+        // Multiple TFMs with preprocessor directives - analyze all
+        return options.TargetFrameworks.ToList();
+    }
+
+    /// <summary>
+    /// Compares source code for a single TFM.
+    /// </summary>
+    private DiffResult CompareSingleTfm(string oldContent, string newContent, DiffOptions options, string tfm)
+    {
+        // Get preprocessor symbols for the TFM
+        var symbols = TfmSymbolResolver.GetPreprocessorSymbols(tfm);
+
+        // Parse both sources with TFM-specific symbols
         var parseOptions = new VisualBasicParseOptions(
             languageVersion: LanguageVersion.Latest,
-            documentationMode: DocumentationMode.Parse);
+            documentationMode: DocumentationMode.Parse,
+            preprocessorSymbols: symbols.Select(s => new KeyValuePair<string, object>(s, true)));
 
         var oldTree = VisualBasicSyntaxTree.ParseText(oldContent, parseOptions, options.OldPath ?? string.Empty);
         var newTree = VisualBasicSyntaxTree.ParseText(newContent, parseOptions, options.NewPath ?? string.Empty);
@@ -92,6 +142,7 @@ public sealed class VisualBasicDiffer : IDiffer
             OldPath = options.OldPath,
             NewPath = options.NewPath,
             Mode = DiffMode.Roslyn,
+            AnalyzedTfms = new[] { tfm },
             FileChanges =
             [
                 new FileChange
@@ -102,6 +153,86 @@ public sealed class VisualBasicDiffer : IDiffer
             ],
             Stats = stats
         };
+    }
+
+    /// <summary>
+    /// Compares source code for multiple TFMs in parallel.
+    /// </summary>
+    private DiffResult CompareMultipleTfms(string oldContent, string newContent, DiffOptions options, List<string> tfms)
+    {
+        // Parse and compare for each TFM in parallel
+        var tfmResults = new ConcurrentBag<(string Tfm, IReadOnlyList<Change> Changes)>();
+
+        Parallel.ForEach(tfms, tfm =>
+        {
+            // Get preprocessor symbols for the TFM
+            var symbols = TfmSymbolResolver.GetPreprocessorSymbols(tfm);
+
+            // Parse both sources with TFM-specific symbols
+            var parseOptions = new VisualBasicParseOptions(
+                languageVersion: LanguageVersion.Latest,
+                documentationMode: DocumentationMode.Parse,
+                preprocessorSymbols: symbols.Select(s => new KeyValuePair<string, object>(s, true)));
+
+            var oldTree = VisualBasicSyntaxTree.ParseText(oldContent, parseOptions, options.OldPath ?? string.Empty);
+            var newTree = VisualBasicSyntaxTree.ParseText(newContent, parseOptions, options.NewPath ?? string.Empty);
+
+            // Check for parse errors
+            var oldErrors = oldTree.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
+            var newErrors = newTree.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
+
+            if (oldErrors.Count > 0 || newErrors.Count > 0)
+            {
+                // Skip this TFM if there are parse errors
+                return;
+            }
+
+            // Compare using VisualBasicSyntaxComparer
+            var changes = _comparer.Compare(oldTree, newTree, options);
+
+            tfmResults.Add((tfm, changes));
+        });
+
+        // Merge results from all TFMs
+        var mergedChanges = MergeTfmResults(tfmResults.ToList());
+
+        // Calculate stats
+        var stats = CalculateStats(mergedChanges);
+
+        return new DiffResult
+        {
+            OldPath = options.OldPath,
+            NewPath = options.NewPath,
+            Mode = DiffMode.Roslyn,
+            AnalyzedTfms = tfms,
+            FileChanges =
+            [
+                new FileChange
+                {
+                    Path = options.NewPath ?? options.OldPath,
+                    Changes = mergedChanges
+                }
+            ],
+            Stats = stats
+        };
+    }
+
+    /// <summary>
+    /// Merges changes from multiple TFM analyses.
+    /// This is a placeholder implementation until TfmResultMerger is available.
+    /// </summary>
+    private static List<Change> MergeTfmResults(List<(string Tfm, IReadOnlyList<Change> Changes)> tfmResults)
+    {
+        if (tfmResults.Count == 0)
+        {
+            return new List<Change>();
+        }
+
+        // Placeholder: For now, just return changes from the first TFM
+        // TODO: Sprint 3 will implement proper TfmResultMerger to intelligently merge
+        // changes and populate ApplicableToTfms for each change
+        var firstResult = tfmResults[0];
+        return firstResult.Changes.ToList();
     }
 
     private static DiffResult CreateParseErrorResult(DiffOptions options, string errorMessage)
