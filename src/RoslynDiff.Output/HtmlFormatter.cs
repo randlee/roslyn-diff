@@ -776,6 +776,17 @@ public partial class HtmlFormatter : IOutputFormatter
             color: #9ca3af;
         }
 
+        /* TFM badges */
+        .tfm-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            background-color: #e7f5ff;
+            color: #1971c2;
+            margin-left: 6px;
+            font-weight: 500;
+        }
+
         /* Caveat warnings */
         .change-caveats {
             font-size: 11px;
@@ -924,6 +935,14 @@ public partial class HtmlFormatter : IOutputFormatter
             var modeText = result.Mode == DiffMode.Roslyn ? "Roslyn Semantic" : "Line-by-Line";
             sb.AppendLine("                    <span class=\"stat-separator\">|</span>");
             sb.AppendLine($"                    <span class=\"stat-inline\">Mode: {modeText}</span>");
+
+            // TFM indicator
+            if (result.AnalyzedTfms != null && result.AnalyzedTfms.Count > 0)
+            {
+                var tfmList = string.Join(", ", result.AnalyzedTfms.Select(FormatTfm));
+                sb.AppendLine("                    <span class=\"stat-separator\">|</span>");
+                sb.AppendLine($"                    <span class=\"stat-inline\">Frameworks: {HtmlEncode(tfmList)}</span>");
+            }
 
             sb.AppendLine("                </div>");
         }
@@ -1141,7 +1160,7 @@ public partial class HtmlFormatter : IOutputFormatter
                 sb.AppendLine("            <div class=\"changes-list\">");
                 foreach (var change in rootChanges)
                 {
-                    AppendChange(sb, change, 0);
+                    AppendChangeWithTfms(sb, change, 0, result.AnalyzedTfms);
                 }
                 sb.AppendLine("            </div>");
             }
@@ -1262,6 +1281,11 @@ public partial class HtmlFormatter : IOutputFormatter
 
     private static void AppendChange(StringBuilder sb, Change change, int depth)
     {
+        AppendChangeWithTfms(sb, change, depth, null);
+    }
+
+    private static void AppendChangeWithTfms(StringBuilder sb, Change change, int depth, IReadOnlyList<string>? analyzedTfms)
+    {
         if (change.Type == ChangeType.Unchanged)
         {
             return;
@@ -1285,6 +1309,13 @@ public partial class HtmlFormatter : IOutputFormatter
         sb.AppendLine($"                            <span class=\"change-badge {badgeClass}\">{badgeText}</span>");
         sb.AppendLine($"                            <span class=\"change-kind\">{kindText}</span>");
         sb.AppendLine($"                            <span class=\"change-name\">{HtmlEncode(nameText)}</span>");
+
+        // Add TFM badge if applicable
+        var tfmBadge = FormatTfmBadge(change.ApplicableToTfms, analyzedTfms);
+        if (!string.IsNullOrEmpty(tfmBadge))
+        {
+            sb.AppendLine($"                            {tfmBadge}");
+        }
 
         if (!string.IsNullOrEmpty(locationText))
         {
@@ -1372,7 +1403,7 @@ public partial class HtmlFormatter : IOutputFormatter
         {
             foreach (var child in change.Children!)
             {
-                AppendChange(sb, child, depth + 1);
+                AppendChangeWithTfms(sb, child, depth + 1, analyzedTfms);
             }
         }
 
@@ -1992,5 +2023,92 @@ public partial class HtmlFormatter : IOutputFormatter
             yield return "LineEndingChanged";
         if (issues.HasFlag(WhitespaceIssue.AmbiguousTabWidth))
             yield return "AmbiguousTabWidth";
+    }
+
+    /// <summary>
+    /// Formats a Target Framework Moniker (TFM) for display.
+    /// </summary>
+    /// <param name="tfm">The TFM to format (e.g., "net8.0", "net10.0").</param>
+    /// <returns>A human-readable formatted string (e.g., ".NET 8.0", ".NET 10.0").</returns>
+    private static string FormatTfm(string tfm)
+    {
+        if (string.IsNullOrEmpty(tfm))
+        {
+            return tfm;
+        }
+
+        // Handle .NET (Core) TFMs: net5.0, net6.0, net7.0, net8.0, net9.0, net10.0, etc.
+        if (tfm.StartsWith("net") && tfm.Length > 3 && char.IsDigit(tfm[3]))
+        {
+            var versionPart = tfm.Substring(3);
+            // Parse version (e.g., "8.0" or "10.0")
+            if (versionPart.Contains('.'))
+            {
+                return $".NET {versionPart}";
+            }
+            // Handle versions without dots (e.g., "net48" -> ".NET Framework 4.8")
+            if (versionPart.Length >= 2)
+            {
+                var major = versionPart.Substring(0, versionPart.Length >= 3 ? 1 : 1);
+                var minor = versionPart.Substring(versionPart.Length >= 3 ? 1 : 1);
+                return $".NET Framework {major}.{minor}";
+            }
+        }
+
+        // Handle .NET Framework TFMs: net45, net46, net461, net462, net47, net471, net472, net48
+        if (tfm.StartsWith("net") && tfm.Length >= 5 && !tfm.Contains('.'))
+        {
+            var versionPart = tfm.Substring(3);
+            if (versionPart.Length == 2)
+            {
+                return $".NET Framework {versionPart[0]}.{versionPart[1]}";
+            }
+            if (versionPart.Length == 3)
+            {
+                return $".NET Framework {versionPart[0]}.{versionPart[1]}.{versionPart[2]}";
+            }
+        }
+
+        // Handle .NET Standard: netstandard1.0, netstandard2.0, netstandard2.1
+        if (tfm.StartsWith("netstandard"))
+        {
+            var versionPart = tfm.Substring("netstandard".Length);
+            return $".NET Standard {versionPart}";
+        }
+
+        // Handle .NET Core App: netcoreapp2.0, netcoreapp2.1, netcoreapp3.0, netcoreapp3.1
+        if (tfm.StartsWith("netcoreapp"))
+        {
+            var versionPart = tfm.Substring("netcoreapp".Length);
+            return $".NET Core {versionPart}";
+        }
+
+        // Default: return as-is
+        return tfm;
+    }
+
+    /// <summary>
+    /// Formats TFM badges for display in change items.
+    /// </summary>
+    /// <param name="applicableToTfms">The list of TFMs this change applies to.</param>
+    /// <param name="analyzedTfms">The list of all analyzed TFMs.</param>
+    /// <returns>HTML string for TFM badge, or empty string if no badge should be shown.</returns>
+    private static string FormatTfmBadge(IReadOnlyList<string>? applicableToTfms, IReadOnlyList<string>? analyzedTfms)
+    {
+        // No badge if no TFM analysis was performed
+        if (analyzedTfms == null || analyzedTfms.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        // No badge if change applies to all TFMs (empty or null ApplicableToTfms)
+        if (applicableToTfms == null || applicableToTfms.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        // Change applies to specific TFMs - show badge
+        var tfmList = string.Join(", ", applicableToTfms.Select(FormatTfm));
+        return $"<span class=\"tfm-badge\">{HtmlEncode(tfmList)}</span>";
     }
 }

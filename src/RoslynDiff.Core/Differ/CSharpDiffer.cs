@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using RoslynDiff.Core.Comparison;
 using RoslynDiff.Core.Models;
+using RoslynDiff.Core.Tfm;
 
 /// <summary>
 /// Performs semantic diff comparison for C# source code using Roslyn.
@@ -59,10 +60,32 @@ public sealed class CSharpDiffer : IDiffer
         ArgumentNullException.ThrowIfNull(newContent);
         ArgumentNullException.ThrowIfNull(options);
 
-        // Parse both sources
+        // Pre-scan optimization: Check if preprocessor directives exist
+        var hasPreprocessorDirectives = PreprocessorDirectiveDetector.HasPreprocessorDirectives(oldContent) ||
+                                       PreprocessorDirectiveDetector.HasPreprocessorDirectives(newContent);
+
+        // Determine if we need multi-TFM analysis
+        var shouldPerformMultiTfmAnalysis = hasPreprocessorDirectives &&
+                                           options.TargetFrameworks is { Count: > 0 };
+
+        // Single TFM handling (no TFMs specified OR no preprocessor directives)
+        if (!shouldPerformMultiTfmAnalysis)
+        {
+            return CompareSingleTfm(oldContent, newContent, options);
+        }
+
+        // Multi-TFM parallel processing
+        return CompareMultiTfm(oldContent, newContent, options);
+    }
+
+    private DiffResult CompareSingleTfm(string oldContent, string newContent, DiffOptions options)
+    {
+        // Use default symbols (NET10_0)
+        var symbols = TfmSymbolResolver.GetDefaultSymbols();
         var parseOptions = new CSharpParseOptions(
             languageVersion: LanguageVersion.Latest,
-            documentationMode: DocumentationMode.Parse);
+            documentationMode: DocumentationMode.Parse,
+            preprocessorSymbols: symbols);
 
         var oldTree = CSharpSyntaxTree.ParseText(oldContent, parseOptions, options.OldPath ?? string.Empty);
         var newTree = CSharpSyntaxTree.ParseText(newContent, parseOptions, options.NewPath ?? string.Empty);
@@ -88,6 +111,7 @@ public sealed class CSharpDiffer : IDiffer
             OldPath = options.OldPath,
             NewPath = options.NewPath,
             Mode = DiffMode.Roslyn,
+            AnalyzedTfms = null, // No TFM analysis performed
             FileChanges =
             [
                 new FileChange
@@ -98,6 +122,104 @@ public sealed class CSharpDiffer : IDiffer
             ],
             Stats = stats
         };
+    }
+
+    private DiffResult CompareMultiTfm(string oldContent, string newContent, DiffOptions options)
+    {
+        var tfms = options.TargetFrameworks!;
+        var tfmCount = tfms.Count;
+
+        // Use parallel processing if 2+ TFMs
+        if (tfmCount >= 2)
+        {
+            var results = new List<(string Tfm, IReadOnlyList<Change> Changes)>(tfmCount);
+            var parallelOptions = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = Environment.ProcessorCount
+            };
+
+            // Use Parallel.ForEach for better performance with large TFM lists
+            var syncResults = new object();
+            Parallel.ForEach(tfms, parallelOptions, tfm =>
+            {
+                var changes = AnalyzeTfm(oldContent, newContent, options, tfm);
+                lock (syncResults)
+                {
+                    results.Add((tfm, changes));
+                }
+            });
+
+            // Merge results using placeholder merger (Agent 3 will implement real merger)
+            return MergeTfmResults(results, options, tfms.ToList());
+        }
+        else
+        {
+            // Single TFM in the list
+            var tfm = tfms[0];
+            var changes = AnalyzeTfm(oldContent, newContent, options, tfm);
+            var results = new List<(string Tfm, IReadOnlyList<Change> Changes)>
+            {
+                (tfm, changes)
+            };
+
+            return MergeTfmResults(results, options, tfms.ToList());
+        }
+    }
+
+    private IReadOnlyList<Change> AnalyzeTfm(string oldContent, string newContent, DiffOptions options, string tfm)
+    {
+        // Get symbols for this TFM
+        var symbols = TfmSymbolResolver.GetPreprocessorSymbols(tfm);
+        var parseOptions = new CSharpParseOptions(
+            languageVersion: LanguageVersion.Latest,
+            documentationMode: DocumentationMode.Parse,
+            preprocessorSymbols: symbols);
+
+        var oldTree = CSharpSyntaxTree.ParseText(oldContent, parseOptions, options.OldPath ?? string.Empty);
+        var newTree = CSharpSyntaxTree.ParseText(newContent, parseOptions, options.NewPath ?? string.Empty);
+
+        // Check for parse errors
+        var oldErrors = oldTree.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
+        var newErrors = newTree.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
+
+        if (oldErrors.Count > 0 || newErrors.Count > 0)
+        {
+            // For multi-TFM, we still want to continue with other TFMs even if one fails
+            // Return an empty change list for this TFM
+            return Array.Empty<Change>();
+        }
+
+        // Compare using SyntaxComparer
+        return _comparer.Compare(oldTree, newTree, options);
+    }
+
+    private DiffResult MergeTfmResults(
+        List<(string Tfm, IReadOnlyList<Change> Changes)> results,
+        DiffOptions options,
+        List<string> analyzedTfms)
+    {
+        // Convert to DiffResult format for merger
+        var tfmResults = results.Select(r => (
+            r.Tfm,
+            Result: new DiffResult
+            {
+                OldPath = options.OldPath,
+                NewPath = options.NewPath,
+                Mode = DiffMode.Roslyn,
+                FileChanges =
+                [
+                    new FileChange
+                    {
+                        Path = options.NewPath ?? options.OldPath,
+                        Changes = r.Changes
+                    }
+                ],
+                Stats = CalculateStats(r.Changes)
+            }
+        )).ToList();
+
+        // Use TfmResultMerger to merge results
+        return TfmResultMerger.Merge(tfmResults, options);
     }
 
     private static DiffResult CreateParseErrorResult(DiffOptions options, string errorMessage)

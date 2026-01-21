@@ -17,6 +17,10 @@ This document describes the programmatic API for using roslyn-diff as a library 
   - [OutputOptions](#outputoptions)
 - [Class Matching](#class-matching)
   - [ClassMatcher](#classmatcher)
+- [Multi-TFM Support](#multi-tfm-support)
+  - [TfmParser](#tfmparser)
+  - [TfmSymbolResolver](#tfmsymbolresolver)
+  - [Using TFM Support Programmatically](#using-tfm-support-programmatically)
 - [Extension Points](#extension-points)
 - [Complete Examples](#complete-examples)
 
@@ -836,6 +840,664 @@ if (result != null)
     Console.WriteLine($"Matched: {result.NewClass.Identifier.Text}");
     Console.WriteLine($"Similarity: {result.Similarity:P0}");
 }
+```
+
+---
+
+## Multi-TFM Support
+
+roslyn-diff provides comprehensive support for analyzing multi-targeted projects that compile for different target framework monikers (TFMs). This enables detection of changes that are specific to certain frameworks due to conditional compilation or framework-specific APIs.
+
+### Overview
+
+When analyzing code that targets multiple frameworks (e.g., `net8.0` and `net10.0`), roslyn-diff can:
+
+1. **Parse and validate** TFM strings to ensure they conform to .NET naming conventions
+2. **Resolve** TFMs to their corresponding preprocessor symbols (e.g., `NET8_0`, `NET8_0_OR_GREATER`)
+3. **Analyze** code separately for each TFM to detect framework-specific changes
+4. **Merge** results to identify which changes apply to all TFMs vs. specific TFMs
+
+### TFM Property Semantics
+
+Understanding the TFM-related properties is crucial for working with multi-TFM results:
+
+#### DiffOptions.TargetFrameworks
+
+Controls whether TFM analysis is performed:
+
+- `null` - No TFM analysis (default). Analyze code as single-targeted.
+- `["net8.0", "net10.0"]` - Analyze both frameworks and detect TFM-specific changes.
+
+#### DiffResult.AnalyzedTfms
+
+Indicates which TFMs were analyzed:
+
+- `null` - No TFM analysis was performed
+- `["net8.0", "net10.0"]` - These frameworks were analyzed
+
+#### Change.ApplicableToTfms
+
+Indicates which TFMs a change applies to:
+
+- `null` - No TFM analysis (single-targeted or TFM analysis not requested)
+- `[]` (empty list) - Change appears in **ALL** analyzed TFMs (universal change)
+- `["net8.0"]` - Change appears **ONLY** in net8.0 (TFM-specific change)
+- `["net8.0", "net10.0"]` - Change appears in these specific TFMs
+
+**Important:** An empty list means "all TFMs", not "no TFMs"!
+
+```csharp
+// Check if a change is universal (applies to all TFMs)
+if (change.ApplicableToTfms?.Count == 0)
+{
+    Console.WriteLine($"{change.Name} applies to all TFMs");
+}
+
+// Check if a change is TFM-specific
+if (change.ApplicableToTfms?.Any() == true)
+{
+    Console.WriteLine($"{change.Name} only applies to: {string.Join(", ", change.ApplicableToTfms)}");
+}
+
+// Check if TFM analysis was performed
+if (change.ApplicableToTfms != null)
+{
+    Console.WriteLine("TFM analysis was performed");
+}
+```
+
+---
+
+### TfmParser
+
+Parses and validates Target Framework Moniker strings.
+
+**Namespace:** `RoslynDiff.Core.Tfm`
+
+```csharp
+public static partial class TfmParser
+{
+    public static string ParseSingle(string tfm);
+    public static string[] ParseMultiple(string tfms);
+    public static bool Validate(string tfm);
+}
+```
+
+#### Supported TFM Formats
+
+| Framework | Format | Examples |
+|-----------|--------|----------|
+| .NET 5+ | `netX.0` (X >= 5) | `net5.0`, `net6.0`, `net8.0`, `net10.0` |
+| .NET Framework | `netXY` or `netX.Y[.Z]` | `net462`, `net48`, `net4.8` |
+| .NET Core | `netcoreappX.Y` | `netcoreapp3.1`, `netcoreapp2.1` |
+| .NET Standard | `netstandardX.Y` | `netstandard2.0`, `netstandard2.1` |
+
+#### Methods
+
+##### ParseSingle
+
+```csharp
+public static string ParseSingle(string tfm)
+```
+
+Parses and normalizes a single TFM string.
+
+**Parameters:**
+- `tfm` - The TFM string (e.g., "NET8.0", "net8.0", "  net8.0  ")
+
+**Returns:** Normalized TFM in lowercase (e.g., "net8.0")
+
+**Throws:**
+- `ArgumentNullException` - TFM is null
+- `ArgumentException` - TFM is empty or invalid format
+
+**Example:**
+
+```csharp
+using RoslynDiff.Core.Tfm;
+
+// Parse and normalize
+var normalized = TfmParser.ParseSingle("NET8.0");
+Console.WriteLine(normalized); // "net8.0"
+
+// Whitespace is trimmed
+var normalized2 = TfmParser.ParseSingle("  net10.0  ");
+Console.WriteLine(normalized2); // "net10.0"
+
+// Invalid format throws exception
+try
+{
+    var invalid = TfmParser.ParseSingle("net8"); // Missing ".0"
+}
+catch (ArgumentException ex)
+{
+    Console.WriteLine(ex.Message);
+}
+```
+
+##### ParseMultiple
+
+```csharp
+public static string[] ParseMultiple(string tfms)
+```
+
+Parses a semicolon-separated list of TFMs (e.g., from MSBuild TargetFrameworks property).
+
+**Parameters:**
+- `tfms` - Semicolon-separated TFMs (e.g., "net8.0;net10.0;netstandard2.1")
+
+**Returns:** Array of normalized TFMs with duplicates removed
+
+**Throws:**
+- `ArgumentNullException` - TFMs is null
+- `ArgumentException` - TFMs is empty or contains invalid TFMs
+
+**Example:**
+
+```csharp
+// Parse multiple TFMs
+var tfms = TfmParser.ParseMultiple("net8.0;net10.0;netstandard2.1");
+// Returns: ["net8.0", "net10.0", "netstandard2.1"]
+
+// Duplicates are removed (case-insensitive)
+var tfms2 = TfmParser.ParseMultiple("net8.0;NET8.0;net10.0");
+// Returns: ["net8.0", "net10.0"]
+
+// Empty entries are ignored
+var tfms3 = TfmParser.ParseMultiple("net8.0;;net10.0");
+// Returns: ["net8.0", "net10.0"]
+
+// Use with MSBuild project files
+var projectTfms = "<TargetFrameworks>net8.0;net10.0</TargetFrameworks>";
+var extractedTfms = ExtractTfmsFromMSBuild(projectTfms);
+var parsedTfms = TfmParser.ParseMultiple(extractedTfms);
+```
+
+##### Validate
+
+```csharp
+public static bool Validate(string tfm)
+```
+
+Validates a TFM string without throwing exceptions.
+
+**Parameters:**
+- `tfm` - The TFM string to validate
+
+**Returns:** `true` if valid, `false` otherwise
+
+**Example:**
+
+```csharp
+if (TfmParser.Validate("net8.0"))
+{
+    Console.WriteLine("Valid TFM");
+}
+
+if (!TfmParser.Validate("net8")) // Invalid - missing ".0"
+{
+    Console.WriteLine("Invalid TFM format");
+}
+```
+
+---
+
+### TfmSymbolResolver
+
+Resolves TFMs to their corresponding preprocessor symbols defined by the .NET compiler.
+
+**Namespace:** `RoslynDiff.Core.Tfm`
+
+```csharp
+public static class TfmSymbolResolver
+{
+    public static string[] GetPreprocessorSymbols(string tfm);
+    public static string[] GetDefaultSymbols();
+}
+```
+
+#### Methods
+
+##### GetPreprocessorSymbols
+
+```csharp
+public static string[] GetPreprocessorSymbols(string tfm)
+```
+
+Gets all preprocessor symbols for a given TFM.
+
+**Parameters:**
+- `tfm` - The Target Framework Moniker (case-insensitive)
+
+**Returns:** Array of preprocessor symbols
+
+**Throws:**
+- `ArgumentException` - TFM is null, empty, or unrecognized
+
+**Example:**
+
+```csharp
+using RoslynDiff.Core.Tfm;
+
+// Get symbols for .NET 8.0
+var symbols = TfmSymbolResolver.GetPreprocessorSymbols("net8.0");
+// Returns: ["NET8_0", "NET5_0_OR_GREATER", "NET6_0_OR_GREATER",
+//           "NET7_0_OR_GREATER", "NET8_0_OR_GREATER"]
+
+// Get symbols for .NET Framework 4.8
+var fxSymbols = TfmSymbolResolver.GetPreprocessorSymbols("net48");
+// Returns: ["NET48", "NETFRAMEWORK"]
+
+// Get symbols for .NET Standard 2.0
+var stdSymbols = TfmSymbolResolver.GetPreprocessorSymbols("netstandard2.0");
+// Returns: ["NETSTANDARD2_0", "NETSTANDARD"]
+
+// Case-insensitive and whitespace-tolerant
+var symbols2 = TfmSymbolResolver.GetPreprocessorSymbols("  NET8.0  ");
+// Works correctly
+```
+
+**Symbol Patterns:**
+
+For .NET 5+, symbols include:
+- Base symbol: `NET8_0`
+- OR_GREATER symbols: `NET5_0_OR_GREATER`, `NET6_0_OR_GREATER`, ..., `NET8_0_OR_GREATER`
+
+This matches the compiler's behavior where `net8.0` can use `#if NET6_0_OR_GREATER`.
+
+##### GetDefaultSymbols
+
+```csharp
+public static string[] GetDefaultSymbols()
+```
+
+Gets default symbols for the latest supported .NET version (currently .NET 10.0).
+
+**Returns:** Array of preprocessor symbols for .NET 10.0
+
+**Example:**
+
+```csharp
+var defaultSymbols = TfmSymbolResolver.GetDefaultSymbols();
+// Returns: ["NET10_0", "NET5_0_OR_GREATER", "NET6_0_OR_GREATER",
+//           "NET7_0_OR_GREATER", "NET8_0_OR_GREATER", "NET9_0_OR_GREATER",
+//           "NET10_0_OR_GREATER"]
+
+// Use when no TFM is specified
+var symbols = options.TargetFrameworks?.Any() == true
+    ? TfmSymbolResolver.GetPreprocessorSymbols(options.TargetFrameworks[0])
+    : TfmSymbolResolver.GetDefaultSymbols();
+```
+
+---
+
+### Using TFM Support Programmatically
+
+This section demonstrates how to use TFM support in your applications.
+
+#### Basic Multi-TFM Analysis
+
+```csharp
+using RoslynDiff.Core.Differ;
+using RoslynDiff.Core.Models;
+using RoslynDiff.Core.Tfm;
+
+public async Task AnalyzeMultiTfmProjectAsync()
+{
+    var oldContent = await File.ReadAllTextAsync("old.cs");
+    var newContent = await File.ReadAllTextAsync("new.cs");
+
+    // Configure diff options with target frameworks
+    var options = new DiffOptions
+    {
+        TargetFrameworks = new[] { "net8.0", "net10.0" },
+        OldPath = "old.cs",
+        NewPath = "new.cs"
+    };
+
+    // Create differ and perform analysis
+    var factory = new DifferFactory();
+    var differ = factory.GetDiffer("file.cs", options);
+    var result = differ.Compare(oldContent, newContent, options);
+
+    // Check which TFMs were analyzed
+    Console.WriteLine($"Analyzed TFMs: {string.Join(", ", result.AnalyzedTfms)}");
+    // Output: "Analyzed TFMs: net8.0, net10.0"
+
+    // Process results
+    foreach (var fileChange in result.FileChanges)
+    {
+        foreach (var change in fileChange.Changes)
+        {
+            ProcessChange(change);
+        }
+    }
+}
+
+private void ProcessChange(Change change)
+{
+    if (change.ApplicableToTfms == null)
+    {
+        // No TFM analysis performed
+        Console.WriteLine($"{change.Name}: No TFM analysis");
+    }
+    else if (change.ApplicableToTfms.Count == 0)
+    {
+        // Universal change - applies to all TFMs
+        Console.WriteLine($"{change.Name}: Universal change (all TFMs)");
+    }
+    else
+    {
+        // TFM-specific change
+        Console.WriteLine($"{change.Name}: Only in {string.Join(", ", change.ApplicableToTfms)}");
+    }
+
+    // Recursively process children
+    if (change.Children != null)
+    {
+        foreach (var child in change.Children)
+        {
+            ProcessChange(child);
+        }
+    }
+}
+```
+
+#### Filtering TFM-Specific Changes
+
+```csharp
+using RoslynDiff.Core.Models;
+
+public class TfmChangeFilter
+{
+    public IEnumerable<Change> GetUniversalChanges(DiffResult result)
+    {
+        // Changes that apply to all TFMs (empty list)
+        return result.FileChanges
+            .SelectMany(fc => fc.Changes)
+            .Where(c => c.ApplicableToTfms?.Count == 0);
+    }
+
+    public IEnumerable<Change> GetTfmSpecificChanges(DiffResult result)
+    {
+        // Changes that apply to specific TFMs only
+        return result.FileChanges
+            .SelectMany(fc => fc.Changes)
+            .Where(c => c.ApplicableToTfms?.Any() == true);
+    }
+
+    public IEnumerable<Change> GetChangesForTfm(DiffResult result, string tfm)
+    {
+        // Changes that apply to a specific TFM
+        return result.FileChanges
+            .SelectMany(fc => fc.Changes)
+            .Where(c => c.ApplicableToTfms == null ||
+                       c.ApplicableToTfms.Count == 0 ||
+                       c.ApplicableToTfms.Contains(tfm, StringComparer.OrdinalIgnoreCase));
+    }
+}
+
+// Usage
+var filter = new TfmChangeFilter();
+
+// Get all universal changes
+var universalChanges = filter.GetUniversalChanges(result);
+Console.WriteLine($"Universal changes: {universalChanges.Count()}");
+
+// Get changes specific to certain TFMs
+var specificChanges = filter.GetTfmSpecificChanges(result);
+foreach (var change in specificChanges)
+{
+    Console.WriteLine($"{change.Name}: {string.Join(", ", change.ApplicableToTfms)}");
+}
+
+// Get all changes that apply to net8.0
+var net8Changes = filter.GetChangesForTfm(result, "net8.0");
+Console.WriteLine($"Changes affecting net8.0: {net8Changes.Count()}");
+```
+
+#### Generating TFM-Aware Reports
+
+```csharp
+using RoslynDiff.Core.Models;
+
+public class TfmReport
+{
+    public void GenerateReport(DiffResult result)
+    {
+        Console.WriteLine("=== Multi-TFM Analysis Report ===\n");
+
+        if (result.AnalyzedTfms == null)
+        {
+            Console.WriteLine("No TFM analysis performed.");
+            return;
+        }
+
+        Console.WriteLine($"Target Frameworks: {string.Join(", ", result.AnalyzedTfms)}\n");
+
+        var universalCount = 0;
+        var specificCount = 0;
+        var tfmBreakdown = new Dictionary<string, int>();
+
+        foreach (var change in result.FileChanges.SelectMany(fc => fc.Changes))
+        {
+            if (change.ApplicableToTfms?.Count == 0)
+            {
+                universalCount++;
+            }
+            else if (change.ApplicableToTfms?.Any() == true)
+            {
+                specificCount++;
+                foreach (var tfm in change.ApplicableToTfms)
+                {
+                    tfmBreakdown.TryGetValue(tfm, out var count);
+                    tfmBreakdown[tfm] = count + 1;
+                }
+            }
+        }
+
+        Console.WriteLine($"Universal changes (all TFMs): {universalCount}");
+        Console.WriteLine($"TFM-specific changes: {specificCount}\n");
+
+        if (tfmBreakdown.Any())
+        {
+            Console.WriteLine("Changes by TFM:");
+            foreach (var (tfm, count) in tfmBreakdown.OrderBy(kv => kv.Key))
+            {
+                Console.WriteLine($"  {tfm}: {count} changes");
+            }
+        }
+
+        Console.WriteLine($"\nTotal changes: {result.Stats.TotalChanges}");
+        Console.WriteLine($"Breaking changes: {result.Stats.BreakingPublicApiCount + result.Stats.BreakingInternalApiCount}");
+    }
+}
+
+// Usage
+var reporter = new TfmReport();
+reporter.GenerateReport(result);
+
+// Output:
+// === Multi-TFM Analysis Report ===
+//
+// Target Frameworks: net8.0, net10.0
+//
+// Universal changes (all TFMs): 15
+// TFM-specific changes: 3
+//
+// Changes by TFM:
+//   net10.0: 3 changes
+//
+// Total changes: 18
+// Breaking changes: 2
+```
+
+#### Validating and Parsing User Input
+
+```csharp
+using RoslynDiff.Core.Tfm;
+
+public class TfmInputHandler
+{
+    public string[]? ParseUserTfms(string? userInput)
+    {
+        if (string.IsNullOrWhiteSpace(userInput))
+        {
+            return null; // No TFM analysis
+        }
+
+        try
+        {
+            // Parse semicolon-separated list
+            var tfms = TfmParser.ParseMultiple(userInput);
+            Console.WriteLine($"Parsed {tfms.Length} TFMs: {string.Join(", ", tfms)}");
+            return tfms;
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine($"Invalid TFMs: {ex.Message}");
+            return null;
+        }
+    }
+
+    public void DisplayTfmInfo(string tfm)
+    {
+        if (!TfmParser.Validate(tfm))
+        {
+            Console.WriteLine($"Invalid TFM: {tfm}");
+            return;
+        }
+
+        var normalized = TfmParser.ParseSingle(tfm);
+        var symbols = TfmSymbolResolver.GetPreprocessorSymbols(normalized);
+
+        Console.WriteLine($"TFM: {normalized}");
+        Console.WriteLine("Preprocessor Symbols:");
+        foreach (var symbol in symbols)
+        {
+            Console.WriteLine($"  {symbol}");
+        }
+    }
+}
+
+// Usage
+var handler = new TfmInputHandler();
+
+// Parse from user input (e.g., command-line argument)
+var tfms = handler.ParseUserTfms("net8.0;net10.0");
+var options = new DiffOptions { TargetFrameworks = tfms };
+
+// Display information about a specific TFM
+handler.DisplayTfmInfo("net8.0");
+// Output:
+// TFM: net8.0
+// Preprocessor Symbols:
+//   NET8_0
+//   NET5_0_OR_GREATER
+//   NET6_0_OR_GREATER
+//   NET7_0_OR_GREATER
+//   NET8_0_OR_GREATER
+```
+
+#### Advanced: Custom TFM Analysis
+
+```csharp
+using RoslynDiff.Core.Models;
+using RoslynDiff.Core.Tfm;
+
+public class CustomTfmAnalyzer
+{
+    public async Task<Dictionary<string, DiffResult>> AnalyzePerTfmAsync(
+        string oldContent,
+        string newContent,
+        string[] tfms)
+    {
+        var results = new Dictionary<string, DiffResult>();
+        var factory = new DifferFactory();
+
+        foreach (var tfm in tfms)
+        {
+            // Analyze each TFM individually
+            var options = new DiffOptions
+            {
+                TargetFrameworks = new[] { tfm },
+                OldPath = $"old.cs ({tfm})",
+                NewPath = $"new.cs ({tfm})"
+            };
+
+            var differ = factory.GetDiffer("file.cs", options);
+            var result = differ.Compare(oldContent, newContent, options);
+
+            results[tfm] = result;
+        }
+
+        return results;
+    }
+
+    public void CompareTfmResults(Dictionary<string, DiffResult> results)
+    {
+        Console.WriteLine("=== Per-TFM Comparison ===\n");
+
+        foreach (var (tfm, result) in results)
+        {
+            Console.WriteLine($"{tfm}:");
+            Console.WriteLine($"  Total changes: {result.Stats.TotalChanges}");
+            Console.WriteLine($"  Additions: {result.Stats.Additions}");
+            Console.WriteLine($"  Deletions: {result.Stats.Deletions}");
+            Console.WriteLine($"  Modifications: {result.Stats.Modifications}");
+            Console.WriteLine();
+        }
+
+        // Find changes unique to specific TFMs
+        var allTfms = results.Keys.ToArray();
+        foreach (var tfm in allTfms)
+        {
+            var otherTfms = allTfms.Where(t => t != tfm).ToArray();
+            var uniqueChanges = FindUniqueChanges(results[tfm], otherTfms.Select(t => results[t]));
+
+            if (uniqueChanges.Any())
+            {
+                Console.WriteLine($"Changes unique to {tfm}:");
+                foreach (var change in uniqueChanges)
+                {
+                    Console.WriteLine($"  - {change.Kind}: {change.Name} ({change.Type})");
+                }
+                Console.WriteLine();
+            }
+        }
+    }
+
+    private IEnumerable<Change> FindUniqueChanges(
+        DiffResult result,
+        IEnumerable<DiffResult> otherResults)
+    {
+        var thisChanges = result.FileChanges
+            .SelectMany(fc => fc.Changes)
+            .Select(c => new { c.Kind, c.Name, c.Type })
+            .ToHashSet();
+
+        var otherChanges = otherResults
+            .SelectMany(r => r.FileChanges)
+            .SelectMany(fc => fc.Changes)
+            .Select(c => new { c.Kind, c.Name, c.Type })
+            .ToHashSet();
+
+        thisChanges.ExceptWith(otherChanges);
+
+        return result.FileChanges
+            .SelectMany(fc => fc.Changes)
+            .Where(c => thisChanges.Contains(new { c.Kind, c.Name, c.Type }));
+    }
+}
+
+// Usage
+var analyzer = new CustomTfmAnalyzer();
+var perTfmResults = await analyzer.AnalyzePerTfmAsync(
+    oldContent,
+    newContent,
+    new[] { "net8.0", "net10.0" });
+
+analyzer.CompareTfmResults(perTfmResults);
 ```
 
 ---

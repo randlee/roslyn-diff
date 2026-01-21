@@ -41,6 +41,9 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
     /// <item>roslyn-diff diff old.cs new.cs -w -c --mode roslyn --text</item>
     /// <item>roslyn-diff diff old.txt new.txt --mode line --quiet</item>
     /// <item>roslyn-diff diff old.py new.py --whitespace-mode language-aware</item>
+    /// <item>roslyn-diff diff old.cs new.cs -t net8.0</item>
+    /// <item>roslyn-diff diff old.cs new.cs -t net8.0 -t net10.0</item>
+    /// <item>roslyn-diff diff old.cs new.cs -T "net8.0;net10.0"</item>
     /// </list>
     /// </para>
     /// </remarks>
@@ -211,6 +214,40 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
         [Description("Minimum impact level: breaking-public, breaking-internal, non-breaking, all [[default: all for HTML, breaking-internal for JSON]]")]
         public string? ImpactLevel { get; init; }
 
+        /// <summary>
+        /// Gets or sets individual target framework monikers (repeatable).
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This option can be specified multiple times to analyze multiple TFMs.
+        /// For example: -t net8.0 -t net10.0
+        /// </para>
+        /// <para>
+        /// Valid TFM formats include:
+        /// <list type="bullet">
+        /// <item>Modern .NET: net5.0, net6.0, net8.0, net10.0</item>
+        /// <item>.NET Framework: net462, net48, net4.8, net4.6.2</item>
+        /// <item>.NET Core: netcoreapp3.1, netcoreapp2.1</item>
+        /// <item>.NET Standard: netstandard2.0, netstandard2.1</item>
+        /// </list>
+        /// </para>
+        /// </remarks>
+        [CommandOption("-t|--target-framework <tfm>")]
+        [Description("Target framework moniker (repeatable: -t net8.0 -t net10.0)")]
+        public string[]? TargetFramework { get; init; }
+
+        /// <summary>
+        /// Gets or sets semicolon-separated target framework monikers.
+        /// </summary>
+        /// <remarks>
+        /// Alternative to -t flag for specifying multiple TFMs in a single value.
+        /// For example: -T "net8.0;net10.0"
+        /// Can be combined with -t flag; all TFMs are merged and deduplicated.
+        /// </remarks>
+        [CommandOption("-T|--target-frameworks <tfms>")]
+        [Description("Semicolon-separated TFMs (e.g., \"net8.0;net10.0\")")]
+        public string? TargetFrameworks { get; init; }
+
         /// <inheritdoc/>
         public override ValidationResult Validate()
         {
@@ -231,6 +268,34 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             if (!validModes.Contains(WhitespaceMode.ToLowerInvariant()))
             {
                 return ValidationResult.Error($"Invalid whitespace mode: '{WhitespaceMode}'. Valid modes: exact, ignore-leading-trailing, ignore-all, language-aware");
+            }
+
+            // Validate TFMs if provided
+            if (TargetFramework is not null)
+            {
+                foreach (var tfm in TargetFramework)
+                {
+                    try
+                    {
+                        Core.Tfm.TfmParser.ParseSingle(tfm);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        return ValidationResult.Error($"Invalid TFM in --target-framework: {ex.Message}");
+                    }
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(TargetFrameworks))
+            {
+                try
+                {
+                    Core.Tfm.TfmParser.ParseMultiple(TargetFrameworks);
+                }
+                catch (ArgumentException ex)
+                {
+                    return ValidationResult.Error($"Invalid TFM in --target-frameworks: {ex.Message}");
+                }
             }
 
             return ValidationResult.Success();
@@ -308,6 +373,49 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             whitespaceMode = Core.Models.WhitespaceMode.IgnoreLeadingTrailing;
         }
 
+        // Parse and merge TFMs from both -t and -T options
+        IReadOnlyList<string>? targetFrameworks = null;
+        if (settings.TargetFramework is not null || !string.IsNullOrWhiteSpace(settings.TargetFrameworks))
+        {
+            var tfmList = new List<string>();
+
+            // Parse individual TFMs from -t flags
+            if (settings.TargetFramework is not null)
+            {
+                foreach (var tfm in settings.TargetFramework)
+                {
+                    try
+                    {
+                        var normalized = Core.Tfm.TfmParser.ParseSingle(tfm);
+                        tfmList.Add(normalized);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        AnsiConsole.MarkupLine($"[red]Error: Invalid TFM '{tfm}': {ex.Message}[/]");
+                        return OutputOrchestrator.ExitCodeError;
+                    }
+                }
+            }
+
+            // Parse semicolon-separated TFMs from -T flag
+            if (!string.IsNullOrWhiteSpace(settings.TargetFrameworks))
+            {
+                try
+                {
+                    var parsed = Core.Tfm.TfmParser.ParseMultiple(settings.TargetFrameworks);
+                    tfmList.AddRange(parsed);
+                }
+                catch (ArgumentException ex)
+                {
+                    AnsiConsole.MarkupLine($"[red]Error: Invalid TFMs in --target-frameworks: {ex.Message}[/]");
+                    return OutputOrchestrator.ExitCodeError;
+                }
+            }
+
+            // Remove duplicates while preserving order
+            targetFrameworks = tfmList.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+        }
+
         try
         {
             // Read file contents
@@ -326,7 +434,8 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
                 OldPath = Path.GetFullPath(settings.OldPath),
                 NewPath = Path.GetFullPath(settings.NewPath),
                 IncludeNonImpactful = settings.IncludeNonImpactful || settings.IncludeFormatting,
-                MinimumImpactLevel = effectiveImpactLevel
+                MinimumImpactLevel = effectiveImpactLevel,
+                TargetFrameworks = targetFrameworks
             };
 
             // Get the appropriate differ

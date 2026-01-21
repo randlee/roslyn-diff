@@ -24,6 +24,49 @@ public record DiffResult
     public DiffMode Mode { get; init; }
 
     /// <summary>
+    /// Gets the Target Framework Monikers (TFMs) that were analyzed during this diff operation.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This property indicates which target frameworks were analyzed when comparing multi-targeted projects.
+    /// The value interpretation is as follows:
+    /// </para>
+    /// <list type="bullet">
+    /// <item>
+    /// <description>
+    /// <c>null</c> - No TFM analysis was performed. This is the default for projects that are
+    /// not multi-targeted or when TFM analysis is not requested via <see cref="DiffOptions.TargetFrameworks"/>.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// List with values - The specified TFMs were analyzed during the diff operation. For example,
+    /// <c>["net8.0", "net10.0"]</c> indicates both .NET 8.0 and .NET 10.0 were analyzed.
+    /// Individual <see cref="Change"/> objects may specify which TFMs they apply to via
+    /// <see cref="Change.ApplicableToTfms"/>.
+    /// </description>
+    /// </item>
+    /// </list>
+    /// <para>
+    /// When performing TFM analysis, the differ compiles the project for each specified framework
+    /// and identifies changes that are specific to certain TFMs (e.g., due to conditional compilation
+    /// or framework-specific APIs).
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// // Result from analyzing both .NET 8.0 and .NET 10.0
+    /// var result = new DiffResult
+    /// {
+    ///     Mode = DiffMode.Roslyn,
+    ///     AnalyzedTfms = new[] { "net8.0", "net10.0" },
+    ///     FileChanges = fileChanges
+    /// };
+    /// </code>
+    /// </example>
+    public IReadOnlyList<string>? AnalyzedTfms { get; init; }
+
+    /// <summary>
     /// Gets the collection of file changes detected during the comparison.
     /// </summary>
     public IReadOnlyList<FileChange> FileChanges { get; init; } = [];

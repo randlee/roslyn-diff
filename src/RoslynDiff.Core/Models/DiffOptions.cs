@@ -87,4 +87,45 @@ public record DiffOptions
     /// Default includes all changes.
     /// </remarks>
     public ChangeImpact MinimumImpactLevel { get; init; } = ChangeImpact.FormattingOnly;
+
+    /// <summary>
+    /// Gets the Target Framework Monikers (TFMs) to analyze during the diff operation.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Specifies which target frameworks should be analyzed when comparing multi-targeted projects.
+    /// The differ will compile and analyze the project for each specified TFM, identifying
+    /// changes that are specific to certain frameworks.
+    /// </para>
+    /// <list type="bullet">
+    /// <item>
+    /// <description>
+    /// <c>null</c> - No TFM-specific analysis is performed. This is the default behavior and
+    /// is appropriate for single-targeted projects or when TFM-specific differences are not relevant.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// List with values - Analyze the specified TFMs. For example, <c>["net8.0", "net10.0"]</c>
+    /// will compile and analyze the project for both .NET 8.0 and .NET 10.0, detecting changes
+    /// that only apply to specific frameworks (e.g., due to conditional compilation directives
+    /// or framework-specific APIs).
+    /// </description>
+    /// </item>
+    /// </list>
+    /// <para>
+    /// The analyzed TFMs are captured in <see cref="DiffResult.AnalyzedTfms"/>, and individual
+    /// changes indicate their applicable TFMs via <see cref="Change.ApplicableToTfms"/>.
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// // Analyze both .NET 8.0 and .NET 10.0 target frameworks
+    /// var options = new DiffOptions
+    /// {
+    ///     TargetFrameworks = new[] { "net8.0", "net10.0" }
+    /// };
+    /// </code>
+    /// </example>
+    public IReadOnlyList<string>? TargetFrameworks { get; init; }
 }
