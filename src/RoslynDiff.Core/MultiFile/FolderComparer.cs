@@ -407,27 +407,32 @@ public sealed class FolderComparer
         var processedNewFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         // Process files that exist in old directory
-        foreach (var relativePath in oldFiles)
+        foreach (var oldRelativePath in oldFiles)
         {
-            if (newFiles.Contains(relativePath))
+            // Find the matching file in newFiles with correct casing
+            var newRelativePath = newFiles.FirstOrDefault(f =>
+                string.Equals(f, oldRelativePath, StringComparison.OrdinalIgnoreCase));
+
+            if (newRelativePath != null)
             {
                 // File exists in both - potential modification
+                // Use the actual filenames from each directory (preserve case)
                 pairs.Add(new FilePair
                 {
-                    RelativePath = relativePath,
-                    OldFullPath = Path.Combine(oldRoot, relativePath),
-                    NewFullPath = Path.Combine(newRoot, relativePath),
+                    RelativePath = oldRelativePath,
+                    OldFullPath = Path.Combine(oldRoot, oldRelativePath),
+                    NewFullPath = Path.Combine(newRoot, newRelativePath),
                     Status = FileChangeStatus.Modified
                 });
-                processedNewFiles.Add(relativePath);
+                processedNewFiles.Add(newRelativePath);
             }
             else
             {
                 // File only in old - removed
                 pairs.Add(new FilePair
                 {
-                    RelativePath = relativePath,
-                    OldFullPath = Path.Combine(oldRoot, relativePath),
+                    RelativePath = oldRelativePath,
+                    OldFullPath = Path.Combine(oldRoot, oldRelativePath),
                     NewFullPath = null,
                     Status = FileChangeStatus.Removed
                 });
@@ -435,16 +440,16 @@ public sealed class FolderComparer
         }
 
         // Process files that only exist in new directory
-        foreach (var relativePath in newFiles)
+        foreach (var newRelativePath in newFiles)
         {
-            if (!processedNewFiles.Contains(relativePath))
+            if (!processedNewFiles.Contains(newRelativePath))
             {
                 // File only in new - added
                 pairs.Add(new FilePair
                 {
-                    RelativePath = relativePath,
+                    RelativePath = newRelativePath,
                     OldFullPath = null,
-                    NewFullPath = Path.Combine(newRoot, relativePath),
+                    NewFullPath = Path.Combine(newRoot, newRelativePath),
                     Status = FileChangeStatus.Added
                 });
             }
