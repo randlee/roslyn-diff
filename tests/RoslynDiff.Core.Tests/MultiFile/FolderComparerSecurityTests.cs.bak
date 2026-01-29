@@ -380,8 +380,83 @@ public sealed class FolderComparerSecurityTests : IDisposable
     #region Large File Tests (MEDIUM Priority - D1-M2)
 
     [Fact]
+    public void Compare_WithVeryLargeFile_ShouldHandleGracefully()
+    {
+        // Arrange - Create a 10MB+ file
+        var largeFile = Path.Combine(_oldFolder, "large.cs");
+        using (var writer = new StreamWriter(largeFile))
+        {
+            writer.WriteLine("public class Large {");
+
+            // Write 100,000 methods (~10MB of text)
+            for (int i = 0; i < 100_000; i++)
+            {
+                writer.WriteLine($"    public void Method{i}() {{ }}");
+            }
+
+            writer.WriteLine("}");
+        }
+
+        var comparer = new FolderComparer();
+        var options = new DiffOptions();
+        var folderOptions = new FolderCompareOptions();
+
+        // Act
+        var act = () => comparer.Compare(_oldFolder, _newFolder, options, folderOptions);
+
+        // Assert - Should either:
+        // 1. Process successfully with streaming
+        // 2. Skip with warning about file size
+        // 3. Throw meaningful exception with size limit info
+        // Should NOT: exhaust memory or hang
+        act.Should().NotThrow("large files should be handled gracefully");
+    }
 
     [Fact]
+    public void Compare_WithHundredMegabyteFile_ShouldHandleOrReject()
+    {
+        // Arrange - Create a 100MB file (might be too large)
+        var massiveFile = Path.Combine(_oldFolder, "massive.cs");
+
+        try
+        {
+            using (var writer = new StreamWriter(massiveFile))
+            {
+                writer.WriteLine("public class Massive {");
+
+                // Write 1 million methods (~100MB of text)
+                for (int i = 0; i < 1_000_000; i++)
+                {
+                    writer.WriteLine($"    public void Method{i}() {{ }}");
+                }
+
+                writer.WriteLine("}");
+            }
+        }
+        catch (IOException)
+        {
+            // May not have disk space
+            return;
+        }
+
+        var comparer = new FolderComparer();
+        var options = new DiffOptions();
+        var folderOptions = new FolderCompareOptions();
+
+        // Act
+        var act = () => comparer.Compare(_oldFolder, _newFolder, options, folderOptions);
+
+        // Assert - Should handle gracefully (process, skip, or reject with clear message)
+        // The key is NOT to crash with OutOfMemoryException
+        try
+        {
+            var result = act.Should().NotThrow("should handle or reject gracefully").Which;
+        }
+        catch (OutOfMemoryException)
+        {
+            Assert.Fail("Should not throw OutOfMemoryException - should implement size limits or streaming");
+        }
+    }
 
     #endregion
 

@@ -570,6 +570,31 @@ public class TestClass
     }
 
     [Fact]
+    public void Compare_WithLargeFile_ShouldHandleGracefully()
+    {
+        // Arrange
+        var comparer = new GitComparer();
+        CreateInitialCommit("main");
+
+        // Create a large C# file
+        var largeContent = new StringBuilder();
+        largeContent.AppendLine("public class LargeClass {");
+        for (int i = 0; i < 1000; i++)
+        {
+            largeContent.AppendLine($"    public void Method{i}() {{ }}");
+        }
+        largeContent.AppendLine("}");
+
+        AddFileAndCommit("Large.cs", largeContent.ToString());
+
+        var options = new DiffOptions { Mode = DiffMode.Roslyn };
+
+        // Act
+        var act = () => comparer.Compare(_tempRepoPath, "HEAD~1..HEAD", options);
+
+        // Assert
+        act.Should().NotThrow();
+    }
 
     #endregion
 
