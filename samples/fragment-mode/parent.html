@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Review Dashboard - Multiple Diffs</title>
+
+    <!-- Include roslyn-diff CSS -->
+    <link rel="stylesheet" href="roslyn-diff.css">
+
+    <!-- Custom page styles -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: #f6f8fa;
+            color: #24292f;
+            line-height: 1.6;
+        }
+
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            background: white;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .dashboard-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #24292f;
+        }
+
+        .dashboard-header p {
+            color: #57606a;
+            font-size: 1rem;
+        }
+
+        .summary-badges {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            gap: 0.5rem;
+        }
+
+        .badge-info {
+            background: #ddf4ff;
+            color: #0969da;
+            border: 1px solid #218bff;
+        }
+
+        .badge-success {
+            background: #dafbe1;
+            color: #1a7f37;
+            border: 1px solid #2da44e;
+        }
+
+        .badge-warning {
+            background: #fff8c5;
+            color: #633c01;
+            border: 1px solid #d4a72c;
+        }
+
+        .badge-danger {
+            background: #ffebe9;
+            color: #cf222e;
+            border: 1px solid #cf222e;
+        }
+
+        .file-section {
+            background: white;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .file-section-header {
+            background: #f6f8fa;
+            border-bottom: 1px solid #d0d7de;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .file-section-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #24292f;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .file-icon {
+            color: #57606a;
+        }
+
+        .file-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: #57606a;
+        }
+
+        .file-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-added {
+            color: #1a7f37;
+            font-weight: 500;
+        }
+
+        .stat-removed {
+            color: #cf222e;
+            font-weight: 500;
+        }
+
+        .stat-modified {
+            color: #bf8700;
+            font-weight: 500;
+        }
+
+        .file-section-content {
+            padding: 0;
+        }
+
+        /* Override roslyn-diff-fragment to remove extra spacing when embedded */
+        .file-section-content .roslyn-diff-fragment {
+            border: none;
+            border-radius: 0;
+            margin: 0;
+        }
+
+        .file-section-content .roslyn-diff-fragment header {
+            display: none; /* Hide duplicate header since we have our own */
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #57606a;
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: #0969da;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1>Pull Request #123 - Code Review</h1>
+            <p>Feature: Add Calculator Operations</p>
+
+            <div class="summary-badges">
+                <div class="badge badge-info">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+                        <path d="M8 0a8 8 0 110 16A8 8 0 018 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z"/>
+                    </svg>
+                    1 File Changed
+                </div>
+                <div class="badge badge-success">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M7.47 10.78a.75.75 0 001.06 0l3.75-3.75a.75.75 0 00-1.06-1.06L8 9.19 5.78 6.97a.75.75 0 00-1.06 1.06l3.75 3.75z"/>
+                    </svg>
+                    2 Additions
+                </div>
+                <div class="badge badge-warning">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm8 3a1 1 0 100-2 1 1 0 000 2zm0-8a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 018 3z"/>
+                    </svg>
+                    2 Modifications
+                </div>
+                <div class="badge badge-info">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M0 8a8 8 0 1116 0A8 8 0 010 8zm1.5 0a6.5 6.5 0 1013 0 6.5 6.5 0 00-13 0zm7-3.25a.75.75 0 01.75.75v2.75h2a.75.75 0 010 1.5h-3.5a.75.75 0 01-.75-.75v-3.5a.75.75 0 01.75-.75z"/>
+                    </svg>
+                    Roslyn Semantic Analysis
+                </div>
+            </div>
+        </div>
+
+        <!-- File 1: Calculator.cs -->
+        <div class="file-section" id="file-calculator">
+            <div class="file-section-header">
+                <h2>
+                    <span class="file-icon">📄</span>
+                    Calculator.cs
+                </h2>
+                <div class="file-stats">
+                    <span class="stat-added">+2 added</span>
+                    <span>•</span>
+                    <span class="stat-modified">~2 modified</span>
+                    <span>•</span>
+                    <span>4 changes</span>
+                </div>
+            </div>
+            <div class="file-section-content" id="diff-calculator">
+                <!-- Fragment will be loaded here by JavaScript -->
+                <div style="padding: 2rem; text-align: center; color: #57606a;">
+                    <p>Loading diff...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- You can add more file sections here for multi-file reviews -->
+        <!--
+        <div class="file-section" id="file-service">
+            <div class="file-section-header">
+                <h2>
+                    <span class="file-icon">📄</span>
+                    Service.cs
+                </h2>
+                <div class="file-stats">
+                    <span class="stat-added">+1 added</span>
+                    <span>•</span>
+                    <span class="stat-removed">-1 removed</span>
+                    <span>•</span>
+                    <span>2 changes</span>
+                </div>
+            </div>
+            <div class="file-section-content" id="diff-service">
+                <!-- Include another fragment here -->
+            </div>
+        </div>
+        -->
+    </div>
+
+    <footer>
+        <p>Generated by <a href="https://github.com/randlee/roslyn-diff" target="_blank">roslyn-diff</a> - Semantic diff tool for .NET</p>
+    </footer>
+
+    <script>
+        // Load fragment dynamically
+        async function loadFragment() {
+            try {
+                const response = await fetch('fragment.html');
+                const html = await response.text();
+                document.getElementById('diff-calculator').innerHTML = html;
+
+                // After loading, extract metadata from data attributes
+                extractFragmentMetadata();
+            } catch (error) {
+                console.error('Failed to load fragment:', error);
+                document.getElementById('diff-calculator').innerHTML =
+                    '<div style="padding: 2rem; text-align: center; color: #cf222e;"><p>Failed to load diff fragment</p></div>';
+            }
+        }
+
+        // Extract and log metadata from fragment
+        function extractFragmentMetadata() {
+            const fragment = document.querySelector('.roslyn-diff-fragment');
+            if (!fragment) return;
+
+            const metadata = {
+                oldFile: fragment.dataset.oldFile,
+                newFile: fragment.dataset.newFile,
+                changesTotal: parseInt(fragment.dataset.changesTotal),
+                changesAdded: parseInt(fragment.dataset.changesAdded),
+                changesRemoved: parseInt(fragment.dataset.changesRemoved),
+                changesModified: parseInt(fragment.dataset.changesModified),
+                impactBreakingPublic: parseInt(fragment.dataset.impactBreakingPublic),
+                impactBreakingInternal: parseInt(fragment.dataset.impactBreakingInternal),
+                impactNonBreaking: parseInt(fragment.dataset.impactNonBreaking),
+                impactFormatting: parseInt(fragment.dataset.impactFormatting),
+                mode: fragment.dataset.mode
+            };
+
+            console.log('Fragment metadata:', metadata);
+
+            // Show alert if breaking changes exist
+            if (metadata.impactBreakingPublic > 0) {
+                console.warn(`⚠️ ${metadata.oldFile} contains ${metadata.impactBreakingPublic} breaking public API changes!`);
+            }
+        }
+
+        // Load fragment when page loads
+        window.addEventListener('DOMContentLoaded', loadFragment);
+    </script>
+</body>
+</html>

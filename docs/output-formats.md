@@ -288,7 +288,12 @@ roslyn-diff diff old.cs new.cs -o json | jq -e '.summary.deletions == 0' && echo
 
 ## HTML Format
 
-The HTML format generates an interactive, self-contained HTML document with:
+The HTML format generates an interactive visual report with two modes:
+
+1. **Document mode** (default): Self-contained HTML document with embedded CSS
+2. **Fragment mode**: Embeddable HTML fragment with external CSS for integration into existing pages
+
+Both modes include:
 - Side-by-side diff view
 - Syntax highlighting for C# and VB.NET
 - Collapsible change sections
@@ -297,9 +302,36 @@ The HTML format generates an interactive, self-contained HTML document with:
 
 ### Usage
 
+#### Document Mode (Default)
+
+Complete standalone HTML document with all styles embedded:
+
 ```bash
+# Generate self-contained HTML report
 roslyn-diff diff old.cs new.cs -o html --out-file report.html
+
+# With short options
+roslyn-diff diff old.cs new.cs --html report.html
+
+# Generate and open in browser
+roslyn-diff diff old.cs new.cs --html report.html --open
 ```
+
+#### Fragment Mode
+
+Generate embeddable HTML fragment with external CSS for integration into existing web applications:
+
+```bash
+# Generate HTML fragment with external CSS
+roslyn-diff diff old.cs new.cs --html fragment.html --html-mode fragment
+
+# Specify custom CSS filename (default: roslyn-diff.css)
+roslyn-diff diff old.cs new.cs --html fragment.html --html-mode fragment --extract-css my-styles.css
+```
+
+Fragment mode outputs:
+- **fragment.html** - HTML fragment with link to CSS and data attributes
+- **roslyn-diff.css** - External stylesheet with all necessary styles
 
 ### Features
 
@@ -367,6 +399,246 @@ The HTML output is self-contained with embedded CSS:
 - Print-friendly styling
 - Color-coded impact badges
 - Accessible contrast ratios
+
+### HTML Fragment Mode
+
+HTML Fragment mode is designed for embedding roslyn-diff reports into existing web applications, documentation sites, or dashboards.
+
+#### How Fragment Mode Works
+
+When using `--html-mode fragment`, roslyn-diff generates:
+
+1. **HTML Fragment** - A `<div class="roslyn-diff-fragment">` container with:
+   - Link to external CSS file
+   - Data attributes for metadata (file names, change counts, impact statistics)
+   - Complete diff content (summary + changes)
+   - No `<html>`, `<head>`, or `<body>` tags
+
+2. **External CSS File** - A standalone CSS file with:
+   - All necessary styles (scoped to `.roslyn-diff-fragment`)
+   - CSS custom properties (variables) for easy theming
+   - Responsive layout and print styles
+   - No external dependencies
+
+#### Data Attributes
+
+The fragment root element includes data attributes for easy JavaScript integration:
+
+```html
+<div class="roslyn-diff-fragment"
+     data-old-file="Calculator.cs"
+     data-new-file="Calculator.cs"
+     data-changes-total="4"
+     data-changes-added="2"
+     data-changes-removed="0"
+     data-changes-modified="2"
+     data-impact-breaking-public="1"
+     data-impact-breaking-internal="0"
+     data-impact-non-breaking="3"
+     data-impact-formatting="0"
+     data-mode="roslyn">
+  <!-- diff content -->
+</div>
+```
+
+These attributes allow parent pages to:
+- Query change statistics without parsing HTML
+- Show summary badges or counters
+- Filter or highlight fragments by impact level
+- Build custom navigation or filtering UI
+
+#### Embedding Example
+
+**Step 1: Generate Fragment**
+
+```bash
+roslyn-diff diff old.cs new.cs --html fragment.html --html-mode fragment
+```
+
+**Step 2: Embed in Your Page**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Code Review Dashboard</title>
+  <!-- Your site styles -->
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <header>
+    <h1>Pull Request #123 - Code Changes</h1>
+  </header>
+
+  <main>
+    <section class="diff-report">
+      <h2>Calculator.cs Changes</h2>
+
+      <!-- Embed roslyn-diff fragment -->
+      <?php include('fragment.html'); ?>
+
+    </section>
+  </main>
+</body>
+</html>
+```
+
+**Step 3: Access Metadata with JavaScript**
+
+```javascript
+// Query all diff fragments on the page
+const fragments = document.querySelectorAll('.roslyn-diff-fragment');
+
+fragments.forEach(fragment => {
+  const stats = {
+    oldFile: fragment.dataset.oldFile,
+    newFile: fragment.dataset.newFile,
+    totalChanges: parseInt(fragment.dataset.changesTotal),
+    breakingPublic: parseInt(fragment.dataset.impactBreakingPublic),
+    breakingInternal: parseInt(fragment.dataset.impactBreakingInternal),
+    nonBreaking: parseInt(fragment.dataset.impactNonBreaking),
+    mode: fragment.dataset.mode
+  };
+
+  console.log(`${stats.oldFile}: ${stats.totalChanges} changes, ${stats.breakingPublic} breaking`);
+
+  // Show warning badge if breaking changes exist
+  if (stats.breakingPublic > 0) {
+    fragment.insertAdjacentHTML('beforebegin',
+      '<div class="alert alert-danger">⚠ Contains breaking API changes</div>'
+    );
+  }
+});
+```
+
+#### Multiple Fragments Example
+
+You can embed multiple diff fragments in a single page:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Multi-File Code Review</title>
+  <link rel="stylesheet" href="roslyn-diff.css">
+  <style>
+    .file-diff { margin-bottom: 2rem; }
+    .file-header {
+      padding: 1rem;
+      background: #f6f8fa;
+      border: 1px solid #d0d7de;
+    }
+  </style>
+</head>
+<body>
+  <h1>Code Review - Multiple Files</h1>
+
+  <!-- First file -->
+  <div class="file-diff">
+    <div class="file-header">
+      <h2>Calculator.cs</h2>
+    </div>
+    <?php include('diffs/calculator-fragment.html'); ?>
+  </div>
+
+  <!-- Second file -->
+  <div class="file-diff">
+    <div class="file-header">
+      <h2>Service.cs</h2>
+    </div>
+    <?php include('diffs/service-fragment.html'); ?>
+  </div>
+
+  <!-- Third file -->
+  <div class="file-diff">
+    <div class="file-header">
+      <h2>Controller.cs</h2>
+    </div>
+    <?php include('diffs/controller-fragment.html'); ?>
+  </div>
+</body>
+</html>
+```
+
+All fragments share the same `roslyn-diff.css` file, so CSS is only loaded once.
+
+#### Styling and Theming
+
+The external CSS uses CSS custom properties (variables) that can be overridden:
+
+```css
+/* Override colors in your site stylesheet */
+.roslyn-diff-fragment {
+  --color-added-bg: #d4edda;      /* Your brand green */
+  --color-added-border: #28a745;
+  --color-removed-bg: #f8d7da;    /* Your brand red */
+  --color-removed-border: #dc3545;
+  --font-mono: 'Source Code Pro', monospace;  /* Your preferred monospace font */
+}
+```
+
+Available CSS variables:
+- `--color-added-bg`, `--color-added-border` - Addition highlighting
+- `--color-removed-bg`, `--color-removed-border` - Deletion highlighting
+- `--color-modified-bg`, `--color-modified-border` - Modification highlighting
+- `--color-moved-bg`, `--color-moved-border` - Move highlighting
+- `--color-renamed-bg`, `--color-renamed-border` - Rename highlighting
+- `--color-line-number` - Line number color
+- `--color-border` - Border color
+- `--color-header-bg` - Header background
+- `--color-code-bg` - Code background
+- `--font-mono` - Monospace font stack
+
+#### Use Cases for Fragment Mode
+
+**Documentation Sites**
+- Embed diffs in changelogs or upgrade guides
+- Show API evolution in documentation
+- Include code examples with before/after comparisons
+
+**Code Review Tools**
+- Integrate semantic diff into custom review interfaces
+- Build dashboards showing multiple file changes
+- Add filtering/navigation UI around diff fragments
+
+**CI/CD Dashboards**
+- Display diff reports in build pipeline dashboards
+- Show impact analysis in deployment approval pages
+- Embed in pull request review tools
+
+**Static Site Generators**
+- Generate diff reports during site build
+- Include in Markdown-based documentation (via HTML injection)
+- Build changelog pages with visual diffs
+
+**Content Management Systems**
+- Embed diffs in CMS-based documentation
+- Show code changes in blog posts or tutorials
+- Include in release notes or version comparison pages
+
+#### Advantages of Fragment Mode
+
+1. **No Style Conflicts** - Styles are scoped and use CSS variables
+2. **Shared Resources** - Multiple fragments share one CSS file
+3. **Easy Integration** - Simple HTML include/embed
+4. **Metadata Access** - Data attributes for JavaScript integration
+5. **Consistent Styling** - All fragments use the same external stylesheet
+6. **Smaller Files** - HTML fragment is smaller without embedded CSS
+7. **Cacheable CSS** - Browser can cache the stylesheet across pages
+
+#### Document vs. Fragment Mode Comparison
+
+| Feature | Document Mode | Fragment Mode |
+|---------|--------------|---------------|
+| HTML Structure | Complete `<html>` document | `<div>` container only |
+| CSS | Embedded in `<style>` tag | External `.css` file |
+| JavaScript | Embedded in `<script>` tag | Embedded in fragment |
+| Data Attributes | No | Yes (metadata on root div) |
+| File Output | 1 file (HTML) | 2 files (HTML + CSS) |
+| Use Case | Standalone reports | Embedded in existing pages |
+| Browser Opening | Yes (with `--open`) | No (requires parent page) |
+| File Size | Larger (includes CSS) | Smaller (CSS separate) |
+| Caching | No (CSS inline) | Yes (CSS file cached) |
 
 ### Customization
 
