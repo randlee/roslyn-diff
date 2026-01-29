@@ -552,25 +552,25 @@ public class HtmlFragmentCornerCaseTests : IDisposable
             ExtractCssPath = cssName
         };
 
-        // Act
-        var act = () => _formatter.FormatResult(result, options);
-
-        // Assert - Should either:
-        // 1. Handle gracefully with directory creation
+        // Act & Assert - Should either:
+        // 1. Handle gracefully with directory creation and return HTML
         // 2. Throw PathTooLongException with clear message
-        // 3. Throw ArgumentException about invalid path
+        // 3. Throw DirectoryNotFoundException (path is too long to create)
         try
         {
-            var html = act.Should().NotThrow("should handle or reject with clear error").Which;
+            var html = _formatter.FormatResult(result, options);
+            // Success case - handled gracefully
+            html.Should().NotBeNullOrWhiteSpace();
         }
         catch (PathTooLongException ex)
         {
-            // Acceptable
+            // Acceptable - explicit path too long exception with clear message
             ex.Message.Should().NotBeNullOrWhiteSpace();
         }
-        catch (DirectoryNotFoundException)
+        catch (DirectoryNotFoundException ex)
         {
-            // Acceptable - path is too long to create
+            // Acceptable - path is too long to create directories
+            ex.Message.Should().NotBeNullOrWhiteSpace();
         }
     }
 
