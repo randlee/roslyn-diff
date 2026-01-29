@@ -1,0 +1,277 @@
+<link rel="stylesheet" href="roslyn-diff.css">
+
+<div class="roslyn-diff-fragment"
+     data-old-file="old.txt"
+     data-new-file="new.txt"
+     data-changes-total="3"
+     data-changes-added="2"
+     data-changes-removed="1"
+     data-changes-modified="0"
+     data-impact-breaking-public="0"
+     data-impact-breaking-internal="0"
+     data-impact-non-breaking="0"
+     data-impact-formatting="0"
+     data-mode="line">
+    <header>
+        <div class="header-title-row">
+            <div class="header-title-left">
+                <h1>Diff Report</h1>
+                <div class="header-stats">
+                    <span class="stat-inline">3 changes</span>
+                    <span class="stat-separator">|</span>
+                    <span class="stat-inline" style="color: var(--color-added-border);">+2 added</span>
+                    <span class="stat-separator">|</span>
+                    <span class="stat-inline" style="color: var(--color-removed-border);">-1 deleted</span>
+                    <span class="stat-separator">|</span>
+                    <span class="stat-inline">Mode: Line-by-Line</span>
+                </div>
+            </div>
+            <span class="header-timestamp">Jan 28, 2026 8:37 PM</span>
+        </div>
+        <div class="file-info">
+            <div class="file-row">
+                <div class="file-row-left">
+                    <span class="file-path-label">Old file:</span>
+                    <span class="file-path" id="old-path" data-path="/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/old.txt">/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/old.txt</span>
+                </div>
+                <div class="file-actions">
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/old.txt')" title="Copy full path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"/><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"/></svg>
+                    </button>
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment')" title="Copy folder path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 2h5.5c.551 0 1.064.278 1.365.737l.43.645A.25.25 0 009.25 3.5h5A1.75 1.75 0 0116 5.25v8A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V3.75C0 2.784.784 2 1.75 2zm0 1.5a.25.25 0 00-.25.25v9.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25v-8a.25.25 0 00-.25-.25H9.25a1.75 1.75 0 01-1.458-.79l-.429-.644a.25.25 0 00-.208-.11z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="vscode" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/old.txt', 'vscode')" title="Open file in VS Code">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14.25 1a.74.74 0 00-.218.033L10.7 2.252l-4.5 4-3.5-2.8a.75.75 0 00-.946.086l-.75.75a.75.75 0 00.033 1.09L4.5 8l-3.463 2.622a.75.75 0 00-.033 1.09l.75.75a.75.75 0 00.946.086l3.5-2.8 4.5 4 3.332 1.22A.74.74 0 0015 14.25V1.75a.75.75 0 00-.75-.75zM11 12.12L7.28 8 11 3.88v8.24z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="rider" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/old.txt', 'rider')" title="Open file in Rider">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm13.2 2.8c.4.5.6 1 .6 1.7 0 .5-.1.9-.3 1.3-.2.4-.6.7-1 .9l1.6 2.5h-2.2l-1.4-2.2H8.8v2.2H7V2.1h3.7c.6 0 1.1.1 1.5.3.4.2.8.3 1 .4zM7 12h6v1.2H7V12z"/><path d="M8.8 3.6v2h1.3c.3 0 .6-.1.8-.3.2-.2.3-.4.3-.7s-.1-.5-.3-.7c-.2-.2-.5-.3-.8-.3H8.8z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="pycharm" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/old.txt', 'pycharm')" title="Open file in PyCharm">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm2 13h5v1H2v-1zm6.3-5.5c-.1.4-.4.7-.8.9l1.2 1.8h-1.5l-1-1.5H5v1.5H3.5V4.5h2.8c.5 0 .9.1 1.2.3.3.2.5.4.7.7.1.3.2.6.2 1 0 .4-.1.7-.1 1zm-.9-1c0-.2-.1-.4-.2-.5-.1-.2-.3-.2-.5-.2H5v1.5h1.7c.2 0 .4-.1.5-.2.1-.2.2-.4.2-.6z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="zed" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/old.txt', 'zed')" title="Open file in Zed">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 1L13 1L15 3.5L15 14.5L13 16L3 16L1 13.5L1 2.5L2.5 1ZM3.5 3L3 3.5L3 12.5L4 14L12 14L13 12.5L13 4L12 3L3.5 3ZM5 5L11 5L11 6.5L7.5 11L11 11L11 13L5 13L5 11.5L8.5 7L5 7L5 5Z"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="file-row">
+                <div class="file-row-left">
+                    <span class="file-path-label">New file:</span>
+                    <span class="file-path" id="new-path" data-path="/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/new.txt">/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/new.txt</span>
+                </div>
+                <div class="file-actions">
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/new.txt')" title="Copy full path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"/><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"/></svg>
+                    </button>
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment')" title="Copy folder path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 2h5.5c.551 0 1.064.278 1.365.737l.43.645A.25.25 0 009.25 3.5h5A1.75 1.75 0 0116 5.25v8A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V3.75C0 2.784.784 2 1.75 2zm0 1.5a.25.25 0 00-.25.25v9.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25v-8a.25.25 0 00-.25-.25H9.25a1.75 1.75 0 01-1.458-.79l-.429-.644a.25.25 0 00-.208-.11z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="vscode" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/new.txt', 'vscode')" title="Open file in VS Code">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14.25 1a.74.74 0 00-.218.033L10.7 2.252l-4.5 4-3.5-2.8a.75.75 0 00-.946.086l-.75.75a.75.75 0 00.033 1.09L4.5 8l-3.463 2.622a.75.75 0 00-.033 1.09l.75.75a.75.75 0 00.946.086l3.5-2.8 4.5 4 3.332 1.22A.74.74 0 0015 14.25V1.75a.75.75 0 00-.75-.75zM11 12.12L7.28 8 11 3.88v8.24z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="rider" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/new.txt', 'rider')" title="Open file in Rider">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm13.2 2.8c.4.5.6 1 .6 1.7 0 .5-.1.9-.3 1.3-.2.4-.6.7-1 .9l1.6 2.5h-2.2l-1.4-2.2H8.8v2.2H7V2.1h3.7c.6 0 1.1.1 1.5.3.4.2.8.3 1 .4zM7 12h6v1.2H7V12z"/><path d="M8.8 3.6v2h1.3c.3 0 .6-.1.8-.3.2-.2.3-.4.3-.7s-.1-.5-.3-.7c-.2-.2-.5-.3-.8-.3H8.8z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="pycharm" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/new.txt', 'pycharm')" title="Open file in PyCharm">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm2 13h5v1H2v-1zm6.3-5.5c-.1.4-.4.7-.8.9l1.2 1.8h-1.5l-1-1.5H5v1.5H3.5V4.5h2.8c.5 0 .9.1 1.2.3.3.2.5.4.7.7.1.3.2.6.2 1 0 .4-.1.7-.1 1zm-.9-1c0-.2-.1-.4-.2-.5-.1-.2-.3-.2-.5-.2H5v1.5h1.7c.2 0 .4-.1.5-.2.1-.2.2-.4.2-.6z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="zed" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/new.txt', 'zed')" title="Open file in Zed">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 1L13 1L15 3.5L15 14.5L13 16L3 16L1 13.5L1 2.5L2.5 1ZM3.5 3L3 3.5L3 12.5L4 14L12 14L13 12.5L13 4L12 3L3.5 3ZM5 5L11 5L11 6.5L7.5 11L11 11L11 13L5 13L5 11.5L8.5 7L5 7L5 5Z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="file-diff" id="file-new-4cf3b83d">
+            <div class="file-header">
+                <h2>new.txt</h2>
+            </div>
+            <div class="top-diff-header" onclick="toggleTopDiff('file-new-4cf3b83d-top-diff')" data-file-json="{&quot;path&quot;:&quot;/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/new.txt&quot;,&quot;changes&quot;:[{&quot;type&quot;:&quot;Removed&quot;,&quot;kind&quot;:&quot;Line&quot;,&quot;name&quot;:null,&quot;oldLine&quot;:1,&quot;newLine&quot;:null,&quot;oldContent&quot;:&quot;Hello World v1&quot;,&quot;newContent&quot;:null},{&quot;type&quot;:&quot;Added&quot;,&quot;kind&quot;:&quot;Line&quot;,&quot;name&quot;:null,&quot;oldLine&quot;:null,&quot;newLine&quot;:1,&quot;oldContent&quot;:null,&quot;newContent&quot;:&quot;Hello World v2&quot;},{&quot;type&quot;:&quot;Added&quot;,&quot;kind&quot;:&quot;Line&quot;,&quot;name&quot;:null,&quot;oldLine&quot;:null,&quot;newLine&quot;:2,&quot;oldContent&quot;:null,&quot;newContent&quot;:&quot;Updated content&quot;}]}" data-file-diff="--- /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/old.txt
++++ /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/test-output-fragment/new.txt
+@@ -1,1 +0,0 @@ 
+-Hello World v1
+@@ -0,0 +1,1 @@ 
++Hello World v2
+@@ -0,0 +2,1 @@ 
++Updated content
+">
+                <div class="top-diff-header-left">
+                    <span class="expand-icon">▼</span>
+                    <div class="top-diff-header-stats">
+                        <span class="stat-inline">3 changes</span>
+                        <span class="stat-added">+2 added</span>
+                        <span class="stat-removed">-1 deleted</span>
+                        <span class="stat-mode">Mode: Line-by-Line</span>
+                    </div>
+                </div>
+                <div class="top-diff-header-buttons" onclick="event.stopPropagation()">
+                    <button class="copy-btn" onclick="copyTopDiffAsJson(this)" title="Copy entire diff as JSON">JSON</button>
+                    <button class="copy-btn" onclick="copyTopDiffAsDiff(this)" title="Copy entire diff in unified format">Diff</button>
+                </div>
+            </div>
+            <div class="top-diff-content" id="file-new-4cf3b83d-top-diff">
+                <div class="diff-container" id="file-new-4cf3b83d-content">
+                <div class="diff-side diff-old">
+                    <div class="diff-side-header">Old Version</div>
+                    <div class="diff-content">
+                        <div class="diff-line line-removed">
+                            <span class="line-number">1</span>
+                            <span class="line-content">Hello World v1</span>
+                        </div>
+                        <div class="diff-line">
+                            <span class="line-number"></span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line">
+                            <span class="line-number"></span>
+                            <span class="line-content"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="diff-side diff-new">
+                    <div class="diff-side-header">New Version</div>
+                    <div class="diff-content">
+                        <div class="diff-line">
+                            <span class="line-number"></span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">1</span>
+                            <span class="line-content">Hello World v2</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">2</span>
+                            <span class="line-content">Updated content</span>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="changes-list">
+                <div class="change-section" style="margin-left: 0px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-cc244219')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Line</span>
+                            <span class="change-name">(unnamed)</span>
+                            <span class="change-location">line 1-1</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-cc244219')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-cc244219')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-cc244219" data-type="Removed" data-kind="Line" data-name="" data-old-line="1" data-new-line="" data-old-content="Hello World v1" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">1</span>
+                                <span class="line-content">Hello World v1</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 0px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-42c83240')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Line</span>
+                            <span class="change-name">(unnamed)</span>
+                            <span class="change-location">line 1-1</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-42c83240')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-42c83240')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-42c83240" data-type="Added" data-kind="Line" data-name="" data-old-line="" data-new-line="1" data-old-content="" data-new-content="Hello World v2">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">1</span>
+                                <span class="line-content">Hello World v2</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 0px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-255e2ea0')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Line</span>
+                            <span class="change-name">(unnamed)</span>
+                            <span class="change-location">line 2-2</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-255e2ea0')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-255e2ea0')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-255e2ea0" data-type="Added" data-kind="Line" data-name="" data-old-line="" data-new-line="2" data-old-content="" data-new-content="Updated content">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">2</span>
+                                <span class="line-content">Updated content</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <div class="nav-container">
+        <button class="nav-btn" onclick="scrollToTop()" title="Go to top">↑</button>
+        <button class="nav-btn" onclick="prevChange()" title="Previous change">▲</button>
+        <button class="nav-btn" onclick="nextChange()" title="Next change">▼</button>
+        <button class="nav-btn" onclick="expandAll()" title="Expand all">+</button>
+        <button class="nav-btn" onclick="collapseAll()" title="Collapse all">-</button>
+    </div>
+</div>

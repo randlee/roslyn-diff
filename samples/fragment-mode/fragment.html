@@ -1,0 +1,840 @@
+<link rel="stylesheet" href="roslyn-diff.css">
+
+<div class="roslyn-diff-fragment"
+     data-old-file="Calculator.cs"
+     data-new-file="Calculator.cs"
+     data-changes-total="4"
+     data-changes-added="2"
+     data-changes-removed="0"
+     data-changes-modified="2"
+     data-impact-breaking-public="0"
+     data-impact-breaking-internal="0"
+     data-impact-non-breaking="0"
+     data-impact-formatting="0"
+     data-mode="roslyn">
+    <header>
+        <div class="header-title-row">
+            <div class="header-title-left">
+                <h1>Diff Report</h1>
+                <div class="header-stats">
+                    <span class="stat-inline">4 changes</span>
+                    <span class="stat-separator">|</span>
+                    <span class="stat-inline" style="color: var(--color-added-border);">+2 added</span>
+                    <span class="stat-separator">|</span>
+                    <span class="stat-inline" style="color: var(--color-modified-border);">~2 modified</span>
+                    <span class="stat-separator">|</span>
+                    <span class="stat-inline">Mode: Roslyn Semantic</span>
+                </div>
+            </div>
+            <span class="header-timestamp">Jan 28, 2026 8:26 PM</span>
+        </div>
+        <div class="file-info">
+            <div class="file-row">
+                <div class="file-row-left">
+                    <span class="file-path-label">Old file:</span>
+                    <span class="file-path" id="old-path" data-path="/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/before/Calculator.cs">/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/before/Calculator.cs</span>
+                </div>
+                <div class="file-actions">
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/before/Calculator.cs')" title="Copy full path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"/><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"/></svg>
+                    </button>
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/before')" title="Copy folder path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 2h5.5c.551 0 1.064.278 1.365.737l.43.645A.25.25 0 009.25 3.5h5A1.75 1.75 0 0116 5.25v8A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V3.75C0 2.784.784 2 1.75 2zm0 1.5a.25.25 0 00-.25.25v9.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25v-8a.25.25 0 00-.25-.25H9.25a1.75 1.75 0 01-1.458-.79l-.429-.644a.25.25 0 00-.208-.11z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="vscode" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/before/Calculator.cs', 'vscode')" title="Open file in VS Code">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14.25 1a.74.74 0 00-.218.033L10.7 2.252l-4.5 4-3.5-2.8a.75.75 0 00-.946.086l-.75.75a.75.75 0 00.033 1.09L4.5 8l-3.463 2.622a.75.75 0 00-.033 1.09l.75.75a.75.75 0 00.946.086l3.5-2.8 4.5 4 3.332 1.22A.74.74 0 0015 14.25V1.75a.75.75 0 00-.75-.75zM11 12.12L7.28 8 11 3.88v8.24z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="rider" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/before/Calculator.cs', 'rider')" title="Open file in Rider">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm13.2 2.8c.4.5.6 1 .6 1.7 0 .5-.1.9-.3 1.3-.2.4-.6.7-1 .9l1.6 2.5h-2.2l-1.4-2.2H8.8v2.2H7V2.1h3.7c.6 0 1.1.1 1.5.3.4.2.8.3 1 .4zM7 12h6v1.2H7V12z"/><path d="M8.8 3.6v2h1.3c.3 0 .6-.1.8-.3.2-.2.3-.4.3-.7s-.1-.5-.3-.7c-.2-.2-.5-.3-.8-.3H8.8z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="pycharm" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/before/Calculator.cs', 'pycharm')" title="Open file in PyCharm">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm2 13h5v1H2v-1zm6.3-5.5c-.1.4-.4.7-.8.9l1.2 1.8h-1.5l-1-1.5H5v1.5H3.5V4.5h2.8c.5 0 .9.1 1.2.3.3.2.5.4.7.7.1.3.2.6.2 1 0 .4-.1.7-.1 1zm-.9-1c0-.2-.1-.4-.2-.5-.1-.2-.3-.2-.5-.2H5v1.5h1.7c.2 0 .4-.1.5-.2.1-.2.2-.4.2-.6z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="zed" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/before/Calculator.cs', 'zed')" title="Open file in Zed">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 1L13 1L15 3.5L15 14.5L13 16L3 16L1 13.5L1 2.5L2.5 1ZM3.5 3L3 3.5L3 12.5L4 14L12 14L13 12.5L13 4L12 3L3.5 3ZM5 5L11 5L11 6.5L7.5 11L11 11L11 13L5 13L5 11.5L8.5 7L5 7L5 5Z"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="file-row">
+                <div class="file-row-left">
+                    <span class="file-path-label">New file:</span>
+                    <span class="file-path" id="new-path" data-path="/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/after/Calculator.cs">/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/after/Calculator.cs</span>
+                </div>
+                <div class="file-actions">
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/after/Calculator.cs')" title="Copy full path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"/><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"/></svg>
+                    </button>
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/after')" title="Copy folder path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 2h5.5c.551 0 1.064.278 1.365.737l.43.645A.25.25 0 009.25 3.5h5A1.75 1.75 0 0116 5.25v8A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V3.75C0 2.784.784 2 1.75 2zm0 1.5a.25.25 0 00-.25.25v9.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25v-8a.25.25 0 00-.25-.25H9.25a1.75 1.75 0 01-1.458-.79l-.429-.644a.25.25 0 00-.208-.11z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="vscode" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/after/Calculator.cs', 'vscode')" title="Open file in VS Code">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14.25 1a.74.74 0 00-.218.033L10.7 2.252l-4.5 4-3.5-2.8a.75.75 0 00-.946.086l-.75.75a.75.75 0 00.033 1.09L4.5 8l-3.463 2.622a.75.75 0 00-.033 1.09l.75.75a.75.75 0 00.946.086l3.5-2.8 4.5 4 3.332 1.22A.74.74 0 0015 14.25V1.75a.75.75 0 00-.75-.75zM11 12.12L7.28 8 11 3.88v8.24z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="rider" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/after/Calculator.cs', 'rider')" title="Open file in Rider">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm13.2 2.8c.4.5.6 1 .6 1.7 0 .5-.1.9-.3 1.3-.2.4-.6.7-1 .9l1.6 2.5h-2.2l-1.4-2.2H8.8v2.2H7V2.1h3.7c.6 0 1.1.1 1.5.3.4.2.8.3 1 .4zM7 12h6v1.2H7V12z"/><path d="M8.8 3.6v2h1.3c.3 0 .6-.1.8-.3.2-.2.3-.4.3-.7s-.1-.5-.3-.7c-.2-.2-.5-.3-.8-.3H8.8z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="pycharm" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/after/Calculator.cs', 'pycharm')" title="Open file in PyCharm">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm2 13h5v1H2v-1zm6.3-5.5c-.1.4-.4.7-.8.9l1.2 1.8h-1.5l-1-1.5H5v1.5H3.5V4.5h2.8c.5 0 .9.1 1.2.3.3.2.5.4.7.7.1.3.2.6.2 1 0 .4-.1.7-.1 1zm-.9-1c0-.2-.1-.4-.2-.5-.1-.2-.3-.2-.5-.2H5v1.5h1.7c.2 0 .4-.1.5-.2.1-.2.2-.4.2-.6z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="zed" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/after/Calculator.cs', 'zed')" title="Open file in Zed">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 1L13 1L15 3.5L15 14.5L13 16L3 16L1 13.5L1 2.5L2.5 1ZM3.5 3L3 3.5L3 12.5L4 14L12 14L13 12.5L13 4L12 3L3.5 3ZM5 5L11 5L11 6.5L7.5 11L11 11L11 13L5 13L5 11.5L8.5 7L5 7L5 5Z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="file-diff" id="file-Calculator-0c106c94">
+            <div class="file-header">
+                <h2>Calculator.cs</h2>
+            </div>
+            <div class="top-diff-header" onclick="toggleTopDiff('file-Calculator-0c106c94-top-diff')" data-file-json="{&quot;path&quot;:&quot;/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/after/Calculator.cs&quot;,&quot;changes&quot;:[{&quot;type&quot;:&quot;Modified&quot;,&quot;kind&quot;:&quot;Namespace&quot;,&quot;name&quot;:&quot;Samples&quot;,&quot;oldLine&quot;:1,&quot;newLine&quot;:1,&quot;oldContent&quot;:&quot;namespace Samples;\r\n/// &lt;summary&gt;\n/// A simple calculator class for basic arithmetic operations.\n/// &lt;/summary&gt;\npublic class Calculator\r\n{\r\n    /// &lt;summary&gt;\n    /// Adds two numbers together.\n    /// &lt;/summary&gt;\n    public int Add(int a, int b)\r\n    {\r\n        return a + b;\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Subtracts the second number from the first.\n    /// &lt;/summary&gt;\n    public int Subtract(int a, int b)\r\n    {\r\n        return a - b;\r\n    }\r\n}&quot;,&quot;newContent&quot;:&quot;namespace Samples;\r\n/// &lt;summary&gt;\n/// A simple calculator class for basic arithmetic operations.\n/// &lt;/summary&gt;\npublic class Calculator\r\n{\r\n    /// &lt;summary&gt;\n    /// Adds two numbers together.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;a\&quot;&gt;The first number.&lt;/param&gt;\n    /// &lt;param name = \&quot;b\&quot;&gt;The second number.&lt;/param&gt;\n    /// &lt;returns&gt;The sum of a and b.&lt;/returns&gt;\n    public int Add(int a, int b)\r\n    {\r\n        return a + b;\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Subtracts the second number from the first.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;a\&quot;&gt;The first number.&lt;/param&gt;\n    /// &lt;param name = \&quot;b\&quot;&gt;The second number.&lt;/param&gt;\n    /// &lt;returns&gt;The difference of a and b.&lt;/returns&gt;\n    public int Subtract(int a, int b)\r\n    {\r\n        return a - b;\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Multiplies two numbers.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;a\&quot;&gt;The first number.&lt;/param&gt;\n    /// &lt;param name = \&quot;b\&quot;&gt;The second number.&lt;/param&gt;\n    /// &lt;returns&gt;The product of a and b.&lt;/returns&gt;\n    public int Multiply(int a, int b)\r\n    {\r\n        return a * b;\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Divides the first number by the second.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;a\&quot;&gt;The dividend.&lt;/param&gt;\n    /// &lt;param name = \&quot;b\&quot;&gt;The divisor.&lt;/param&gt;\n    /// &lt;returns&gt;The quotient of a divided by b.&lt;/returns&gt;\n    /// &lt;exception cref = \&quot;DivideByZeroException\&quot;&gt;Thrown when b is zero.&lt;/exception&gt;\n    public int Divide(int a, int b)\r\n    {\r\n        if (b == 0)\r\n        {\r\n            throw new DivideByZeroException(\&quot;Cannot divide by zero.\&quot;);\r\n        }\r\n\r\n        return a / b;\r\n    }\r\n}&quot;}]}" data-file-diff="--- /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/before/Calculator.cs
++++ /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/samples/after/Calculator.cs
+@@ -1,22 +1,56 @@ Samples
+-namespace Samples;
+-/// &lt;summary&gt;
+-/// A simple calculator class for basic arithmetic operations.
+-/// &lt;/summary&gt;
+-public class Calculator
+-{
+-    /// &lt;summary&gt;
+-    /// Adds two numbers together.
+-    /// &lt;/summary&gt;
+-    public int Add(int a, int b)
+-    {
+-        return a + b;
+-    }
+-
+-    /// &lt;summary&gt;
+-    /// Subtracts the second number from the first.
+-    /// &lt;/summary&gt;
+-    public int Subtract(int a, int b)
+-    {
+-        return a - b;
+-    }
+-}
++namespace Samples;
++/// &lt;summary&gt;
++/// A simple calculator class for basic arithmetic operations.
++/// &lt;/summary&gt;
++public class Calculator
++{
++    /// &lt;summary&gt;
++    /// Adds two numbers together.
++    /// &lt;/summary&gt;
++    /// &lt;param name = &quot;a&quot;&gt;The first number.&lt;/param&gt;
++    /// &lt;param name = &quot;b&quot;&gt;The second number.&lt;/param&gt;
++    /// &lt;returns&gt;The sum of a and b.&lt;/returns&gt;
++    public int Add(int a, int b)
++    {
++        return a + b;
++    }
++
++    /// &lt;summary&gt;
++    /// Subtracts the second number from the first.
++    /// &lt;/summary&gt;
++    /// &lt;param name = &quot;a&quot;&gt;The first number.&lt;/param&gt;
++    /// &lt;param name = &quot;b&quot;&gt;The second number.&lt;/param&gt;
++    /// &lt;returns&gt;The difference of a and b.&lt;/returns&gt;
++    public int Subtract(int a, int b)
++    {
++        return a - b;
++    }
++
++    /// &lt;summary&gt;
++    /// Multiplies two numbers.
++    /// &lt;/summary&gt;
++    /// &lt;param name = &quot;a&quot;&gt;The first number.&lt;/param&gt;
++    /// &lt;param name = &quot;b&quot;&gt;The second number.&lt;/param&gt;
++    /// &lt;returns&gt;The product of a and b.&lt;/returns&gt;
++    public int Multiply(int a, int b)
++    {
++        return a * b;
++    }
++
++    /// &lt;summary&gt;
++    /// Divides the first number by the second.
++    /// &lt;/summary&gt;
++    /// &lt;param name = &quot;a&quot;&gt;The dividend.&lt;/param&gt;
++    /// &lt;param name = &quot;b&quot;&gt;The divisor.&lt;/param&gt;
++    /// &lt;returns&gt;The quotient of a divided by b.&lt;/returns&gt;
++    /// &lt;exception cref = &quot;DivideByZeroException&quot;&gt;Thrown when b is zero.&lt;/exception&gt;
++    public int Divide(int a, int b)
++    {
++        if (b == 0)
++        {
++            throw new DivideByZeroException(&quot;Cannot divide by zero.&quot;);
++        }
++
++        return a / b;
++    }
++}
+">
+                <div class="top-diff-header-left">
+                    <span class="expand-icon">▼</span>
+                    <div class="top-diff-header-stats">
+                        <span class="stat-inline">4 changes</span>
+                        <span class="stat-added">+2 added</span>
+                        <span class="stat-mode">Mode: Roslyn Semantic</span>
+                    </div>
+                </div>
+                <div class="top-diff-header-buttons" onclick="event.stopPropagation()">
+                    <button class="copy-btn" onclick="copyTopDiffAsJson(this)" title="Copy entire diff as JSON">JSON</button>
+                    <button class="copy-btn" onclick="copyTopDiffAsDiff(this)" title="Copy entire diff in unified format">Diff</button>
+                </div>
+            </div>
+            <div class="top-diff-content" id="file-Calculator-0c106c94-top-diff">
+                <div class="diff-container" id="file-Calculator-0c106c94-content">
+                <div class="diff-side diff-old">
+                    <div class="diff-side-header">Old Version</div>
+                    <div class="diff-content">
+                        <div class="diff-line line-modified">
+                            <span class="line-number">1</span>
+                            <span class="line-content"><span class="keyword">namespace</span> Samples;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">2</span>
+                            <span class="line-content"><span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">3</span>
+                            <span class="line-content"><span class="comment">/// A simple calculator <span class="keyword">class</span> <span class="keyword">for</span> basic arithmetic operations.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">4</span>
+                            <span class="line-content"><span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">5</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> Calculator</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">6</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">7</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">8</span>
+                            <span class="line-content">    <span class="comment">/// Adds two numbers together.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">9</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">10</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">int</span> Add(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">11</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">12</span>
+                            <span class="line-content">        <span class="keyword">return</span> a + b;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">13</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">14</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">15</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">16</span>
+                            <span class="line-content">    <span class="comment">/// Subtracts the second number from the first.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">17</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">18</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">int</span> Subtract(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">19</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">20</span>
+                            <span class="line-content">        <span class="keyword">return</span> a - b;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">21</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">22</span>
+                            <span class="line-content">}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="diff-side diff-new">
+                    <div class="diff-side-header">New Version</div>
+                    <div class="diff-content">
+                        <div class="diff-line line-modified">
+                            <span class="line-number">1</span>
+                            <span class="line-content"><span class="keyword">namespace</span> Samples;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">2</span>
+                            <span class="line-content"><span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">3</span>
+                            <span class="line-content"><span class="comment">/// A simple calculator <span class="keyword">class</span> <span class="keyword">for</span> basic arithmetic operations.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">4</span>
+                            <span class="line-content"><span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">5</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> Calculator</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">6</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">7</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">8</span>
+                            <span class="line-content">    <span class="comment">/// Adds two numbers together.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">9</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">10</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;a&quot;</span>&gt;The first number.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">11</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;b&quot;</span>&gt;The second number.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">12</span>
+                            <span class="line-content">    <span class="comment">/// &lt;returns&gt;The sum of a <span class="keyword">and</span> b.&lt;/returns&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">13</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">int</span> Add(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">14</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">15</span>
+                            <span class="line-content">        <span class="keyword">return</span> a + b;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">16</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">17</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">18</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">19</span>
+                            <span class="line-content">    <span class="comment">/// Subtracts the second number from the first.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">20</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">21</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;a&quot;</span>&gt;The first number.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">22</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;b&quot;</span>&gt;The second number.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">23</span>
+                            <span class="line-content">    <span class="comment">/// &lt;returns&gt;The difference of a <span class="keyword">and</span> b.&lt;/returns&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">24</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">int</span> Subtract(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">25</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">26</span>
+                            <span class="line-content">        <span class="keyword">return</span> a - b;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">27</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">28</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">29</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">30</span>
+                            <span class="line-content">    <span class="comment">/// Multiplies two numbers.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">31</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">32</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;a&quot;</span>&gt;The first number.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">33</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;b&quot;</span>&gt;The second number.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">34</span>
+                            <span class="line-content">    <span class="comment">/// &lt;returns&gt;The product of a <span class="keyword">and</span> b.&lt;/returns&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">35</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">int</span> Multiply(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">36</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">37</span>
+                            <span class="line-content">        <span class="keyword">return</span> a * b;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">38</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">39</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">40</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">41</span>
+                            <span class="line-content">    <span class="comment">/// Divides the first number by the second.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">42</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">43</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;a&quot;</span>&gt;The dividend.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">44</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;b&quot;</span>&gt;The divisor.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">45</span>
+                            <span class="line-content">    <span class="comment">/// &lt;returns&gt;The quotient of a divided by b.&lt;/returns&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">46</span>
+                            <span class="line-content">    <span class="comment">/// &lt;exception cref = <span class="string">&quot;DivideByZeroException&quot;</span>&gt;Thrown <span class="keyword">when</span> b <span class="keyword">is</span> zero.&lt;/exception&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">47</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">int</span> Divide(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">48</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">49</span>
+                            <span class="line-content">        <span class="keyword">if</span> (b == <span class="number">0</span>)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">50</span>
+                            <span class="line-content">        {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">51</span>
+                            <span class="line-content">            <span class="keyword">throw</span> <span class="keyword">new</span> DivideByZeroException(<span class="string">&quot;Cannot divide by zero.&quot;</span>);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">52</span>
+                            <span class="line-content">        }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">53</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">54</span>
+                            <span class="line-content">        <span class="keyword">return</span> a / b;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">55</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">56</span>
+                            <span class="line-content">}</span>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="changes-list">
+                <div class="change-section" style="margin-left: 0px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-14f14351')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-modified">Modified</span>
+                            <span class="change-kind">Namespace</span>
+                            <span class="change-name">Samples</span>
+                            <span class="change-location">line 1</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-14f14351')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-14f14351')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-14f14351" data-type="Modified" data-kind="Namespace" data-name="Samples" data-old-line="1" data-new-line="1" data-old-content="namespace Samples;
+/// &lt;summary&gt;
+/// A simple calculator class for basic arithmetic operations.
+/// &lt;/summary&gt;
+public class Calculator
+{
+    /// &lt;summary&gt;
+    /// Adds two numbers together.
+    /// &lt;/summary&gt;
+    public int Add(int a, int b)
+    {
+        return a + b;
+    }
+
+    /// &lt;summary&gt;
+    /// Subtracts the second number from the first.
+    /// &lt;/summary&gt;
+    public int Subtract(int a, int b)
+    {
+        return a - b;
+    }
+}" data-new-content="namespace Samples;
+/// &lt;summary&gt;
+/// A simple calculator class for basic arithmetic operations.
+/// &lt;/summary&gt;
+public class Calculator
+{
+    /// &lt;summary&gt;
+    /// Adds two numbers together.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;a&quot;&gt;The first number.&lt;/param&gt;
+    /// &lt;param name = &quot;b&quot;&gt;The second number.&lt;/param&gt;
+    /// &lt;returns&gt;The sum of a and b.&lt;/returns&gt;
+    public int Add(int a, int b)
+    {
+        return a + b;
+    }
+
+    /// &lt;summary&gt;
+    /// Subtracts the second number from the first.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;a&quot;&gt;The first number.&lt;/param&gt;
+    /// &lt;param name = &quot;b&quot;&gt;The second number.&lt;/param&gt;
+    /// &lt;returns&gt;The difference of a and b.&lt;/returns&gt;
+    public int Subtract(int a, int b)
+    {
+        return a - b;
+    }
+
+    /// &lt;summary&gt;
+    /// Multiplies two numbers.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;a&quot;&gt;The first number.&lt;/param&gt;
+    /// &lt;param name = &quot;b&quot;&gt;The second number.&lt;/param&gt;
+    /// &lt;returns&gt;The product of a and b.&lt;/returns&gt;
+    public int Multiply(int a, int b)
+    {
+        return a * b;
+    }
+
+    /// &lt;summary&gt;
+    /// Divides the first number by the second.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;a&quot;&gt;The dividend.&lt;/param&gt;
+    /// &lt;param name = &quot;b&quot;&gt;The divisor.&lt;/param&gt;
+    /// &lt;returns&gt;The quotient of a divided by b.&lt;/returns&gt;
+    /// &lt;exception cref = &quot;DivideByZeroException&quot;&gt;Thrown when b is zero.&lt;/exception&gt;
+    public int Divide(int a, int b)
+    {
+        if (b == 0)
+        {
+            throw new DivideByZeroException(&quot;Cannot divide by zero.&quot;);
+        }
+
+        return a / b;
+    }
+}">
+                        <div class="diff-line" style="padding: 8px 12px; color: #57606a; font-style: italic;">
+                            Contains 1 nested change shown below.
+                        </div>
+                    </div>
+                <div class="change-section" style="margin-left: 20px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-d7734939')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-modified">Modified</span>
+                            <span class="change-kind">Class</span>
+                            <span class="change-name">Calculator</span>
+                            <span class="change-location">line 6</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-d7734939')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-d7734939')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-d7734939" data-type="Modified" data-kind="Class" data-name="Calculator" data-old-line="6" data-new-line="6" data-old-content="public class Calculator
+{
+    /// &lt;summary&gt;
+    /// Adds two numbers together.
+    /// &lt;/summary&gt;
+    public int Add(int a, int b)
+    {
+        return a + b;
+    }
+
+    /// &lt;summary&gt;
+    /// Subtracts the second number from the first.
+    /// &lt;/summary&gt;
+    public int Subtract(int a, int b)
+    {
+        return a - b;
+    }
+}" data-new-content="public class Calculator
+{
+    /// &lt;summary&gt;
+    /// Adds two numbers together.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;a&quot;&gt;The first number.&lt;/param&gt;
+    /// &lt;param name = &quot;b&quot;&gt;The second number.&lt;/param&gt;
+    /// &lt;returns&gt;The sum of a and b.&lt;/returns&gt;
+    public int Add(int a, int b)
+    {
+        return a + b;
+    }
+
+    /// &lt;summary&gt;
+    /// Subtracts the second number from the first.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;a&quot;&gt;The first number.&lt;/param&gt;
+    /// &lt;param name = &quot;b&quot;&gt;The second number.&lt;/param&gt;
+    /// &lt;returns&gt;The difference of a and b.&lt;/returns&gt;
+    public int Subtract(int a, int b)
+    {
+        return a - b;
+    }
+
+    /// &lt;summary&gt;
+    /// Multiplies two numbers.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;a&quot;&gt;The first number.&lt;/param&gt;
+    /// &lt;param name = &quot;b&quot;&gt;The second number.&lt;/param&gt;
+    /// &lt;returns&gt;The product of a and b.&lt;/returns&gt;
+    public int Multiply(int a, int b)
+    {
+        return a * b;
+    }
+
+    /// &lt;summary&gt;
+    /// Divides the first number by the second.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;a&quot;&gt;The dividend.&lt;/param&gt;
+    /// &lt;param name = &quot;b&quot;&gt;The divisor.&lt;/param&gt;
+    /// &lt;returns&gt;The quotient of a divided by b.&lt;/returns&gt;
+    /// &lt;exception cref = &quot;DivideByZeroException&quot;&gt;Thrown when b is zero.&lt;/exception&gt;
+    public int Divide(int a, int b)
+    {
+        if (b == 0)
+        {
+            throw new DivideByZeroException(&quot;Cannot divide by zero.&quot;);
+        }
+
+        return a / b;
+    }
+}">
+                        <div class="diff-line" style="padding: 8px 12px; color: #57606a; font-style: italic;">
+                            Contains 2 nested changes shown below.
+                        </div>
+                    </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-5b13b73d')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">Multiply</span>
+                            <span class="change-location">line 36-39</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-5b13b73d')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-5b13b73d')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-5b13b73d" data-type="Added" data-kind="Method" data-name="Multiply" data-old-line="" data-new-line="36" data-old-content="" data-new-content="public int Multiply(int a, int b)
+{
+    return a * b;
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">36</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="keyword">int</span> Multiply(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">37</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">38</span>
+                                <span class="line-content">    <span class="keyword">return</span> a * b;</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">39</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-50ebb960')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">Divide</span>
+                            <span class="change-location">line 48-55</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-50ebb960')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-50ebb960')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-50ebb960" data-type="Added" data-kind="Method" data-name="Divide" data-old-line="" data-new-line="48" data-old-content="" data-new-content="public int Divide(int a, int b)
+{
+    if (b == 0)
+    {
+        throw new DivideByZeroException(&quot;Cannot divide by zero.&quot;);
+    }
+
+    return a / b;
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">48</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="keyword">int</span> Divide(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">49</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">50</span>
+                                <span class="line-content">    <span class="keyword">if</span> (b == <span class="number">0</span>)</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">51</span>
+                                <span class="line-content">    {</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">52</span>
+                                <span class="line-content">        <span class="keyword">throw</span> <span class="keyword">new</span> DivideByZeroException(<span class="string">&quot;Cannot divide by zero.&quot;</span>);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">53</span>
+                                <span class="line-content">    }</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">54</span>
+                                <span class="line-content"></span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">55</span>
+                                <span class="line-content">    <span class="keyword">return</span> a / b;</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">56</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <div class="nav-container">
+        <button class="nav-btn" onclick="scrollToTop()" title="Go to top">↑</button>
+        <button class="nav-btn" onclick="prevChange()" title="Previous change">▲</button>
+        <button class="nav-btn" onclick="nextChange()" title="Next change">▼</button>
+        <button class="nav-btn" onclick="expandAll()" title="Expand all">+</button>
+        <button class="nav-btn" onclick="collapseAll()" title="Collapse all">-</button>
+    </div>
+</div>

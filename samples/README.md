@@ -4,6 +4,52 @@ This directory contains sample files demonstrating the capabilities of RoslynDif
 
 ## Samples Overview
 
+### fragment-mode
+
+**Location:** `samples/fragment-mode/`
+
+**Purpose:** Demonstrates HTML Fragment Mode for embedding roslyn-diff reports into existing web applications.
+
+**Files:**
+- `fragment.html` - Example HTML fragment with embedded diff (no document wrapper)
+- `roslyn-diff.css` - External CSS stylesheet with all necessary styles
+- `parent.html` - Example parent page showing how to embed fragments in a dashboard
+- `README.md` - Comprehensive guide to fragment mode integration patterns
+
+**Features Demonstrated:**
+- Embeddable HTML fragments without document wrapper
+- External CSS for shared styling across multiple fragments
+- Data attributes for JavaScript integration
+- Custom parent page with dashboard UI
+- Metadata extraction and JavaScript interaction
+- Multiple fragment embedding patterns
+
+**Use Cases:**
+- Code review dashboards
+- Documentation sites (changelog, upgrade guides)
+- CI/CD pipeline reports
+- Static site generators (Jekyll, Hugo, Gatsby)
+- Content management systems
+
+**How to Generate:**
+```bash
+cd src/RoslynDiff.Cli
+
+# Generate HTML fragment with external CSS
+dotnet run -- diff ../../samples/before/Calculator.cs ../../samples/after/Calculator.cs \
+  --html ../../samples/fragment-mode/fragment.html \
+  --html-mode fragment
+
+# Custom CSS filename
+dotnet run -- diff ../../samples/before/Calculator.cs ../../samples/after/Calculator.cs \
+  --html ../../samples/fragment-mode/fragment.html \
+  --html-mode fragment \
+  --extract-css custom.css
+```
+
+**View Example:**
+Open `samples/fragment-mode/parent.html` in your browser to see the fragment embedded in a complete dashboard.
+
 ### impact-demo
 
 **Location:** `samples/impact-demo/`
@@ -164,8 +210,11 @@ Generate different output formats:
 # JSON output
 dotnet run -- diff old.cs new.cs --json output.json
 
-# HTML report
+# HTML report (standalone document)
 dotnet run -- diff old.cs new.cs --html report.html
+
+# HTML fragment (embeddable with external CSS)
+dotnet run -- diff old.cs new.cs --html fragment.html --html-mode fragment
 
 # Both formats
 dotnet run -- diff old.cs new.cs --json output.json --html report.html
@@ -229,6 +278,7 @@ To add new samples:
 
 ## Version History
 
+- v0.9.0: Added HTML Fragment Mode for embedding in existing applications
 - v0.8.0: Added impact classification system with filtering and whitespace modes
 - v0.7.0: Added HTML report generation
 - v0.6.0: Enhanced semantic analysis
