@@ -2,7 +2,9 @@
 
 **Document ID:** DESIGN-006
 **Date:** 2026-01-28
-**Status:** PLANNING
+**Status:** IN PROGRESS
+**Worktree:** `/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode`
+**Branch:** `feature/html-fragment-mode` (based on `develop`)
 **Related Issue:** [#46](https://github.com/randlee/roslyn-diff/issues/46)
 **Target Version:** v0.9.0
 
