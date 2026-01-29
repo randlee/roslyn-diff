@@ -122,11 +122,21 @@ public class OutputOrchestrator
                 throw new InvalidOperationException("HTML output requires a file path (cannot write to stdout).");
             }
 
+            // Create HTML-specific options with mode and CSS path
+            var htmlOptions = outputOptions with
+            {
+                HtmlMode = settings.HtmlMode.ToLowerInvariant() == "fragment"
+                    ? Output.HtmlMode.Fragment
+                    : Output.HtmlMode.Document,
+                ExtractCssPath = settings.ExtractCss,
+                HtmlOutputPath = settings.HtmlOutput
+            };
+
             await WriteFormatOutputAsync(
                 result,
                 "html",
                 settings.HtmlOutput,
-                outputOptions,
+                htmlOptions,
                 stdoutState,
                 settings.Quiet,
                 cancellationToken);
@@ -412,4 +422,14 @@ public class OutputSettings
     /// Only changes at or above this impact level are included.
     /// </remarks>
     public ChangeImpact MinimumImpactLevel { get; init; } = ChangeImpact.FormattingOnly;
+
+    /// <summary>
+    /// Gets or sets the HTML generation mode.
+    /// </summary>
+    public string HtmlMode { get; init; } = "document";
+
+    /// <summary>
+    /// Gets or sets the CSS filename for fragment mode.
+    /// </summary>
+    public string ExtractCss { get; init; } = "roslyn-diff.css";
 }

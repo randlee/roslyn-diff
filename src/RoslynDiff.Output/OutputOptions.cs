@@ -1,6 +1,25 @@
 namespace RoslynDiff.Output;
 
 /// <summary>
+/// HTML generation mode for controlling document structure.
+/// </summary>
+public enum HtmlMode
+{
+    /// <summary>
+    /// Generate complete HTML document with &lt;html&gt;, &lt;head&gt;, &lt;body&gt; tags.
+    /// Includes embedded CSS and JavaScript. Default mode.
+    /// </summary>
+    Document,
+
+    /// <summary>
+    /// Generate embeddable HTML fragment without document wrapper.
+    /// Outputs external CSS file and references it with link tag.
+    /// Includes data attributes for parent document integration.
+    /// </summary>
+    Fragment
+}
+
+/// <summary>
 /// Options for controlling diff output formatting.
 /// </summary>
 public record OutputOptions
@@ -56,4 +75,25 @@ public record OutputOptions
     /// Used by HTML formatter to conditionally show editor buttons.
     /// </summary>
     public IReadOnlyList<string> AvailableEditors { get; init; } = Array.Empty<string>();
+
+    /// <summary>
+    /// Gets or sets the HTML generation mode.
+    /// Default: Document (complete HTML document).
+    /// Only applies when generating HTML output.
+    /// </summary>
+    public HtmlMode HtmlMode { get; init; } = HtmlMode.Document;
+
+    /// <summary>
+    /// Gets or sets the CSS filename for fragment mode.
+    /// Default: "roslyn-diff.css".
+    /// Only applies when HtmlMode is Fragment.
+    /// </summary>
+    public string ExtractCssPath { get; init; } = "roslyn-diff.css";
+
+    /// <summary>
+    /// Gets or sets the output directory for HTML fragments.
+    /// Used to determine where to write the CSS file.
+    /// Only applies when HtmlMode is Fragment.
+    /// </summary>
+    public string? HtmlOutputPath { get; init; }
 }

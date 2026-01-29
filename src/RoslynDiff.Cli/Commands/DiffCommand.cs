@@ -132,6 +132,31 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
         public string? HtmlOutput { get; init; }
 
         /// <summary>
+        /// Gets or sets the HTML generation mode.
+        /// </summary>
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item>document: Complete HTML document (default)</item>
+        /// <item>fragment: Embeddable HTML fragment with external CSS</item>
+        /// </list>
+        /// </remarks>
+        [CommandOption("--html-mode <mode>")]
+        [Description("HTML mode: document (full doc) or fragment (embeddable) [[default: document]]")]
+        [DefaultValue("document")]
+        public string HtmlMode { get; init; } = "document";
+
+        /// <summary>
+        /// Gets or sets the CSS filename for fragment mode.
+        /// </summary>
+        /// <remarks>
+        /// Only applies when --html-mode is fragment.
+        /// </remarks>
+        [CommandOption("--extract-css <filename>")]
+        [Description("CSS filename for fragment mode [[default: roslyn-diff.css]]")]
+        [DefaultValue("roslyn-diff.css")]
+        public string ExtractCss { get; init; } = "roslyn-diff.css";
+
+        /// <summary>
         /// Gets or sets the plain text output option.
         /// </summary>
         /// <remarks>
@@ -268,6 +293,13 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             if (!validModes.Contains(WhitespaceMode.ToLowerInvariant()))
             {
                 return ValidationResult.Error($"Invalid whitespace mode: '{WhitespaceMode}'. Valid modes: exact, ignore-leading-trailing, ignore-all, language-aware");
+            }
+
+            // Validate --html-mode
+            var validHtmlModes = new[] { "document", "fragment" };
+            if (!validHtmlModes.Contains(HtmlMode.ToLowerInvariant()))
+            {
+                return ValidationResult.Error($"Invalid HTML mode: '{HtmlMode}'. Valid modes: document, fragment");
             }
 
             // Validate TFMs if provided
@@ -456,7 +488,9 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
                 NoColor = settings.NoColor,
                 IncludeNonImpactful = settings.IncludeNonImpactful || settings.IncludeFormatting,
                 IncludeFormatting = settings.IncludeFormatting,
-                MinimumImpactLevel = effectiveImpactLevel
+                MinimumImpactLevel = effectiveImpactLevel,
+                HtmlMode = settings.HtmlMode,
+                ExtractCss = settings.ExtractCss
             };
 
             // Use OutputOrchestrator to handle all output logic

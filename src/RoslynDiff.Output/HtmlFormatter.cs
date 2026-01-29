@@ -22,10 +22,19 @@ public partial class HtmlFormatter : IOutputFormatter
         options ??= new OutputOptions();
         var sb = new StringBuilder();
 
-        AppendHtmlHeader(sb, result);
-        AppendSummarySection(sb, result, options);
-        AppendDiffContent(sb, result, options);
-        AppendHtmlFooter(sb);
+        if (options.HtmlMode == HtmlMode.Fragment)
+        {
+            // Fragment mode: No HTML wrapper, external CSS
+            AppendFragmentContent(sb, result, options);
+        }
+        else
+        {
+            // Document mode: Full HTML document with embedded CSS
+            AppendHtmlHeader(sb, result);
+            AppendSummarySection(sb, result, options);
+            AppendDiffContent(sb, result, options);
+            AppendHtmlFooter(sb);
+        }
 
         return sb.ToString();
     }
@@ -1503,6 +1512,151 @@ public partial class HtmlFormatter : IOutputFormatter
         sb.AppendLine("        <button class=\"nav-btn\" onclick=\"expandAll()\" title=\"Expand all\">+</button>");
         sb.AppendLine("        <button class=\"nav-btn\" onclick=\"collapseAll()\" title=\"Collapse all\">-</button>");
         sb.AppendLine("    </div>");
+    }
+
+    private static void AppendFragmentContent(StringBuilder sb, DiffResult result, OutputOptions options)
+    {
+        // Write CSS to external file
+        WriteCssFile(options);
+
+        // Add link to external CSS
+        sb.AppendLine($"<link rel=\"stylesheet\" href=\"{HtmlEncode(options.ExtractCssPath)}\">");
+        sb.AppendLine();
+
+        // Create fragment container with data attributes
+        sb.AppendLine("<div class=\"roslyn-diff-fragment\"");
+
+        // Add data attributes for metadata
+        if (result.OldPath is not null)
+        {
+            sb.AppendLine($"     data-old-file=\"{HtmlEncode(Path.GetFileName(result.OldPath))}\"");
+        }
+        if (result.NewPath is not null)
+        {
+            sb.AppendLine($"     data-new-file=\"{HtmlEncode(Path.GetFileName(result.NewPath))}\"");
+        }
+
+        // Add change statistics
+        sb.AppendLine($"     data-changes-total=\"{result.Stats.TotalChanges}\"");
+        sb.AppendLine($"     data-changes-added=\"{result.Stats.Additions}\"");
+        sb.AppendLine($"     data-changes-removed=\"{result.Stats.Deletions}\"");
+        sb.AppendLine($"     data-changes-modified=\"{result.Stats.Modifications}\"");
+
+        // Add impact statistics
+        sb.AppendLine($"     data-impact-breaking-public=\"{result.Stats.BreakingPublicApiCount}\"");
+        sb.AppendLine($"     data-impact-breaking-internal=\"{result.Stats.BreakingInternalApiCount}\"");
+        sb.AppendLine($"     data-impact-non-breaking=\"{result.Stats.NonBreakingCount}\"");
+        sb.AppendLine($"     data-impact-formatting=\"{result.Stats.FormattingOnlyCount}\"");
+
+        // Add mode
+        sb.AppendLine($"     data-mode=\"{result.Mode.ToString().ToLowerInvariant()}\">");
+
+        // Add the actual diff content (same as document mode)
+        AppendSummarySection(sb, result, options);
+        AppendDiffContent(sb, result, options);
+
+        // Close fragment container
+        sb.AppendLine("</div>");
+    }
+
+    private static void WriteCssFile(OutputOptions options)
+    {
+        if (string.IsNullOrEmpty(options.HtmlOutputPath))
+        {
+            return;
+        }
+
+        // Determine CSS file path (same directory as HTML output)
+        var htmlDirectory = Path.GetDirectoryName(options.HtmlOutputPath);
+        if (string.IsNullOrEmpty(htmlDirectory))
+        {
+            htmlDirectory = Directory.GetCurrentDirectory();
+        }
+
+        var cssPath = Path.Combine(htmlDirectory, options.ExtractCssPath);
+
+        // Generate CSS content
+        var cssContent = GenerateExternalCss();
+
+        // Write CSS file
+        File.WriteAllText(cssPath, cssContent);
+    }
+
+    private static string GenerateExternalCss()
+    {
+        var sb = new StringBuilder();
+
+        // Extract CSS from AppendStyles method, but without <style> tags
+        // and wrap everything to be scoped to .roslyn-diff-fragment
+        sb.AppendLine(":root {");
+        sb.AppendLine("    --color-added-bg: #e6ffec;");
+        sb.AppendLine("    --color-added-border: #2da44e;");
+        sb.AppendLine("    --color-removed-bg: #ffebe9;");
+        sb.AppendLine("    --color-removed-border: #cf222e;");
+        sb.AppendLine("    --color-modified-bg: #fff3cd;");
+        sb.AppendLine("    --color-modified-border: #bf8700;");
+        sb.AppendLine("    --color-moved-bg: #ddf4ff;");
+        sb.AppendLine("    --color-moved-border: #218bff;");
+        sb.AppendLine("    --color-renamed-bg: #f5e8ff;");
+        sb.AppendLine("    --color-renamed-border: #8250df;");
+        sb.AppendLine("    --color-line-number: #57606a;");
+        sb.AppendLine("    --color-border: #d0d7de;");
+        sb.AppendLine("    --color-header-bg: #f6f8fa;");
+        sb.AppendLine("    --color-code-bg: #f6f8fa;");
+        sb.AppendLine("    --font-mono: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;");
+        sb.AppendLine("}");
+        sb.AppendLine();
+
+        // Now generate the CSS with .roslyn-diff-fragment prefix
+        var styles = new StringBuilder();
+        AppendStyles(styles);
+
+        // Extract just the CSS content (between <style> and </style>)
+        var fullStyles = styles.ToString();
+        var styleStart = fullStyles.IndexOf("<style>") + "<style>".Length;
+        var styleEnd = fullStyles.IndexOf("</style>");
+        var cssContent = fullStyles.Substring(styleStart, styleEnd - styleStart).Trim();
+
+        // For now, just return the CSS as-is since it's already scoped to body and children
+        // In fragment mode, we replace body with .roslyn-diff-fragment
+        cssContent = cssContent.Replace("body {", ".roslyn-diff-fragment {");
+        cssContent = cssContent.Replace("header {", ".roslyn-diff-fragment header {");
+        cssContent = cssContent.Replace("h1 {", ".roslyn-diff-fragment h1 {");
+        cssContent = cssContent.Replace("h2 {", ".roslyn-diff-fragment h2 {");
+        cssContent = cssContent.Replace("main {", ".roslyn-diff-fragment main {");
+
+        // Add scoping prefix to all remaining selectors that don't start with :root or *
+        var lines = cssContent.Split('\n');
+        var scopedCss = new StringBuilder();
+
+        foreach (var line in lines)
+        {
+            var trimmed = line.TrimStart();
+
+            // Skip empty lines, :root, *, and lines already scoped
+            if (string.IsNullOrWhiteSpace(trimmed) ||
+                trimmed.StartsWith(":root") ||
+                trimmed.StartsWith("*") ||
+                trimmed.StartsWith(".roslyn-diff-fragment"))
+            {
+                scopedCss.AppendLine(line);
+            }
+            // Scope class and element selectors
+            else if (trimmed.StartsWith(".") || trimmed.StartsWith("h") ||
+                     trimmed.StartsWith("header") || trimmed.StartsWith("main") ||
+                     trimmed.StartsWith("pre") || trimmed.StartsWith("code") ||
+                     trimmed.StartsWith("table"))
+            {
+                var indent = line.Substring(0, line.Length - trimmed.Length);
+                scopedCss.AppendLine($"{indent}.roslyn-diff-fragment {trimmed}");
+            }
+            else
+            {
+                scopedCss.AppendLine(line);
+            }
+        }
+
+        return scopedCss.ToString();
     }
 
     private static void AppendHtmlFooter(StringBuilder sb)
