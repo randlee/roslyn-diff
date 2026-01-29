@@ -1,0 +1,302 @@
+{
+  "$schema": "roslyn-diff-output-v3",
+  "metadata": {
+    "version": "0.8.0\u002B2f8c3ff6020f3298bf521cadccbfc90ea1e85afa",
+    "timestamp": "2026-01-29T06:04:00.949644+00:00",
+    "mode": "multi-file",
+    "comparisonMode": "folder",
+    "oldRoot": "/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/multi-file-diff/samples/multi-file/test-folders/before/",
+    "newRoot": "/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/multi-file-diff/samples/multi-file/test-folders/after/",
+    "options": {
+      "includeContent": true,
+      "contextLines": 3,
+      "includeNonImpactful": false
+    }
+  },
+  "summary": {
+    "totalFiles": 4,
+    "modifiedFiles": 2,
+    "addedFiles": 1,
+    "removedFiles": 1,
+    "renamedFiles": 0,
+    "totalChanges": 10,
+    "impactBreakdown": {
+      "breakingPublicApi": 10,
+      "breakingInternalApi": 0,
+      "nonBreaking": 0,
+      "formattingOnly": 0
+    }
+  },
+  "files": [
+    {
+      "oldPath": "/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/multi-file-diff/samples/multi-file/test-folders/before/Calculator.cs",
+      "newPath": "/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/multi-file-diff/samples/multi-file/test-folders/after/Calculator.cs",
+      "status": "modified",
+      "result": {
+        "summary": {
+          "totalChanges": 3,
+          "additions": 1,
+          "deletions": 0,
+          "modifications": 2,
+          "renames": 0,
+          "moves": 0,
+          "impactBreakdown": {
+            "breakingPublicApi": 3,
+            "breakingInternalApi": 0,
+            "nonBreaking": 0,
+            "formattingOnly": 0
+          }
+        },
+        "changes": [
+          {
+            "type": "modified",
+            "kind": "namespace",
+            "name": "MathLib",
+            "impact": "breakingPublicApi",
+            "location": {
+              "startLine": 1,
+              "endLine": 34,
+              "startColumn": 1,
+              "endColumn": 2
+            },
+            "oldLocation": {
+              "startLine": 1,
+              "endLine": 17,
+              "startColumn": 1,
+              "endColumn": 2
+            },
+            "content": "namespace MathLib;\r\n/// \u003Csummary\u003E\n/// Provides basic calculator operations\n/// \u003C/summary\u003E\npublic class Calculator\r\n{\r\n    /// \u003Csummary\u003E\n    /// Adds two integers\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022a\u0022\u003EFirst number\u003C/param\u003E\n    /// \u003Cparam name = \u0022b\u0022\u003ESecond number\u003C/param\u003E\n    /// \u003Creturns\u003ESum of a and b\u003C/returns\u003E\n    public int Add(int a, int b)\r\n    {\r\n        return a \u002B b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Subtracts one integer from another\n    /// \u003C/summary\u003E\n    public int Subtract(int a, int b)\r\n    {\r\n        return a - b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Multiplies two integers\n    /// \u003C/summary\u003E\n    public int Multiply(int a, int b)\r\n    {\r\n        return a * b;\r\n    }\r\n}",
+            "oldContent": "namespace MathLib;\r\n/// \u003Csummary\u003E\n/// Provides basic calculator operations\n/// \u003C/summary\u003E\npublic class Calculator\r\n{\r\n    public int Add(int a, int b)\r\n    {\r\n        return a \u002B b;\r\n    }\r\n\r\n    public int Subtract(int a, int b)\r\n    {\r\n        return a - b;\r\n    }\r\n}",
+            "children": [
+              {
+                "type": "modified",
+                "kind": "class",
+                "name": "Calculator",
+                "impact": "breakingPublicApi",
+                "location": {
+                  "startLine": 6,
+                  "endLine": 34,
+                  "startColumn": 1,
+                  "endColumn": 2
+                },
+                "oldLocation": {
+                  "startLine": 6,
+                  "endLine": 17,
+                  "startColumn": 1,
+                  "endColumn": 2
+                },
+                "content": "public class Calculator\r\n{\r\n    /// \u003Csummary\u003E\n    /// Adds two integers\n    /// \u003C/summary\u003E\n    /// \u003Cparam name = \u0022a\u0022\u003EFirst number\u003C/param\u003E\n    /// \u003Cparam name = \u0022b\u0022\u003ESecond number\u003C/param\u003E\n    /// \u003Creturns\u003ESum of a and b\u003C/returns\u003E\n    public int Add(int a, int b)\r\n    {\r\n        return a \u002B b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Subtracts one integer from another\n    /// \u003C/summary\u003E\n    public int Subtract(int a, int b)\r\n    {\r\n        return a - b;\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Multiplies two integers\n    /// \u003C/summary\u003E\n    public int Multiply(int a, int b)\r\n    {\r\n        return a * b;\r\n    }\r\n}",
+                "oldContent": "public class Calculator\r\n{\r\n    public int Add(int a, int b)\r\n    {\r\n        return a \u002B b;\r\n    }\r\n\r\n    public int Subtract(int a, int b)\r\n    {\r\n        return a - b;\r\n    }\r\n}",
+                "children": [
+                  {
+                    "type": "added",
+                    "kind": "method",
+                    "name": "Multiply",
+                    "impact": "breakingPublicApi",
+                    "location": {
+                      "startLine": 30,
+                      "endLine": 33,
+                      "startColumn": 5,
+                      "endColumn": 6
+                    },
+                    "content": "public int Multiply(int a, int b)\r\n{\r\n    return a * b;\r\n}"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "newPath": "/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/multi-file-diff/samples/multi-file/test-folders/after/Logger.cs",
+      "status": "added",
+      "result": {
+        "summary": {
+          "totalChanges": 1,
+          "additions": 1,
+          "deletions": 0,
+          "modifications": 0,
+          "renames": 0,
+          "moves": 0,
+          "impactBreakdown": {
+            "breakingPublicApi": 1,
+            "breakingInternalApi": 0,
+            "nonBreaking": 0,
+            "formattingOnly": 0
+          }
+        },
+        "changes": [
+          {
+            "type": "added",
+            "kind": "namespace",
+            "name": "MathLib.Utilities",
+            "impact": "breakingPublicApi",
+            "location": {
+              "startLine": 1,
+              "endLine": 17,
+              "startColumn": 1,
+              "endColumn": 2
+            },
+            "content": "namespace MathLib.Utilities;\r\n/// \u003Csummary\u003E\n/// Simple logging utility\n/// \u003C/summary\u003E\npublic class Logger\r\n{\r\n    public void LogInfo(string message)\r\n    {\r\n        Console.WriteLine($\u0022[INFO] {message}\u0022);\r\n    }\r\n\r\n    public void LogError(string message)\r\n    {\r\n        Console.Error.WriteLine($\u0022[ERROR] {message}\u0022);\r\n    }\r\n}"
+          }
+        ]
+      }
+    },
+    {
+      "oldPath": "/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/multi-file-diff/samples/multi-file/test-folders/before/StringHelper.cs",
+      "newPath": "/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/multi-file-diff/samples/multi-file/test-folders/after/StringHelper.cs",
+      "status": "modified",
+      "result": {
+        "summary": {
+          "totalChanges": 5,
+          "additions": 1,
+          "deletions": 0,
+          "modifications": 4,
+          "renames": 0,
+          "moves": 0,
+          "impactBreakdown": {
+            "breakingPublicApi": 5,
+            "breakingInternalApi": 0,
+            "nonBreaking": 0,
+            "formattingOnly": 0
+          }
+        },
+        "changes": [
+          {
+            "type": "modified",
+            "kind": "namespace",
+            "name": "MathLib.Utilities",
+            "impact": "breakingPublicApi",
+            "location": {
+              "startLine": 1,
+              "endLine": 36,
+              "startColumn": 1,
+              "endColumn": 2
+            },
+            "oldLocation": {
+              "startLine": 1,
+              "endLine": 14,
+              "startColumn": 1,
+              "endColumn": 2
+            },
+            "content": "namespace MathLib.Utilities;\r\n/// \u003Csummary\u003E\n/// Helper methods for string manipulation\n/// \u003C/summary\u003E\npublic class StringHelper\r\n{\r\n    /// \u003Csummary\u003E\n    /// Converts string to uppercase\n    /// \u003C/summary\u003E\n    public static string ToUpperCase(string input)\r\n    {\r\n        if (input == null)\r\n            throw new ArgumentNullException(nameof(input));\r\n        return input.ToUpper();\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Converts string to lowercase\n    /// \u003C/summary\u003E\n    public static string ToLowerCase(string input)\r\n    {\r\n        if (input == null)\r\n            throw new ArgumentNullException(nameof(input));\r\n        return input.ToLower();\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Reverses a string\n    /// \u003C/summary\u003E\n    public static string Reverse(string input)\r\n    {\r\n        if (input == null)\r\n            throw new ArgumentNullException(nameof(input));\r\n        char[] chars = input.ToCharArray();\r\n        Array.Reverse(chars);\r\n        return new string (chars);\r\n    }\r\n}",
+            "oldContent": "namespace MathLib.Utilities;\r\npublic class StringHelper\r\n{\r\n    public static string ToUpperCase(string input)\r\n    {\r\n        return input.ToUpper();\r\n    }\r\n\r\n    public static string ToLowerCase(string input)\r\n    {\r\n        return input.ToLower();\r\n    }\r\n}",
+            "children": [
+              {
+                "type": "modified",
+                "kind": "class",
+                "name": "StringHelper",
+                "impact": "breakingPublicApi",
+                "location": {
+                  "startLine": 6,
+                  "endLine": 36,
+                  "startColumn": 1,
+                  "endColumn": 2
+                },
+                "oldLocation": {
+                  "startLine": 3,
+                  "endLine": 14,
+                  "startColumn": 1,
+                  "endColumn": 2
+                },
+                "content": "public class StringHelper\r\n{\r\n    /// \u003Csummary\u003E\n    /// Converts string to uppercase\n    /// \u003C/summary\u003E\n    public static string ToUpperCase(string input)\r\n    {\r\n        if (input == null)\r\n            throw new ArgumentNullException(nameof(input));\r\n        return input.ToUpper();\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Converts string to lowercase\n    /// \u003C/summary\u003E\n    public static string ToLowerCase(string input)\r\n    {\r\n        if (input == null)\r\n            throw new ArgumentNullException(nameof(input));\r\n        return input.ToLower();\r\n    }\r\n\r\n    /// \u003Csummary\u003E\n    /// Reverses a string\n    /// \u003C/summary\u003E\n    public static string Reverse(string input)\r\n    {\r\n        if (input == null)\r\n            throw new ArgumentNullException(nameof(input));\r\n        char[] chars = input.ToCharArray();\r\n        Array.Reverse(chars);\r\n        return new string (chars);\r\n    }\r\n}",
+                "oldContent": "public class StringHelper\r\n{\r\n    public static string ToUpperCase(string input)\r\n    {\r\n        return input.ToUpper();\r\n    }\r\n\r\n    public static string ToLowerCase(string input)\r\n    {\r\n        return input.ToLower();\r\n    }\r\n}",
+                "children": [
+                  {
+                    "type": "modified",
+                    "kind": "method",
+                    "name": "ToUpperCase",
+                    "impact": "breakingPublicApi",
+                    "location": {
+                      "startLine": 11,
+                      "endLine": 15,
+                      "startColumn": 5,
+                      "endColumn": 6
+                    },
+                    "oldLocation": {
+                      "startLine": 5,
+                      "endLine": 8,
+                      "startColumn": 5,
+                      "endColumn": 6
+                    },
+                    "content": "public static string ToUpperCase(string input)\r\n{\r\n    if (input == null)\r\n        throw new ArgumentNullException(nameof(input));\r\n    return input.ToUpper();\r\n}",
+                    "oldContent": "public static string ToUpperCase(string input)\r\n{\r\n    return input.ToUpper();\r\n}"
+                  },
+                  {
+                    "type": "modified",
+                    "kind": "method",
+                    "name": "ToLowerCase",
+                    "impact": "breakingPublicApi",
+                    "location": {
+                      "startLine": 20,
+                      "endLine": 24,
+                      "startColumn": 5,
+                      "endColumn": 6
+                    },
+                    "oldLocation": {
+                      "startLine": 10,
+                      "endLine": 13,
+                      "startColumn": 5,
+                      "endColumn": 6
+                    },
+                    "content": "public static string ToLowerCase(string input)\r\n{\r\n    if (input == null)\r\n        throw new ArgumentNullException(nameof(input));\r\n    return input.ToLower();\r\n}",
+                    "oldContent": "public static string ToLowerCase(string input)\r\n{\r\n    return input.ToLower();\r\n}"
+                  },
+                  {
+                    "type": "added",
+                    "kind": "method",
+                    "name": "Reverse",
+                    "impact": "breakingPublicApi",
+                    "location": {
+                      "startLine": 29,
+                      "endLine": 35,
+                      "startColumn": 5,
+                      "endColumn": 6
+                    },
+                    "content": "public static string Reverse(string input)\r\n{\r\n    if (input == null)\r\n        throw new ArgumentNullException(nameof(input));\r\n    char[] chars = input.ToCharArray();\r\n    Array.Reverse(chars);\r\n    return new string (chars);\r\n}"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "oldPath": "/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/multi-file-diff/samples/multi-file/test-folders/before/Validator.cs",
+      "status": "removed",
+      "result": {
+        "summary": {
+          "totalChanges": 1,
+          "additions": 0,
+          "deletions": 1,
+          "modifications": 0,
+          "renames": 0,
+          "moves": 0,
+          "impactBreakdown": {
+            "breakingPublicApi": 1,
+            "breakingInternalApi": 0,
+            "nonBreaking": 0,
+            "formattingOnly": 0
+          }
+        },
+        "changes": [
+          {
+            "type": "removed",
+            "kind": "namespace",
+            "name": "MathLib",
+            "impact": "breakingPublicApi",
+            "location": {
+              "startLine": 1,
+              "endLine": 14,
+              "startColumn": 1,
+              "endColumn": 2
+            },
+            "content": "namespace MathLib;\r\npublic class Validator\r\n{\r\n    public bool IsPositive(int value)\r\n    {\r\n        return value \u003E 0;\r\n    }\r\n\r\n    public bool IsNegative(int value)\r\n    {\r\n        return value \u003C 0;\r\n    }\r\n}"
+          }
+        ]
+      }
+    }
+  ]
+}

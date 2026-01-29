@@ -1833,11 +1833,85 @@ public partial class HtmlFormatter : IOutputFormatter
 
         var cssPath = Path.Combine(htmlDirectory, options.ExtractCssPath);
 
+        // Validate path length
+        if (cssPath.Length > 260 && OperatingSystem.IsWindows())
+        {
+            throw new PathTooLongException($"CSS file path is too long ({cssPath.Length} characters): {cssPath}");
+        }
+
+        // If CSS file already exists, skip writing (graceful handling of locked/readonly files)
+        if (File.Exists(cssPath))
+        {
+            return;
+        }
+
         // Generate CSS content
         var cssContent = GenerateExternalCss();
 
-        // Write CSS file
-        File.WriteAllText(cssPath, cssContent);
+        try
+        {
+            // Ensure directory exists
+            var cssDirectory = Path.GetDirectoryName(cssPath);
+            if (!string.IsNullOrEmpty(cssDirectory) && !Directory.Exists(cssDirectory))
+            {
+                try
+                {
+                    Directory.CreateDirectory(cssDirectory);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    // Cannot create directory due to permissions - skip CSS write gracefully
+                    return;
+                }
+                catch (IOException)
+                {
+                    // Cannot create directory due to I/O error - skip CSS write gracefully
+                    return;
+                }
+            }
+
+            // Write CSS file with retry logic for concurrent writes
+            var retryCount = 0;
+            const int maxRetries = 3;
+            const int retryDelayMs = 50;
+
+            while (retryCount < maxRetries)
+            {
+                try
+                {
+                    File.WriteAllText(cssPath, cssContent);
+                    return; // Success
+                }
+                catch (IOException) when (retryCount < maxRetries - 1)
+                {
+                    // File might be locked or being written by another thread, retry
+                    retryCount++;
+                    System.Threading.Thread.Sleep(retryDelayMs);
+                }
+                catch (IOException) when (retryCount == maxRetries - 1)
+                {
+                    // Final retry failed - check if another process succeeded
+                    if (File.Exists(cssPath))
+                    {
+                        // Another process/thread wrote the file, that's fine
+                        return;
+                    }
+                    // If file still doesn't exist, this is a real error - skip gracefully
+                    return;
+                }
+            }
+        }
+        catch (UnauthorizedAccessException)
+        {
+            // Permission denied - skip CSS write gracefully
+            // The HTML fragment will still reference the CSS, but won't create it
+            return;
+        }
+        catch (DirectoryNotFoundException)
+        {
+            // Directory not found (possibly path too long) - skip CSS write gracefully
+            return;
+        }
     }
 
     private static string GenerateExternalCss()
@@ -2266,7 +2340,14 @@ public partial class HtmlFormatter : IOutputFormatter
 
         var safeName = Path.GetFileNameWithoutExtension(path)
             .Replace(" ", "-")
-            .Replace(".", "-");
+            .Replace(".", "-")
+            .Replace("<", "-")
+            .Replace(">", "-")
+            .Replace("&", "-")
+            .Replace("\"", "-")
+            .Replace("'", "-")
+            .Replace("/", "-")
+            .Replace("\\", "-");
         return $"file-{safeName}-{path.GetHashCode():x8}";
     }
 
@@ -2522,5 +2603,377 @@ public partial class HtmlFormatter : IOutputFormatter
         // Change applies to specific TFMs - show badge
         var tfmList = string.Join(", ", applicableToTfms.Select(FormatTfm));
         return $"<span class=\"tfm-badge\">{HtmlEncode(tfmList)}</span>";
+    }
+
+    /// <inheritdoc/>
+    public string FormatMultiFileResult(MultiFileDiffResult result, OutputOptions? options = null)
+    {
+        options ??= new OutputOptions();
+        var sb = new StringBuilder();
+
+        if (options.HtmlMode == HtmlMode.Fragment)
+        {
+            // Fragment mode: Generate separate fragments for each file
+            // This is handled by the CLI layer, not here
+            throw new NotSupportedException("Fragment mode for multi-file results must be handled by the CLI layer.");
+        }
+        else
+        {
+            // Document mode: Full HTML document with all files
+            AppendMultiFileHtmlHeader(sb, result);
+            AppendMultiFileSummary(sb, result, options);
+            AppendFileListNavigation(sb, result);
+            AppendMultiFileDiffContent(sb, result, options);
+            AppendHtmlFooter(sb);
+        }
+
+        return sb.ToString();
+    }
+
+    /// <inheritdoc/>
+    public async Task FormatMultiFileResultAsync(MultiFileDiffResult result, TextWriter writer, OutputOptions? options = null)
+    {
+        var html = FormatMultiFileResult(result, options);
+        await writer.WriteAsync(html);
+    }
+
+    private static void AppendMultiFileHtmlHeader(StringBuilder sb, MultiFileDiffResult result)
+    {
+        var title = FormatMultiFileTitle(result);
+
+        sb.AppendLine("<!DOCTYPE html>");
+        sb.AppendLine("<html lang=\"en\">");
+        sb.AppendLine("<head>");
+        sb.AppendLine("    <meta charset=\"UTF-8\">");
+        sb.AppendLine("    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+        sb.AppendLine($"    <title>{HtmlEncode(title)}</title>");
+        AppendStyles(sb);
+        AppendMultiFileStyles(sb);
+        sb.AppendLine("</head>");
+        sb.AppendLine("<body>");
+    }
+
+    private static string FormatMultiFileTitle(MultiFileDiffResult result)
+    {
+        if (result.Metadata.Mode == "git" && !string.IsNullOrEmpty(result.Metadata.GitRefRange))
+        {
+            return $"Multi-File Diff: {result.Metadata.GitRefRange}";
+        }
+
+        if (result.Metadata.Mode == "folder")
+        {
+            return "Multi-File Diff: Folder Comparison";
+        }
+
+        return "Multi-File Diff Report";
+    }
+
+    private static void AppendMultiFileStyles(StringBuilder sb)
+    {
+        sb.AppendLine("    <style>");
+        sb.AppendLine(@"        .multi-file-summary {
+            background-color: var(--color-header-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .summary-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0 0 16px 0;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .summary-card {
+            background-color: white;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .summary-card-label {
+            font-size: 12px;
+            color: #57606a;
+            font-weight: 500;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .summary-card-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #24292f;
+        }
+
+        .file-list-nav {
+            background-color: var(--color-header-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 24px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .file-list-nav h3 {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #24292f;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .file-list-item {
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.15s;
+        }
+
+        .file-list-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        .file-list-item a {
+            text-decoration: none;
+            color: #0969da;
+            flex: 1;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            word-break: break-all;
+        }
+
+        .file-list-item a:hover {
+            text-decoration: underline;
+        }
+
+        .file-status-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .file-status-modified {
+            background-color: var(--color-modified-bg);
+            color: var(--color-modified-border);
+        }
+
+        .file-status-added {
+            background-color: var(--color-added-bg);
+            color: var(--color-added-border);
+        }
+
+        .file-status-removed {
+            background-color: var(--color-removed-bg);
+            color: var(--color-removed-border);
+        }
+
+        .file-status-renamed {
+            background-color: var(--color-renamed-bg);
+            color: var(--color-renamed-border);
+        }
+
+        .file-change-count {
+            font-size: 11px;
+            color: #57606a;
+            white-space: nowrap;
+        }
+
+        .file-section {
+            margin-bottom: 32px;
+            scroll-margin-top: 20px;
+        }
+
+        .file-section-header {
+            background-color: var(--color-header-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 6px 6px 0 0;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-section-header h2 {
+            margin: 0;
+            padding: 0;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            flex: 1;
+        }
+
+        .back-to-top {
+            font-size: 11px;
+            color: #0969da;
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.15s;
+        }
+
+        .back-to-top:hover {
+            background-color: #f3f4f6;
+            text-decoration: underline;
+        }
+");
+        sb.AppendLine("    </style>");
+    }
+
+    private static void AppendMultiFileSummary(StringBuilder sb, MultiFileDiffResult result, OutputOptions options)
+    {
+        var summary = result.Summary;
+
+        sb.AppendLine("    <div class=\"multi-file-summary\">");
+        sb.AppendLine($"        <h2 class=\"summary-title\">{summary.TotalFiles} files changed</h2>");
+        sb.AppendLine("        <div class=\"summary-grid\">");
+
+        // Total changes
+        sb.AppendLine("            <div class=\"summary-card\">");
+        sb.AppendLine("                <div class=\"summary-card-label\">Total Changes</div>");
+        sb.AppendLine($"                <div class=\"summary-card-value\">{summary.TotalChanges}</div>");
+        sb.AppendLine("            </div>");
+
+        // Modified files
+        if (summary.ModifiedFiles > 0)
+        {
+            sb.AppendLine("            <div class=\"summary-card\">");
+            sb.AppendLine("                <div class=\"summary-card-label\">Modified</div>");
+            sb.AppendLine($"                <div class=\"summary-card-value\" style=\"color: var(--color-modified-border);\">{summary.ModifiedFiles}</div>");
+            sb.AppendLine("            </div>");
+        }
+
+        // Added files
+        if (summary.AddedFiles > 0)
+        {
+            sb.AppendLine("            <div class=\"summary-card\">");
+            sb.AppendLine("                <div class=\"summary-card-label\">Added</div>");
+            sb.AppendLine($"                <div class=\"summary-card-value\" style=\"color: var(--color-added-border);\">{summary.AddedFiles}</div>");
+            sb.AppendLine("            </div>");
+        }
+
+        // Removed files
+        if (summary.RemovedFiles > 0)
+        {
+            sb.AppendLine("            <div class=\"summary-card\">");
+            sb.AppendLine("                <div class=\"summary-card-label\">Removed</div>");
+            sb.AppendLine($"                <div class=\"summary-card-value\" style=\"color: var(--color-removed-border);\">{summary.RemovedFiles}</div>");
+            sb.AppendLine("            </div>");
+        }
+
+        // Renamed files
+        if (summary.RenamedFiles > 0)
+        {
+            sb.AppendLine("            <div class=\"summary-card\">");
+            sb.AppendLine("                <div class=\"summary-card-label\">Renamed</div>");
+            sb.AppendLine($"                <div class=\"summary-card-value\" style=\"color: var(--color-renamed-border);\">{summary.RenamedFiles}</div>");
+            sb.AppendLine("            </div>");
+        }
+
+        // Impact breakdown
+        if (summary.ImpactBreakdown.BreakingPublicApi > 0)
+        {
+            sb.AppendLine("            <div class=\"summary-card\">");
+            sb.AppendLine("                <div class=\"summary-card-label\">Breaking Public API</div>");
+            sb.AppendLine($"                <div class=\"summary-card-value\" style=\"color: #dc2626;\">{summary.ImpactBreakdown.BreakingPublicApi}</div>");
+            sb.AppendLine("            </div>");
+        }
+
+        if (summary.ImpactBreakdown.BreakingInternalApi > 0)
+        {
+            sb.AppendLine("            <div class=\"summary-card\">");
+            sb.AppendLine("                <div class=\"summary-card-label\">Breaking Internal API</div>");
+            sb.AppendLine($"                <div class=\"summary-card-value\" style=\"color: #d97706;\">{summary.ImpactBreakdown.BreakingInternalApi}</div>");
+            sb.AppendLine("            </div>");
+        }
+
+        sb.AppendLine("        </div>");
+
+        // Metadata
+        if (result.Metadata.Mode == "git" && !string.IsNullOrEmpty(result.Metadata.GitRefRange))
+        {
+            sb.AppendLine("        <div style=\"margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--color-border); font-size: 12px; color: #57606a;\">");
+            sb.AppendLine($"            Git Ref Range: <strong>{HtmlEncode(result.Metadata.GitRefRange)}</strong>");
+            sb.AppendLine("        </div>");
+        }
+
+        sb.AppendLine("    </div>");
+    }
+
+    private static void AppendFileListNavigation(StringBuilder sb, MultiFileDiffResult result)
+    {
+        sb.AppendLine("    <nav class=\"file-list-nav\" id=\"file-list\">");
+        sb.AppendLine("        <h3>Files Changed</h3>");
+        sb.AppendLine("        <ul class=\"file-list\">");
+
+        for (int i = 0; i < result.Files.Count; i++)
+        {
+            var file = result.Files[i];
+            var fileName = file.NewPath ?? file.OldPath ?? $"file-{i}";
+            var fileId = $"file-{i}";
+            var statusClass = file.Status.ToString().ToLowerInvariant();
+            var changeCount = file.Result.Stats.TotalChanges;
+
+            sb.AppendLine("            <li class=\"file-list-item\">");
+            sb.AppendLine($"                <span class=\"file-status-badge file-status-{statusClass}\">{file.Status}</span>");
+            sb.AppendLine($"                <a href=\"#{fileId}\">{HtmlEncode(fileName)}</a>");
+            if (changeCount > 0)
+            {
+                sb.AppendLine($"                <span class=\"file-change-count\">({changeCount} changes)</span>");
+            }
+            sb.AppendLine("            </li>");
+        }
+
+        sb.AppendLine("        </ul>");
+        sb.AppendLine("    </nav>");
+    }
+
+    private static void AppendMultiFileDiffContent(StringBuilder sb, MultiFileDiffResult result, OutputOptions options)
+    {
+        sb.AppendLine("    <main>");
+
+        for (int i = 0; i < result.Files.Count; i++)
+        {
+            var file = result.Files[i];
+            var fileId = $"file-{i}";
+            var fileName = file.NewPath ?? file.OldPath ?? $"file-{i}";
+            var statusClass = file.Status.ToString().ToLowerInvariant();
+
+            sb.AppendLine($"        <section class=\"file-section\" id=\"{fileId}\">");
+            sb.AppendLine("            <div class=\"file-section-header\">");
+            sb.AppendLine($"                <span class=\"file-status-badge file-status-{statusClass}\">{file.Status}</span>");
+            sb.AppendLine($"                <h2>{HtmlEncode(fileName)}</h2>");
+            sb.AppendLine("                <a href=\"#file-list\" class=\"back-to-top\">\u2191 Back to list</a>");
+            sb.AppendLine("            </div>");
+
+            // Render the single-file diff content
+            AppendDiffContent(sb, file.Result, options);
+
+            sb.AppendLine("        </section>");
+        }
+
+        sb.AppendLine("    </main>");
+
+        // Navigation buttons
+        AppendNavigation(sb);
     }
 }

@@ -50,4 +50,29 @@ public class JsonOutputFormatter : IOutputFormatter
         var json = FormatResult(result, options);
         await writer.WriteAsync(json);
     }
+
+    /// <inheritdoc/>
+    public string FormatMultiFileResult(MultiFileDiffResult result, OutputOptions? options = null)
+    {
+        options ??= new OutputOptions();
+
+        var serializerOptions = new JsonSerializerOptions
+        {
+#pragma warning disable CS0618 // Type or member is obsolete
+            WriteIndented = options.IndentJson,
+#pragma warning restore CS0618
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
+
+        return JsonSerializer.Serialize(result, serializerOptions);
+    }
+
+    /// <inheritdoc/>
+    public async Task FormatMultiFileResultAsync(MultiFileDiffResult result, TextWriter writer, OutputOptions? options = null)
+    {
+        var json = FormatMultiFileResult(result, options);
+        await writer.WriteAsync(json);
+    }
 }
