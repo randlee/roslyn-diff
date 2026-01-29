@@ -455,8 +455,10 @@ public sealed class FolderComparerTests : IDisposable
     public void Compare_CaseInsensitivePaths_MatchesFilesCorrectly()
     {
         // Arrange
-        File.WriteAllText(Path.Combine(_oldFolder, "File.CS"), "class File { }");
-        File.WriteAllText(Path.Combine(_newFolder, "file.cs"), "class File { void Method() { } }");
+        var oldFile = Path.Combine(_oldFolder, "File.CS");
+        var newFile = Path.Combine(_newFolder, "file.cs");
+        File.WriteAllText(oldFile, "class File { }");
+        File.WriteAllText(newFile, "class File { void Method() { } }");
 
         var comparer = new FolderComparer();
         var options = new DiffOptions();
@@ -466,9 +468,22 @@ public sealed class FolderComparerTests : IDisposable
         var result = comparer.Compare(_oldFolder, _newFolder, options, folderOptions);
 
         // Assert
-        // Note: On case-sensitive filesystems, these would be treated as different files
+        // Note: On case-sensitive filesystems (Linux), these would be treated as different files
         // On case-insensitive filesystems (Windows, macOS default), they match
-        Assert.True(result.Files.Count > 0);
+        // Check if filesystem is case-sensitive by testing if both files are the same
+        var isCaseSensitive = !File.Exists(Path.Combine(_oldFolder, "file.cs"));
+
+        if (isCaseSensitive)
+        {
+            // On case-sensitive filesystems, we should have 2 files (1 added, 1 removed)
+            Assert.Equal(2, result.Files.Count);
+        }
+        else
+        {
+            // On case-insensitive filesystems, we should have 1 modified file
+            var singleFile = Assert.Single(result.Files);
+            Assert.Equal(FileChangeStatus.Modified, singleFile.Status);
+        }
     }
 
     [Fact]

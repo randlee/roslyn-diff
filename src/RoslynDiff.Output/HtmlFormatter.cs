@@ -1863,6 +1863,11 @@ public partial class HtmlFormatter : IOutputFormatter
                     // Cannot create directory due to permissions - skip CSS write gracefully
                     return;
                 }
+                catch (PathTooLongException)
+                {
+                    // Path is too long to create directory - skip CSS write gracefully
+                    return;
+                }
                 catch (IOException)
                 {
                     // Cannot create directory due to I/O error - skip CSS write gracefully

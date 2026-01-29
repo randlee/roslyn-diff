@@ -151,20 +151,37 @@ public sealed class FolderComparer
     /// </summary>
     private HashSet<string> CollectFiles(string rootPath, FolderCompareOptions options)
     {
-        var searchOption = options.Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-        var allFiles = Directory.GetFiles(rootPath, "*", searchOption);
-
         var matchedFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var filePath in allFiles)
+        try
         {
-            var relativePath = GetRelativePath(rootPath, filePath);
+            var searchOption = options.Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+            var allFiles = Directory.GetFiles(rootPath, "*", searchOption);
 
-            // Apply include/exclude filters
-            if (ShouldIncludeFile(relativePath, options))
+            foreach (var filePath in allFiles)
             {
-                matchedFiles.Add(relativePath);
+                var relativePath = GetRelativePath(rootPath, filePath);
+
+                // Apply include/exclude filters
+                if (ShouldIncludeFile(relativePath, options))
+                {
+                    matchedFiles.Add(relativePath);
+                }
             }
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            // Handle permission denied gracefully - log and continue with files we could access
+            Console.Error.WriteLine($"Warning: Access denied to directory '{rootPath}': {ex.Message}");
+        }
+        catch (DirectoryNotFoundException)
+        {
+            // Directory was deleted or doesn't exist - return empty set
+        }
+        catch (IOException ex)
+        {
+            // Other I/O errors (e.g., network issues) - log and return what we have
+            Console.Error.WriteLine($"Warning: I/O error accessing directory '{rootPath}': {ex.Message}");
         }
 
         return matchedFiles;
