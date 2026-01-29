@@ -220,6 +220,15 @@ public class OutputFormatterFactoryTests
             writer.Write("custom output");
             return Task.CompletedTask;
         }
+
+        public string FormatMultiFileResult(RoslynDiff.Core.Models.MultiFileDiffResult result, OutputOptions? options = null)
+            => "custom multi-file output";
+
+        public Task FormatMultiFileResultAsync(RoslynDiff.Core.Models.MultiFileDiffResult result, TextWriter writer, OutputOptions? options = null)
+        {
+            writer.Write("custom multi-file output");
+            return Task.CompletedTask;
+        }
     }
 
     #endregion

@@ -39,7 +39,8 @@ roslyn-diff diff old.cs new.cs -o json --out-file diff.json
 
 The JSON schema version depends on the roslyn-diff version:
 - **v1 schema**: Used by roslyn-diff 0.6.x and earlier
-- **v2 schema**: Used by roslyn-diff 0.7.0+, adds impact classification support
+- **v2 schema**: Used by roslyn-diff 0.7.0-0.9.0, adds impact classification support
+- **v3 schema**: Used by roslyn-diff 0.10.0+, adds multi-file comparison support
 
 #### Schema v2 (0.7.0+)
 
@@ -85,6 +86,125 @@ The JSON schema version depends on the roslyn-diff version:
   ]
 }
 ```
+
+#### Schema v3 (0.10.0+) - Multi-File Support
+
+**Single-File Mode** (backward compatible with v2):
+```json
+{
+  "$schema": "roslyn-diff-output-v3",
+  "metadata": {
+    "version": "0.10.0",
+    "timestamp": "2026-01-28T10:00:00Z",
+    "mode": "roslyn",
+    "oldPath": "old/Service.cs",
+    "newPath": "new/Service.cs",
+    "options": {
+      "includeContent": true,
+      "contextLines": 3,
+      "includeNonImpactful": false
+    }
+  },
+  "summary": {
+    "totalChanges": 10,
+    "impactBreakdown": {
+      "breakingPublicApi": 2,
+      "breakingInternalApi": 1,
+      "nonBreaking": 5,
+      "formattingOnly": 2
+    },
+    "typeBreakdown": {
+      "additions": 3,
+      "deletions": 2,
+      "modifications": 3,
+      "renames": 1,
+      "moves": 1
+    }
+  },
+  "changes": [...]
+}
+```
+
+**Multi-File Mode** (folder or git comparison):
+```json
+{
+  "$schema": "roslyn-diff-output-v3",
+  "metadata": {
+    "version": "0.10.0",
+    "timestamp": "2026-01-28T10:00:00Z",
+    "mode": "multi-file",
+    "comparisonMode": "git",
+    "gitRefRange": "main..feature",
+    "oldRoot": null,
+    "newRoot": null,
+    "options": {
+      "includeContent": true,
+      "contextLines": 3,
+      "includeNonImpactful": false
+    }
+  },
+  "summary": {
+    "totalFiles": 15,
+    "modifiedFiles": 8,
+    "addedFiles": 5,
+    "removedFiles": 2,
+    "renamedFiles": 0,
+    "totalChanges": 47,
+    "impactBreakdown": {
+      "breakingPublicApi": 5,
+      "breakingInternalApi": 8,
+      "nonBreaking": 32,
+      "formattingOnly": 2
+    }
+  },
+  "files": [
+    {
+      "oldPath": "src/Calculator.cs",
+      "newPath": "src/Calculator.cs",
+      "status": "modified",
+      "result": {
+        "summary": {
+          "totalChanges": 3,
+          "additions": 1,
+          "deletions": 0,
+          "modifications": 2
+        },
+        "changes": [...]
+      }
+    },
+    {
+      "oldPath": null,
+      "newPath": "src/NewService.cs",
+      "status": "added",
+      "result": {
+        "summary": { "totalChanges": 5, "additions": 5 },
+        "changes": [...]
+      }
+    },
+    {
+      "oldPath": "src/OldHelper.cs",
+      "newPath": null,
+      "status": "removed",
+      "result": {
+        "summary": { "totalChanges": 3, "deletions": 3 },
+        "changes": [...]
+      }
+    }
+  ]
+}
+```
+
+**Key Differences in v3**:
+- `mode` can be `"roslyn"`, `"line"`, or `"multi-file"`
+- Multi-file mode adds:
+  - `comparisonMode`: `"git"` or `"folder"`
+  - `gitRefRange`: Ref range for git comparison (e.g., `"main..feature"`)
+  - `oldRoot` / `newRoot`: Directory paths for folder comparison
+  - `files` array: Per-file results with status
+  - File status values: `"modified"`, `"added"`, `"removed"`, `"renamed"`
+  - Aggregated `summary` with file counts: `totalFiles`, `modifiedFiles`, `addedFiles`, `removedFiles`, `renamedFiles`
+- Single-file mode is backward compatible (uses root `changes` array)
+- Multi-file mode wraps each file's changes in `files[].result.changes`
 
 #### Schema v1 (Legacy)
 

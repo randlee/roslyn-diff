@@ -32,4 +32,20 @@ public interface IOutputFormatter
     /// <param name="writer">The text writer to write the output to.</param>
     /// <param name="options">Options controlling the output format.</param>
     Task FormatResultAsync(DiffResult result, TextWriter writer, OutputOptions? options = null);
+
+    /// <summary>
+    /// Formats a multi-file diff result into a string representation.
+    /// </summary>
+    /// <param name="result">The multi-file diff result to format.</param>
+    /// <param name="options">Options controlling the output format.</param>
+    /// <returns>A formatted string representation of the multi-file diff result.</returns>
+    string FormatMultiFileResult(MultiFileDiffResult result, OutputOptions? options = null);
+
+    /// <summary>
+    /// Formats a multi-file diff result and writes it to the specified writer.
+    /// </summary>
+    /// <param name="result">The multi-file diff result to format.</param>
+    /// <param name="writer">The text writer to write the output to.</param>
+    /// <param name="options">Options controlling the output format.</param>
+    Task FormatMultiFileResultAsync(MultiFileDiffResult result, TextWriter writer, OutputOptions? options = null);
 }

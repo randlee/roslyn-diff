@@ -271,8 +271,13 @@ public sealed class VisualBasicDiffer : IDiffer
         var modifications = 0;
         var moves = 0;
         var renames = 0;
+        var breakingPublicApi = 0;
+        var breakingInternalApi = 0;
+        var nonBreaking = 0;
+        var formattingOnly = 0;
 
-        CountChanges(changes, ref additions, ref deletions, ref modifications, ref moves, ref renames);
+        CountChanges(changes, ref additions, ref deletions, ref modifications, ref moves, ref renames,
+            ref breakingPublicApi, ref breakingInternalApi, ref nonBreaking, ref formattingOnly);
 
         return new DiffStats
         {
@@ -280,11 +285,16 @@ public sealed class VisualBasicDiffer : IDiffer
             Deletions = deletions,
             Modifications = modifications,
             Moves = moves,
-            Renames = renames
+            Renames = renames,
+            BreakingPublicApiCount = breakingPublicApi,
+            BreakingInternalApiCount = breakingInternalApi,
+            NonBreakingCount = nonBreaking,
+            FormattingOnlyCount = formattingOnly
         };
     }
 
-    private static void CountChanges(IReadOnlyList<Change> changes, ref int additions, ref int deletions, ref int modifications, ref int moves, ref int renames)
+    private static void CountChanges(IReadOnlyList<Change> changes, ref int additions, ref int deletions, ref int modifications, ref int moves, ref int renames,
+        ref int breakingPublicApi, ref int breakingInternalApi, ref int nonBreaking, ref int formattingOnly)
     {
         foreach (var change in changes)
         {
@@ -307,9 +317,27 @@ public sealed class VisualBasicDiffer : IDiffer
                     break;
             }
 
+            // Count impact breakdown
+            switch (change.Impact)
+            {
+                case ChangeImpact.BreakingPublicApi:
+                    breakingPublicApi++;
+                    break;
+                case ChangeImpact.BreakingInternalApi:
+                    breakingInternalApi++;
+                    break;
+                case ChangeImpact.NonBreaking:
+                    nonBreaking++;
+                    break;
+                case ChangeImpact.FormattingOnly:
+                    formattingOnly++;
+                    break;
+            }
+
             if (change.Children is { Count: > 0 })
             {
-                CountChanges(change.Children, ref additions, ref deletions, ref modifications, ref moves, ref renames);
+                CountChanges(change.Children, ref additions, ref deletions, ref modifications, ref moves, ref renames,
+                    ref breakingPublicApi, ref breakingInternalApi, ref nonBreaking, ref formattingOnly);
             }
         }
     }

@@ -346,4 +346,30 @@ public sealed class UnifiedFormatter : IOutputFormatter
         return Math.Max(count, 1); // At least 1 line
     }
 
+    /// <inheritdoc/>
+    public string FormatMultiFileResult(MultiFileDiffResult result, OutputOptions? options = null)
+    {
+        var sb = new StringBuilder();
+
+        foreach (var file in result.Files)
+        {
+            var oldPath = file.OldPath ?? "/dev/null";
+            var newPath = file.NewPath ?? "/dev/null";
+
+            sb.AppendLine($"diff --git a/{oldPath} b/{newPath}");
+            sb.AppendLine($"--- a/{oldPath}");
+            sb.AppendLine($"+++ b/{newPath}");
+            sb.AppendLine(FormatResult(file.Result, options));
+            sb.AppendLine();
+        }
+
+        return sb.ToString();
+    }
+
+    /// <inheritdoc/>
+    public async Task FormatMultiFileResultAsync(MultiFileDiffResult result, TextWriter writer, OutputOptions? options = null)
+    {
+        var text = FormatMultiFileResult(result, options);
+        await writer.WriteAsync(text);
+    }
 }
