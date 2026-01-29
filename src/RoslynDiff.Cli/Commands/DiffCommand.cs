@@ -157,6 +157,30 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
         public string ExtractCss { get; init; } = "roslyn-diff.css";
 
         /// <summary>
+        /// Gets or sets the inline view mode with optional context lines.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// When specified without a value, shows full file content with inline diff markers.
+        /// When specified with a number, shows N lines of context around changes (like git diff -U).
+        /// </para>
+        /// <para>
+        /// Examples:
+        /// <list type="bullet">
+        /// <item>--inline: Show full file with inline diff markers</item>
+        /// <item>--inline=3: Show 3 lines of context around changes</item>
+        /// <item>--inline=5: Show 5 lines of context around changes</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// Only applies to HTML output. When not specified, default tree view is used.
+        /// </para>
+        /// </remarks>
+        [CommandOption("--inline [context-lines]")]
+        [Description("Use inline diff view (like git diff). Optional: number of context lines")]
+        public FlagValue<string>? Inline { get; init; }
+
+        /// <summary>
         /// Gets or sets the plain text output option.
         /// </summary>
         /// <remarks>
@@ -300,6 +324,21 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             if (!validHtmlModes.Contains(HtmlMode.ToLowerInvariant()))
             {
                 return ValidationResult.Error($"Invalid HTML mode: '{HtmlMode}'. Valid modes: document, fragment");
+            }
+
+            // Validate --inline context lines if provided
+            if (Inline?.IsSet == true && !string.IsNullOrEmpty(Inline.Value))
+            {
+                if (!int.TryParse(Inline.Value, out var contextLines) || contextLines < 0)
+                {
+                    return ValidationResult.Error($"Invalid inline context lines: '{Inline.Value}'. Must be a non-negative integer.");
+                }
+            }
+
+            // --inline only applies to HTML output
+            if (Inline?.IsSet == true && string.IsNullOrEmpty(HtmlOutput))
+            {
+                return ValidationResult.Error("--inline requires --html to be specified");
             }
 
             // Validate TFMs if provided
@@ -448,6 +487,23 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
             targetFrameworks = tfmList.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
         }
 
+        // Parse --inline option
+        string? viewMode = null;
+        int? inlineContext = null;
+        if (settings.Inline?.IsSet == true)
+        {
+            viewMode = "inline";
+            if (!string.IsNullOrEmpty(settings.Inline.Value))
+            {
+                // Parse context lines
+                if (int.TryParse(settings.Inline.Value, out var contextLines))
+                {
+                    inlineContext = contextLines;
+                }
+            }
+            // If no value or parsing failed, inlineContext stays null (full file)
+        }
+
         try
         {
             // Read file contents
@@ -490,7 +546,9 @@ public sealed class DiffCommand : AsyncCommand<DiffCommand.Settings>
                 IncludeFormatting = settings.IncludeFormatting,
                 MinimumImpactLevel = effectiveImpactLevel,
                 HtmlMode = settings.HtmlMode,
-                ExtractCss = settings.ExtractCss
+                ExtractCss = settings.ExtractCss,
+                ViewMode = viewMode,
+                InlineContext = inlineContext
             };
 
             // Use OutputOrchestrator to handle all output logic

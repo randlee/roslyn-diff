@@ -7,6 +7,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-01-28
+
+### Added
+
+#### Inline Diff View
+- **Inline View Mode for HTML Output** - New `--inline` option displays diffs line-by-line with +/- markers
+  - Similar to traditional git diff output while maintaining semantic intelligence
+  - Two modes: full file view or contextual view with N lines around changes
+  - Works with both document and fragment HTML modes
+  - Compatible with all impact classification and filtering options
+- **Full File Mode** - Show entire file content with inline diff markers (`--inline`)
+  - Changed lines marked with `+` (additions) or `-` (deletions)
+  - Unchanged lines shown without markers for complete context
+  - Best for smaller files or comprehensive reviews
+- **Context Mode** - Show only N lines around changes (`--inline=N`)
+  - Similar to `git diff -U N` for compact output
+  - Reduces scrolling in large files with isolated changes
+  - Configurable context lines (e.g., `--inline=3`, `--inline=5`, `--inline=10`)
+
+#### CLI Enhancements
+- `--inline [context-lines]` - Enable inline view mode for HTML output
+  - Without value: shows full file with inline markers
+  - With number: shows N lines of context around changes
+  - Examples: `--inline`, `--inline=3`, `--inline=10`
+
+#### HTML Output Features
+- **Line Markers** - Clear `+` and `-` prefixes with color-coded backgrounds
+- **Syntax Highlighting** - Full C# and VB.NET syntax highlighting in inline view
+- **Impact Indicators** - Impact badges and warnings integrated with inline view
+- **Change Sections** - Changes grouped by location with collapsible sections
+- **Familiar Workflow** - Traditional diff format for developers accustomed to git diff
+
+#### Documentation
+- **Inline View Section** in `docs/output-formats.md`
+  - Tree view vs. inline view comparison table
+  - Full file vs. context mode explanation
+  - CLI usage examples and options
+  - Use case recommendations
+  - Integration with fragment mode examples
+- **README.md Examples** - Added inline view examples to Quick Start
+- **Samples** - Sample inline view HTML outputs (planned)
+
+### Use Cases Enabled
+- **Code Reviews** - Line-by-line review workflow familiar to developers
+- **Patch Documentation** - Generate HTML patches for documentation or archival
+- **Detailed Analysis** - Examine exact line-level modifications and whitespace
+- **Traditional Git Workflow** - Maintain familiar diff format in HTML reports
+- **Integration Scenarios** - Embed inline diffs in dashboards and documentation
+
+### Changed
+- Enhanced `ViewMode` enum with `Inline` option
+- Enhanced `OutputOptions` with `InlineContext` property (null = full file, N = context lines)
+- Enhanced `HtmlFormatter` to support both tree and inline view rendering
+- CLI help text updated with inline view examples
+
 ## [0.9.0] - 2026-01-28
 
 ### Added

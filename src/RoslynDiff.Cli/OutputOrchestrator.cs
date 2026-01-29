@@ -122,14 +122,18 @@ public class OutputOrchestrator
                 throw new InvalidOperationException("HTML output requires a file path (cannot write to stdout).");
             }
 
-            // Create HTML-specific options with mode and CSS path
+            // Create HTML-specific options with mode, CSS path, and view mode
             var htmlOptions = outputOptions with
             {
                 HtmlMode = settings.HtmlMode.ToLowerInvariant() == "fragment"
                     ? Output.HtmlMode.Fragment
                     : Output.HtmlMode.Document,
                 ExtractCssPath = settings.ExtractCss,
-                HtmlOutputPath = settings.HtmlOutput
+                HtmlOutputPath = settings.HtmlOutput,
+                ViewMode = settings.ViewMode?.ToLowerInvariant() == "inline"
+                    ? Output.ViewMode.Inline
+                    : Output.ViewMode.Tree,
+                InlineContext = settings.InlineContext
             };
 
             await WriteFormatOutputAsync(
@@ -432,4 +436,16 @@ public class OutputSettings
     /// Gets or sets the CSS filename for fragment mode.
     /// </summary>
     public string ExtractCss { get; init; } = "roslyn-diff.css";
+
+    /// <summary>
+    /// Gets or sets the view mode for HTML output.
+    /// null = default (tree), "inline" = inline view.
+    /// </summary>
+    public string? ViewMode { get; init; }
+
+    /// <summary>
+    /// Gets or sets the inline context lines.
+    /// null = full file, N = N lines of context.
+    /// </summary>
+    public int? InlineContext { get; init; }
 }

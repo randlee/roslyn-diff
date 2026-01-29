@@ -4,6 +4,59 @@ This directory contains sample files demonstrating the capabilities of RoslynDif
 
 ## Samples Overview
 
+### inline-view
+
+**Location:** `samples/inline-view/`
+
+**Purpose:** Demonstrates Inline View Mode (v0.10.0) for line-by-line diff display with +/- markers, similar to git diff.
+
+**Files:**
+- `calculator-inline-full.html` - Full file view with all lines shown
+- `calculator-inline-context3.html` - Context mode with 3 lines around changes
+- `calculator-inline-context5.html` - Context mode with 5 lines around changes
+- `impact-demo-inline.html` - Impact classification in inline view
+- `calculator-inline-fragment.html` - Fragment mode with inline view
+- `roslyn-diff.css` - External CSS for fragment mode
+- `README.md` - Comprehensive guide to inline view features
+
+**Features Demonstrated:**
+- Line-by-line diff with +/- markers (like git diff)
+- Full file mode vs. context mode (N lines around changes)
+- Syntax highlighting in inline view
+- Impact classification badges in inline format
+- Fragment mode combined with inline view
+- Comparison between tree view and inline view
+
+**Use Cases:**
+- Traditional diff workflow for developers familiar with git
+- Line-by-line code reviews
+- Patch documentation and archival
+- Detailed whitespace and formatting analysis
+
+**How to Generate:**
+```bash
+cd src/RoslynDiff.Cli
+
+# Full file inline view
+dotnet run -- diff ../../samples/before/Calculator.cs ../../samples/after/Calculator.cs \
+  --html ../../samples/inline-view/calculator-inline-full.html \
+  --inline
+
+# Context mode (5 lines)
+dotnet run -- diff ../../samples/before/Calculator.cs ../../samples/after/Calculator.cs \
+  --html ../../samples/inline-view/calculator-inline-context5.html \
+  --inline=5
+
+# Fragment mode with inline view
+dotnet run -- diff ../../samples/before/Calculator.cs ../../samples/after/Calculator.cs \
+  --html ../../samples/inline-view/calculator-inline-fragment.html \
+  --html-mode fragment \
+  --inline=5
+```
+
+**View Examples:**
+Open any `.html` file in `samples/inline-view/` to see inline diff view in action.
+
 ### fragment-mode
 
 **Location:** `samples/fragment-mode/`

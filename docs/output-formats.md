@@ -288,17 +288,22 @@ roslyn-diff diff old.cs new.cs -o json | jq -e '.summary.deletions == 0' && echo
 
 ## HTML Format
 
-The HTML format generates an interactive visual report with two modes:
+The HTML format generates an interactive visual report with two document modes and two view modes:
 
+**Document Modes:**
 1. **Document mode** (default): Self-contained HTML document with embedded CSS
 2. **Fragment mode**: Embeddable HTML fragment with external CSS for integration into existing pages
 
+**View Modes:**
+1. **Tree view** (default): Hierarchical display of structural changes by element type (class, method, property)
+2. **Inline view**: Line-by-line diff with +/- markers, similar to git diff
+
 Both modes include:
-- Side-by-side diff view
 - Syntax highlighting for C# and VB.NET
+- Impact classification badges and TFM indicators
 - Collapsible change sections
-- Navigation sidebar
-- Summary statistics
+- Navigation sidebar and summary statistics
+- Keyboard navigation (Ctrl+J/K)
 
 ### Usage
 
@@ -640,6 +645,182 @@ Available CSS variables:
 | File Size | Larger (includes CSS) | Smaller (CSS separate) |
 | Caching | No (CSS inline) | Yes (CSS file cached) |
 
+### Inline View Mode
+
+**New in v0.10.0** - Inline view displays diffs line-by-line with +/- markers, similar to traditional git diff output, while maintaining roslyn-diff's semantic intelligence and impact classification.
+
+#### When to Use Inline View vs. Tree View
+
+| Feature | Tree View (Default) | Inline View |
+|---------|-------------------|-------------|
+| **Best For** | Structural changes, API reviews | Line-by-line review, traditional diff workflow |
+| **Display** | Hierarchical by type (class/method/property) | Sequential code lines with +/- markers |
+| **Context** | Shows changed elements only | Shows full file or N lines around changes |
+| **Whitespace** | De-emphasized unless significant | Clearly visible in context |
+| **Impact** | Impact badges on each structural change | Impact indicators on changed sections |
+| **Navigation** | Jump to specific classes/methods | Scroll through code linearly |
+| **Use Cases** | API reviews, breaking change detection | Code reviews, patch generation, detailed line analysis |
+
+#### Usage
+
+```bash
+# Full file inline view (default)
+roslyn-diff diff old.cs new.cs --html report.html --inline
+
+# Inline view with 3 lines of context (compact)
+roslyn-diff diff old.cs new.cs --html report.html --inline=3
+
+# Inline view with 10 lines of context
+roslyn-diff diff old.cs new.cs --html report.html --inline=10
+
+# Combine with fragment mode
+roslyn-diff diff old.cs new.cs --html fragment.html --html-mode fragment --inline=5
+```
+
+#### Full File vs. Context Mode
+
+**Full File Mode** (`--inline` without number):
+- Shows the entire file content with inline diff markers
+- Changed lines marked with `+` (additions) or `-` (deletions)
+- Unchanged lines shown without markers
+- Best for understanding changes in full context
+- Suitable for smaller files or comprehensive reviews
+
+**Context Mode** (`--inline=N`):
+- Shows only N lines of context around each change
+- Similar to `git diff -U N` or `diff -C N`
+- More compact, focuses on changes
+- Best for large files or when changes are isolated
+- Reduces scrolling and improves readability
+
+#### Visual Features
+
+Inline view includes all standard roslyn-diff features:
+
+**Impact Classification:**
+- Color-coded background for changed sections
+- Impact badges (Breaking Public API, Breaking Internal API, Non-Breaking, Formatting Only)
+- Caveat warnings for subtle impacts
+
+**Syntax Highlighting:**
+- C# and VB.NET keyword highlighting
+- String, comment, and literal styling
+- Type and modifier recognition
+
+**Line Markers:**
+- `+` prefix for added lines (green background)
+- `-` prefix for removed lines (red background)
+- No prefix for unchanged context lines
+
+**Change Sections:**
+- Changes grouped by location in file
+- Section headers showing change type and impact
+- Collapsible sections for large changes
+
+#### Examples
+
+**Example 1: Full File Inline View**
+
+```bash
+roslyn-diff diff Calculator.cs NewCalculator.cs --html report.html --inline
+```
+
+Output shows:
+```
+  1  public class Calculator
+  2  {
+  3      public int Add(int a, int b) => a + b;
+  4      public int Subtract(int a, int b) => a - b;
++ 5      public int Multiply(int a, int b) => a * b;
++ 6      public int Divide(int a, int b) => a / b;
+  7  }
+```
+
+**Example 2: Context Mode (3 Lines)**
+
+```bash
+roslyn-diff diff Calculator.cs NewCalculator.cs --html report.html --inline=3
+```
+
+Output shows only 3 lines around changes:
+```
+  2  {
+  3      public int Add(int a, int b) => a + b;
+  4      public int Subtract(int a, int b) => a - b;
++ 5      public int Multiply(int a, int b) => a * b;
++ 6      public int Divide(int a, int b) => a / b;
+  7  }
+```
+
+**Example 3: Combined with Fragment Mode**
+
+```bash
+roslyn-diff diff old.cs new.cs --html fragment.html --html-mode fragment --inline=5
+```
+
+Generates embeddable HTML fragment with inline view and external CSS, perfect for integration into documentation sites or dashboards.
+
+#### Inline View with Impact Filtering
+
+Combine inline view with impact filtering to focus on specific change types:
+
+```bash
+# Show only breaking changes in inline view
+roslyn-diff diff old.cs new.cs --html report.html --inline --impact-level breaking-public
+
+# Full file with all changes including formatting
+roslyn-diff diff old.cs new.cs --html report.html --inline --include-formatting
+
+# Context view showing only breaking internal changes
+roslyn-diff diff old.cs new.cs --html report.html --inline=5 --impact-level breaking-internal
+```
+
+#### Use Cases for Inline View
+
+**Code Reviews:**
+- Line-by-line review workflow familiar to developers
+- Easy to spot whitespace changes and formatting issues
+- Clear visual distinction between additions and deletions
+
+**Patch Generation:**
+- Generate HTML patches for documentation or records
+- Share detailed line-level changes with stakeholders
+- Archive code changes with full context
+
+**Detailed Analysis:**
+- Examine exact line-level modifications
+- Review whitespace and formatting changes
+- Understand precise code transformations
+
+**Integration Scenarios:**
+- Embed in code review dashboards with inline view
+- Generate changelog entries with code examples
+- Document migration guides with before/after code
+
+**Traditional Git Workflow:**
+- Developers familiar with git diff prefer inline view
+- Easier transition from command-line git to HTML reports
+- Maintains mental model of line-based diffing
+
+#### Quick Reference: Tree vs. Inline View Commands
+
+```bash
+# Generate both views for comparison
+roslyn-diff diff old.cs new.cs --html tree-view.html                # Tree view (default)
+roslyn-diff diff old.cs new.cs --html inline-full.html --inline     # Inline full file
+roslyn-diff diff old.cs new.cs --html inline-ctx.html --inline=5    # Inline with context
+
+# For API reviews (focus on structure)
+roslyn-diff diff old.cs new.cs --html review.html --impact-level breaking-public
+
+# For detailed line reviews (focus on implementation)
+roslyn-diff diff old.cs new.cs --html review.html --inline=5 --include-formatting
+
+# Fragment mode examples (embeddable)
+roslyn-diff diff old.cs new.cs --html frag-tree.html --html-mode fragment
+roslyn-diff diff old.cs new.cs --html frag-inline.html --html-mode fragment --inline=5
+```
+
 ### Customization
 
 The HTML template can be customized by modifying `src/RoslynDiff.Output/Templates/` (future feature).
@@ -945,6 +1126,8 @@ Need machine-readable output?
 └─ No
     ├─ Need visual report for sharing?
     │   └─ Yes → html
+    │       ├─ Structural/API review? → html (tree view)
+    │       └─ Line-by-line review? → html --inline
     └─ No
         ├─ Using in terminal interactively?
         │   ├─ Want colors? → terminal
@@ -953,20 +1136,50 @@ Need machine-readable output?
             └─ plain
 ```
 
+### HTML View Mode Selection
+
+When using HTML output, choose between tree view and inline view:
+
+**Tree View (default):**
+```bash
+roslyn-diff diff old.cs new.cs --html report.html
+```
+- Best for: API reviews, structural changes, breaking change detection
+- Shows: Hierarchical view by element type (class, method, property)
+- Navigation: Jump to specific elements
+- Context: Changed elements only
+
+**Inline View:**
+```bash
+# Full file
+roslyn-diff diff old.cs new.cs --html report.html --inline
+
+# Context mode
+roslyn-diff diff old.cs new.cs --html report.html --inline=5
+```
+- Best for: Line-by-line reviews, traditional diff workflow, whitespace analysis
+- Shows: Sequential code lines with +/- markers
+- Navigation: Scroll through code
+- Context: Full file or N lines around changes
+
 ### Use Case Recommendations
 
 | Use Case | Recommended Format |
 |----------|-------------------|
 | CI/CD integration | `json` |
 | AI/LLM consumption | `json` |
-| Code review | `html` |
+| API review | `html` (tree view) |
+| Line-by-line code review | `html --inline` |
+| Breaking change detection | `html` (tree view) with `--impact-level breaking-public` |
+| Patch documentation | `html --inline` |
 | Quick terminal check | `text` or `terminal` |
-| Git-like workflow | `text` |
+| Git-like workflow | `html --inline` or `text` |
 | Shell scripting | `plain` or `json` |
 | Log files | `plain` |
-| Documentation | `html` |
-| Email reports | `html` |
+| Documentation | `html` (either view) |
+| Email reports | `html` (tree view for structure, inline for details) |
 | Automated testing | `json` |
+| Whitespace analysis | `html --inline` with `--whitespace-mode language-aware` |
 
 ### Performance Considerations
 
