@@ -124,6 +124,12 @@ roslyn-diff diff old.cs new.cs --json
 # Generate HTML report and open in browser
 roslyn-diff diff old.cs new.cs --html report.html --open
 
+# Inline diff view (like git diff, shows full file)
+roslyn-diff diff old.cs new.cs --html report.html --inline
+
+# Inline view with 5 lines of context (compact)
+roslyn-diff diff old.cs new.cs --html report.html --inline=5
+
 # Git-style unified diff (patchable)
 roslyn-diff diff old.cs new.cs --git
 ```
@@ -185,6 +191,13 @@ roslyn-diff diff <old-file> <new-file> [options]
 | `--text [file]` | Plain text diff (stdout if no file) |
 | `--git [file]` | Git-style unified diff (stdout if no file) |
 | `--open` | Open HTML in default browser after generation |
+
+**HTML View Options:**
+| Option | Description |
+|--------|-------------|
+| `--inline [N]` | Use inline diff view (like git diff). Optional: context lines (default: full file) |
+| `--html-mode <mode>` | HTML mode: `document` (default) or `fragment` (embeddable) |
+| `--extract-css <file>` | CSS filename for fragment mode (default: `roslyn-diff.css`) |
 
 **Output Control:**
 | Option | Description |
@@ -344,13 +357,30 @@ roslyn-diff diff old.cs new.cs --html fragment.html --html-mode fragment
 # Outputs: fragment.html + roslyn-diff.css
 ```
 
+**View Modes** - Choose how to display changes:
+
+```bash
+# Tree view (default) - Shows structural hierarchy of changes
+roslyn-diff diff old.cs new.cs --html report.html
+
+# Inline view - Shows full file with +/- diff markers (like git diff)
+roslyn-diff diff old.cs new.cs --html report.html --inline
+
+# Inline view with context - Shows only N lines around changes
+roslyn-diff diff old.cs new.cs --html report.html --inline=5
+
+# Combine with fragment mode
+roslyn-diff diff old.cs new.cs --html fragment.html --html-mode fragment --inline=3
+```
+
 Features:
 - **Impact classification badges** - Color-coded indicators (Breaking Public API, Breaking Internal API, Non-Breaking, Formatting Only)
 - **TFM badges** - Framework-specific indicators (net8.0, net10.0) showing which TFMs each change applies to
 - **Caveat warnings** - Yellow warning boxes for edge cases (e.g., "Parameter rename may break named arguments")
 - **Whitespace issue indicators** - Warnings for indentation changes, mixed tabs/spaces, etc.
-- Side-by-side diff view with syntax highlighting
-- Keyboard navigation (Ctrl+J/K for next/previous change)
+- **Tree view** - Hierarchical display of structural changes by element type
+- **Inline view** - Line-by-line diff with +/- markers (full file or contextual)
+- Syntax highlighting and keyboard navigation (Ctrl+J/K)
 - Collapsible sections with copy buttons
 - IDE integration links (VS Code, Rider, PyCharm, Zed)
 - Navigation panel and summary statistics

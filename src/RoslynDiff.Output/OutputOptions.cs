@@ -20,6 +20,24 @@ public enum HtmlMode
 }
 
 /// <summary>
+/// View mode for displaying diff results in HTML output.
+/// </summary>
+public enum ViewMode
+{
+    /// <summary>
+    /// Tree view showing hierarchical structure of changes (default).
+    /// Shows changed elements by type (class, method, property, etc.).
+    /// </summary>
+    Tree,
+
+    /// <summary>
+    /// Inline view showing actual code with +/- diff markers (like git diff).
+    /// Shows full file or contextual lines with change indicators.
+    /// </summary>
+    Inline
+}
+
+/// <summary>
 /// Options for controlling diff output formatting.
 /// </summary>
 public record OutputOptions
@@ -96,4 +114,18 @@ public record OutputOptions
     /// Only applies when HtmlMode is Fragment.
     /// </summary>
     public string? HtmlOutputPath { get; init; }
+
+    /// <summary>
+    /// Gets or sets the view mode for HTML output.
+    /// Default: Tree (hierarchical structure of changes).
+    /// Only applies when generating HTML output.
+    /// </summary>
+    public ViewMode ViewMode { get; init; } = ViewMode.Tree;
+
+    /// <summary>
+    /// Gets or sets the number of context lines for inline view.
+    /// null = show full file, N = show N lines of context around changes.
+    /// Only applies when ViewMode is Inline.
+    /// </summary>
+    public int? InlineContext { get; init; }
 }

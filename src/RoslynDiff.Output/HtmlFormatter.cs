@@ -338,6 +338,61 @@ public partial class HtmlFormatter : IOutputFormatter
             background-color: rgba(191, 135, 0, 0.2);
         }
 
+        /* Inline diff view styles */
+        .diff-inline {
+            flex: 1;
+            min-width: 0;
+            overflow-x: auto;
+        }
+
+        .diff-inline .diff-content {
+            width: 100%;
+        }
+
+        .line-prefix {
+            flex-shrink: 0;
+            width: 20px;
+            padding: 0 4px;
+            text-align: center;
+            color: var(--color-line-number);
+            background-color: var(--color-code-bg);
+            border-right: 1px solid var(--color-border);
+            user-select: none;
+            font-weight: 600;
+        }
+
+        .line-added .line-prefix {
+            background-color: rgba(46, 160, 67, 0.2);
+            color: var(--color-added-border);
+        }
+
+        .line-removed .line-prefix {
+            background-color: rgba(207, 34, 46, 0.2);
+            color: var(--color-removed-border);
+        }
+
+        .diff-line-separator {
+            background-color: var(--color-header-bg);
+            color: #57606a;
+        }
+
+        .diff-line-separator .line-number,
+        .diff-line-separator .line-prefix,
+        .diff-line-separator .line-content {
+            color: #57606a;
+            font-style: italic;
+        }
+
+        .diff-line-comment {
+            background-color: #f6f8fa;
+        }
+
+        .line-semantic-header {
+            font-style: italic;
+            color: #57606a;
+            font-weight: 500;
+        }
+
         .change-section {
             margin-bottom: 8px;
             border: 1px solid var(--color-border);
@@ -1139,8 +1194,16 @@ public partial class HtmlFormatter : IOutputFormatter
         sb.AppendLine($"            <div class=\"top-diff-content\" id=\"{topDiffId}\">");
         sb.AppendLine($"                <div class=\"diff-container\" id=\"{fileId}-content\">");
 
-        // Side-by-side view
-        AppendSideBySideView(sb, fileChange, result, options);
+        // Choose view mode: inline or side-by-side
+        if (options.ViewMode == ViewMode.Inline)
+        {
+            AppendInlineView(sb, fileChange, result, options);
+        }
+        else
+        {
+            // Side-by-side view (default)
+            AppendSideBySideView(sb, fileChange, result, options);
+        }
 
         sb.AppendLine("                </div>");
         sb.AppendLine("            </div>");
@@ -1195,6 +1258,201 @@ public partial class HtmlFormatter : IOutputFormatter
         AppendSideContent(sb, fileChange, isOld: false, result.Mode);
         sb.AppendLine("                    </div>");
         sb.AppendLine("                </div>");
+    }
+
+    private static void AppendInlineView(StringBuilder sb, FileChange fileChange, DiffResult result, OutputOptions options)
+    {
+        sb.AppendLine("                <div class=\"diff-inline\">");
+        sb.AppendLine("                    <div class=\"diff-content\">");
+        AppendInlineContent(sb, fileChange, result.Mode, options);
+        sb.AppendLine("                    </div>");
+        sb.AppendLine("                </div>");
+    }
+
+    private static void AppendInlineContent(StringBuilder sb, FileChange fileChange, DiffMode mode, OutputOptions options)
+    {
+        // Build a set of all child changes to identify root-level changes
+        var childChanges = new HashSet<Change>();
+        foreach (var change in fileChange.Changes)
+        {
+            if (change.Children != null)
+            {
+                foreach (var child in change.Children)
+                {
+                    childChanges.Add(child);
+                }
+            }
+        }
+
+        // Only process root-level changes (those not nested as children)
+        var rootChanges = fileChange.Changes.Where(c => !childChanges.Contains(c)).ToList();
+
+        if (rootChanges.Count == 0)
+        {
+            sb.AppendLine("                        <div class=\"diff-line\">");
+            sb.AppendLine("                            <span class=\"line-number\">-</span>");
+            sb.AppendLine("                            <span class=\"line-prefix\"></span>");
+            sb.AppendLine("                            <span class=\"line-content\">(no changes)</span>");
+            sb.AppendLine("                        </div>");
+            return;
+        }
+
+        // Check if we're in context mode (limited lines) or full file mode
+        var contextLines = options.InlineContext;
+        var isContextMode = contextLines.HasValue;
+
+        if (isContextMode && contextLines.HasValue)
+        {
+            // Context mode: show N lines around changes
+            AppendInlineContentWithContext(sb, rootChanges, fileChange.Path, contextLines.Value);
+        }
+        else
+        {
+            // Full file mode: show all changed lines
+            AppendInlineContentFullFile(sb, rootChanges, fileChange.Path);
+        }
+    }
+
+    private static void AppendInlineContentFullFile(StringBuilder sb, List<Change> rootChanges, string? filePath)
+    {
+        var fileExtension = GetFileExtension(filePath);
+
+        foreach (var change in rootChanges)
+        {
+            // Show semantic change description for Roslyn diffs (not for line-based diffs)
+            if (change.Kind != ChangeKind.File && change.Kind != ChangeKind.Line)
+            {
+                var description = $"// {change.Type}: {change.Kind} {change.Name ?? "(unnamed)"}";
+                sb.AppendLine("                        <div class=\"diff-line diff-line-comment\">");
+                sb.AppendLine("                            <span class=\"line-number\"></span>");
+                sb.AppendLine("                            <span class=\"line-prefix\"></span>");
+                sb.AppendLine($"                            <span class=\"line-content line-semantic-header\">{HtmlEncode(description)}</span>");
+                sb.AppendLine("                        </div>");
+            }
+
+            // Show removed lines (old content)
+            if (change.OldContent != null)
+            {
+                var lines = change.OldContent.Split('\n');
+                var startLine = change.OldLocation?.StartLine ?? 1;
+
+                for (var i = 0; i < lines.Length; i++)
+                {
+                    var line = lines[i].TrimEnd('\r');
+                    var lineNumber = startLine + i;
+                    var highlightedLine = HighlightSyntax(line, fileExtension);
+
+                    sb.AppendLine("                        <div class=\"diff-line line-removed\">");
+                    sb.AppendLine($"                            <span class=\"line-number\">{lineNumber}</span>");
+                    sb.AppendLine("                            <span class=\"line-prefix\">-</span>");
+                    sb.AppendLine($"                            <span class=\"line-content\">{highlightedLine}</span>");
+                    sb.AppendLine("                        </div>");
+                }
+            }
+
+            // Show added lines (new content)
+            if (change.NewContent != null)
+            {
+                var lines = change.NewContent.Split('\n');
+                var startLine = change.NewLocation?.StartLine ?? 1;
+
+                for (var i = 0; i < lines.Length; i++)
+                {
+                    var line = lines[i].TrimEnd('\r');
+                    var lineNumber = startLine + i;
+                    var highlightedLine = HighlightSyntax(line, fileExtension);
+
+                    sb.AppendLine("                        <div class=\"diff-line line-added\">");
+                    sb.AppendLine($"                            <span class=\"line-number\">{lineNumber}</span>");
+                    sb.AppendLine("                            <span class=\"line-prefix\">+</span>");
+                    sb.AppendLine($"                            <span class=\"line-content\">{highlightedLine}</span>");
+                    sb.AppendLine("                        </div>");
+                }
+            }
+        }
+    }
+
+    private static void AppendInlineContentWithContext(StringBuilder sb, List<Change> rootChanges, string? filePath, int contextLines)
+    {
+        var fileExtension = GetFileExtension(filePath);
+
+        // For context mode, we need to show unchanged lines around changes
+        // This is more complex and requires reading the original file
+        // For now, show changes with ellipsis separators when there are gaps
+
+        var lastLine = 0;
+        foreach (var change in rootChanges)
+        {
+            var currentStartLine = Math.Min(
+                change.OldLocation?.StartLine ?? int.MaxValue,
+                change.NewLocation?.StartLine ?? int.MaxValue
+            );
+
+            // Show separator if there's a gap
+            if (lastLine > 0 && currentStartLine - lastLine > 1)
+            {
+                sb.AppendLine("                        <div class=\"diff-line diff-line-separator\">");
+                sb.AppendLine("                            <span class=\"line-number\">...</span>");
+                sb.AppendLine("                            <span class=\"line-prefix\"></span>");
+                sb.AppendLine("                            <span class=\"line-content\">...</span>");
+                sb.AppendLine("                        </div>");
+            }
+
+            // Show semantic change description for Roslyn diffs (not for line-based diffs)
+            if (change.Kind != ChangeKind.File && change.Kind != ChangeKind.Line)
+            {
+                var description = $"// {change.Type}: {change.Kind} {change.Name ?? "(unnamed)"}";
+                sb.AppendLine("                        <div class=\"diff-line diff-line-comment\">");
+                sb.AppendLine("                            <span class=\"line-number\"></span>");
+                sb.AppendLine("                            <span class=\"line-prefix\"></span>");
+                sb.AppendLine($"                            <span class=\"line-content line-semantic-header\">{HtmlEncode(description)}</span>");
+                sb.AppendLine("                        </div>");
+            }
+
+            // Show removed lines (old content)
+            if (change.OldContent != null)
+            {
+                var lines = change.OldContent.Split('\n');
+                var startLine = change.OldLocation?.StartLine ?? 1;
+
+                for (var i = 0; i < lines.Length; i++)
+                {
+                    var line = lines[i].TrimEnd('\r');
+                    var lineNumber = startLine + i;
+                    var highlightedLine = HighlightSyntax(line, fileExtension);
+
+                    sb.AppendLine("                        <div class=\"diff-line line-removed\">");
+                    sb.AppendLine($"                            <span class=\"line-number\">{lineNumber}</span>");
+                    sb.AppendLine("                            <span class=\"line-prefix\">-</span>");
+                    sb.AppendLine($"                            <span class=\"line-content\">{highlightedLine}</span>");
+                    sb.AppendLine("                        </div>");
+
+                    lastLine = lineNumber;
+                }
+            }
+
+            // Show added lines (new content)
+            if (change.NewContent != null)
+            {
+                var lines = change.NewContent.Split('\n');
+                var startLine = change.NewLocation?.StartLine ?? 1;
+
+                for (var i = 0; i < lines.Length; i++)
+                {
+                    var line = lines[i].TrimEnd('\r');
+                    var lineNumber = startLine + i;
+                    var highlightedLine = HighlightSyntax(line, fileExtension);
+
+                    sb.AppendLine("                        <div class=\"diff-line line-added\">");
+                    sb.AppendLine($"                            <span class=\"line-number\">{lineNumber}</span>");
+                    sb.AppendLine("                            <span class=\"line-prefix\">+</span>");
+                    sb.AppendLine($"                            <span class=\"line-content\">{highlightedLine}</span>");
+                    sb.AppendLine("                        </div>");
+
+                    lastLine = lineNumber;
+                }
+            }
+        }
     }
 
     private static void AppendSideContent(StringBuilder sb, FileChange fileChange, bool isOld, DiffMode mode)
