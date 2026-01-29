@@ -1,0 +1,260 @@
+# fragment-mode-example.png - Screenshot Specification
+
+## Purpose
+Demonstrate roslyn-diff HTML Fragment Mode embedded in a parent page, showing:
+- Fragment integrated into custom dashboard
+- CSS styling from external roslyn-diff.css
+- Data attributes visible in DevTools
+- Metadata extraction and JavaScript integration
+
+## Source Files
+- **Fragment HTML**: `/docs/images/fragment-example.html`
+- **External CSS**: `/docs/images/roslyn-diff.css`
+- **Parent Page**: `/docs/images/fragment-parent-example.html`
+- **Sample Code**: Generated from `samples/before/Calculator.cs` → `samples/after/Calculator.cs`
+
+## Screenshot Requirements
+
+### Display Configuration
+- **Browser**: Chrome or Firefox (latest stable)
+- **Viewport**: 1920 x 1400px (desktop)
+- **Zoom**: 100% (default)
+- **DevTools**: Open and positioned on right side (50/50 split)
+
+### What to Capture
+
+#### Main Browser View (Left Half)
+1. **Dashboard Header**
+   - Gradient header with "Code Review Dashboard" title
+   - "Fragment Mode Demo" subtitle
+
+2. **Metadata Card** (top section)
+   - Summary badges showing additions/modifications
+   - Metadata grid with 6 items:
+     - Total Changes
+     - Breaking Public API (should be 0, green)
+     - Breaking Internal API (should be 0, green)
+     - Non-Breaking Changes
+     - Formatting Only
+     - Diff Mode (roslyn)
+
+3. **Info Alert**
+   - Blue info box explaining how fragment mode works
+   - Shows fragment filename and CSS reference
+
+4. **Embedded Fragment** (main content)
+   - Section header "Calculator.cs Changes" with mode badge
+   - Diff content showing:
+     - Side-by-side comparison
+     - Syntax highlighting
+     - Line numbers
+     - At least 2 visible changes (Added methods: Multiply, Divide, Subtract, Power)
+   - Impact badges (if any)
+
+#### DevTools View (Right Half)
+1. **Elements Panel** showing:
+   - `<div class="roslyn-diff-fragment">` root element
+   - All data attributes visible:
+     ```html
+     data-old-file="Calculator.cs"
+     data-new-file="Calculator.cs"
+     data-changes-total="4"
+     data-changes-added="2"
+     data-changes-removed="0"
+     data-changes-modified="2"
+     data-impact-breaking-public="0"
+     data-impact-breaking-internal="0"
+     data-impact-non-breaking="0"
+     data-impact-formatting="0"
+     data-mode="roslyn"
+     ```
+   - Fragment HTML structure (expandable nodes)
+
+2. **Console Panel** (optional, if space)
+   - Console log showing: "Fragment metadata: {oldFile: 'Calculator.cs', ...}"
+
+### Key Visual Elements
+✅ Custom dashboard header and styling (shows parent page integration)
+✅ Metadata extracted from data attributes displayed in cards
+✅ Fragment content with roslyn-diff.css styling applied
+✅ DevTools showing data attributes on fragment root element
+✅ Clear separation between parent page styles and fragment styles
+✅ At least 2 code changes visible with syntax highlighting
+
+### Annotations (Optional)
+Consider adding numbered annotations:
+1. "Parent page header and custom styles"
+2. "Metadata extracted via JavaScript from data attributes"
+3. "Embedded fragment with external CSS"
+4. "Data attributes for integration"
+
+## How to Generate
+
+### Option 1: Manual Screenshot (Recommended)
+
+1. **Setup**:
+   ```bash
+   cd /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/docs/images
+   ```
+
+2. **Open in Browser**:
+   ```bash
+   # macOS
+   open fragment-parent-example.html
+
+   # Linux
+   xdg-open fragment-parent-example.html
+
+   # Windows
+   start fragment-parent-example.html
+   ```
+
+3. **Configure Browser**:
+   - Set viewport to 1920x1400 (use responsive design mode)
+   - Open DevTools (F12)
+   - Position DevTools on right side (click dock button → "Dock to right")
+   - Resize split to 50/50
+   - In Elements panel, find and expand `<div class="roslyn-diff-fragment">`
+   - Highlight/select this element to show data attributes in right panel
+
+4. **Capture**:
+   - Scroll to show: header + metadata card + info alert + first 2-3 changes
+   - Ensure DevTools shows fragment root element with all data attributes
+   - Take full-page screenshot (browser tool or OS screenshot)
+   - Save as `fragment-mode-example.png`
+
+5. **Post-Process**:
+   - Crop to remove browser chrome (address bar, tabs) if needed
+   - Optionally add border: 1px solid #e1e4e8
+   - Optimize with `pngquant` or similar: `pngquant --quality=80-90 fragment-mode-example.png`
+   - Target file size: < 500KB
+
+### Option 2: Browser Automation (Playwright)
+
+```javascript
+// screenshot-fragment-mode.js
+const { chromium } = require('playwright');
+
+(async () => {
+  const browser = await chromium.launch();
+  const context = await browser.newContext({
+    viewport: { width: 1920, height: 1400 }
+  });
+
+  const page = await context.newPage();
+
+  // Load the parent page
+  await page.goto('file:///Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/docs/images/fragment-parent-example.html');
+
+  // Wait for fragment to load
+  await page.waitForSelector('.roslyn-diff-fragment');
+
+  // Open DevTools programmatically is complex, so we'll capture just the page
+  // For DevTools view, manual screenshot is recommended
+
+  // Capture screenshot
+  await page.screenshot({
+    path: 'fragment-mode-example.png',
+    fullPage: false // Capture visible viewport only
+  });
+
+  console.log('Screenshot saved to fragment-mode-example.png');
+
+  await browser.close();
+})();
+```
+
+Run with: `npx playwright install && node screenshot-fragment-mode.js`
+
+**Note**: Playwright cannot easily capture DevTools panel. For the DevTools view showing data attributes, manual screenshot is recommended.
+
+### Option 3: Puppeteer
+
+```javascript
+// screenshot-fragment-mode.js
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  await page.setViewport({ width: 1920, height: 1400 });
+
+  await page.goto('file:///Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-fragment-mode/docs/images/fragment-parent-example.html');
+
+  // Wait for fragment to load
+  await page.waitForSelector('.roslyn-diff-fragment');
+
+  // Capture screenshot
+  await page.screenshot({
+    path: 'fragment-mode-example.png',
+    fullPage: false
+  });
+
+  console.log('Screenshot saved!');
+
+  await browser.close();
+})();
+```
+
+Run with: `npm install puppeteer && node screenshot-fragment-mode.js`
+
+## Quality Checklist
+
+Before submitting the screenshot, verify:
+- [ ] Viewport is 1920x1400px
+- [ ] Browser DevTools visible on right side
+- [ ] Fragment root element selected in DevTools
+- [ ] All data attributes visible in Elements panel
+- [ ] Dashboard header, metadata cards, and fragment all visible
+- [ ] At least 2 code changes visible with syntax highlighting
+- [ ] Text is sharp and readable (no blur or artifacts)
+- [ ] File size < 500KB
+- [ ] Format is PNG (lossless)
+- [ ] No personal information in paths or filenames
+- [ ] Colors are vibrant and accurate
+
+## Expected Output
+
+The screenshot should demonstrate:
+1. **Integration**: Fragment seamlessly embedded in custom dashboard
+2. **Styling**: External CSS (roslyn-diff.css) applied correctly
+3. **Metadata**: Data attributes visible in DevTools for JavaScript access
+4. **Functionality**: Metadata extracted and displayed in parent page (badges, cards)
+5. **Flexibility**: Parent page has its own styles that don't conflict with fragment
+
+## Usage
+
+This screenshot will be used in:
+- `README.md` - Fragment Mode section
+- `docs/output-formats.md` - HTML Fragment Mode documentation
+- `samples/fragment-mode/README.md` - Integration examples
+- GitHub releases and blog posts about fragment mode feature
+
+## Related Files
+
+- `html-output-screenshot.png.TODO` - Standard HTML document mode
+- `json-impact-breakdown.png.TODO` - JSON output format
+- `docs/screenshot-requirements.md` - General screenshot guidelines
+
+## Notes
+
+- **Browser Choice**: Chrome recommended for consistent rendering and DevTools
+- **DevTools Position**: Right dock (not bottom) to show both page and attributes clearly
+- **Element Selection**: Must select `.roslyn-diff-fragment` root to show data attributes
+- **Viewport Height**: 1400px ensures enough content visible without excessive scrolling
+- **File Size**: If > 500KB, use `pngquant --quality=80-90` or similar optimization tool
+
+## Support
+
+If you need assistance generating this screenshot:
+1. Review `/docs/screenshot-requirements.md` for general guidelines
+2. Check `samples/fragment-mode/README.md` for usage examples
+3. Open a GitHub issue with tag `documentation` and `help-wanted`
+4. Contact project maintainers
+
+---
+
+**Status**: Pending
+**Priority**: High (required for v0.9.0 release)
+**Estimated Time**: 15 minutes (manual) or 30 minutes (automated script)
