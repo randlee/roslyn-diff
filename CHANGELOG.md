@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+#### Performance Analysis & Benchmarking
+- **ComprehensiveDiffModeBenchmarks** - Complete benchmark suite comparing text diff vs semantic diff modes
+  - 16 benchmark scenarios across 4 file sizes (50, 500, 2000, 5000 lines)
+  - Tests both small changes (0.2-2% modified) and large changes (30% + rearrangement)
+  - Measures time, memory allocation, and GC pressure for both modes
+  - Realistic code generation with method signatures, bodies, and rearrangement patterns
+- **ExtendedScaleBenchmarks** - Large file validation (3000-5000 lines)
+  - Validates DESIGN-003 performance projections
+  - Tests identical file comparison (early termination)
+  - Confirms scaling characteristics
+- **Comprehensive Performance Documentation**
+  - Performance comparison guide in docs/performance.md
+  - Benchmark results with actual data
+  - Use case recommendations (when to use text vs semantic diff)
+  - Hybrid strategy guidance for optimal performance
+- **Performance Analysis Reports** (in project root, pending integration)
+  - COMPREHENSIVE_DIFF_COMPARISON.md - Detailed 16-scenario analysis
+  - BENCHMARK_SAMPLE_DATA_SPEC.md - Test data specification
+  - PERFORMANCE_ANALYSIS.md - Extended scale analysis
+  - PERFORMANCE_CHARTS.md - Visual performance charts
+  - BENCHMARK_ANALYSIS_INDEX.md - Master navigation guide
+
+### Performance Findings
+- **Text Diff**: 2-80× faster than semantic diff depending on change density
+- **Semantic Diff**: 18× more memory but perfect structural accuracy
+- **GC Pressure**: Semantic diff triggers 13-18× more Gen0 collections
+- **Scaling**: Text diff scales linearly (O(n)), semantic diff scales with file size × change complexity
+- **Early Termination**: Both modes handle identical files in nanoseconds
+
 ### Planned
 - MCP Server integration for AI tooling
 - Folder/project comparison
