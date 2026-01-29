@@ -377,14 +377,6 @@ public sealed class FolderComparerSecurityTests : IDisposable
 
     #endregion
 
-    #region Large File Tests (MEDIUM Priority - D1-M2)
-
-    [Fact]
-
-    [Fact]
-
-    #endregion
-
     #region Special Filename Tests (MEDIUM Priority - D1-M4, D1-M8)
 
     [Fact]

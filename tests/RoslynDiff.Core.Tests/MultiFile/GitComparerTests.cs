@@ -569,8 +569,6 @@ public class TestClass
         result.Files[0].Status.Should().Be(FileChangeStatus.Added);
     }
 
-    [Fact]
-
     #endregion
 
     #region Helper Methods
