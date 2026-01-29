@@ -323,7 +323,28 @@ See [Output Formats Guide](docs/output-formats.md) for complete schema documenta
 
 ### HTML (`--html`)
 
-Interactive HTML report with:
+Interactive HTML report with two modes:
+
+**Document Mode (default)** - Standalone HTML report:
+
+```bash
+# Generate and open in browser
+roslyn-diff diff old.cs new.cs --html report.html --open
+
+# Filter to show only breaking changes in HTML
+roslyn-diff diff old.cs new.cs --html report.html --impact-level breaking-public
+```
+
+**Fragment Mode** - Embeddable HTML for integration:
+
+```bash
+# Generate HTML fragment with external CSS
+roslyn-diff diff old.cs new.cs --html fragment.html --html-mode fragment
+
+# Outputs: fragment.html + roslyn-diff.css
+```
+
+Features:
 - **Impact classification badges** - Color-coded indicators (Breaking Public API, Breaking Internal API, Non-Breaking, Formatting Only)
 - **TFM badges** - Framework-specific indicators (net8.0, net10.0) showing which TFMs each change applies to
 - **Caveat warnings** - Yellow warning boxes for edge cases (e.g., "Parameter rename may break named arguments")
@@ -334,15 +355,28 @@ Interactive HTML report with:
 - IDE integration links (VS Code, Rider, PyCharm, Zed)
 - Navigation panel and summary statistics
 
-```bash
-# Generate and open in browser
-roslyn-diff diff old.cs new.cs --html report.html --open
+**Fragment Mode** for embedding in existing pages:
+- Generates `<div>` container (no document wrapper)
+- External CSS file for shared styling
+- Data attributes for JavaScript integration
+- Perfect for dashboards, documentation sites, and code review tools
 
-# Filter to show only breaking changes in HTML
-roslyn-diff diff old.cs new.cs --html report.html --impact-level breaking-public
+```html
+<!-- Embed in your page -->
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="roslyn-diff.css">
+</head>
+<body>
+  <h1>Code Review</h1>
+  <!-- Include fragment here -->
+  <?php include('fragment.html'); ?>
+</body>
+</html>
 ```
 
-See [Output Formats Guide](docs/output-formats.md) for details on all HTML features.
+See [Output Formats Guide](docs/output-formats.md) for details on all HTML features and [Fragment Mode Examples](samples/fragment-mode/) for integration patterns.
 
 ### Text (`--text`)
 
@@ -413,6 +447,72 @@ When piped/redirected:
 
 ### Line-by-Line Diff
 - All other text files (`.txt`, `.md`, `.json`, `.xml`, `.html`, etc.)
+
+## HTML Fragment Mode
+
+roslyn-diff can generate embeddable HTML fragments for integration into existing web applications, documentation sites, and code review dashboards.
+
+### Quick Start with Fragment Mode
+
+```bash
+# Generate HTML fragment with external CSS
+roslyn-diff diff old.cs new.cs --html fragment.html --html-mode fragment
+
+# Outputs two files:
+# - fragment.html (embeddable HTML)
+# - roslyn-diff.css (external stylesheet)
+```
+
+### Embedding the Fragment
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Code Review Dashboard</title>
+  <!-- Include the external CSS -->
+  <link rel="stylesheet" href="roslyn-diff.css">
+</head>
+<body>
+  <h1>Pull Request #123 - Changes</h1>
+
+  <!-- Embed the fragment -->
+  <div id="diff-container">
+    <?php include('fragment.html'); ?>
+  </div>
+</body>
+</html>
+```
+
+### Data-Driven Integration
+
+Fragments include data attributes for JavaScript integration:
+
+```javascript
+const fragment = document.querySelector('.roslyn-diff-fragment');
+
+// Extract metadata
+const stats = {
+  totalChanges: parseInt(fragment.dataset.changesTotal),
+  breakingPublic: parseInt(fragment.dataset.impactBreakingPublic),
+  additions: parseInt(fragment.dataset.changesAdded),
+  mode: fragment.dataset.mode
+};
+
+// Show alert if breaking changes exist
+if (stats.breakingPublic > 0) {
+  showWarning(`⚠️ ${stats.breakingPublic} breaking API changes detected`);
+}
+```
+
+### Use Cases
+
+- **Documentation Sites** - Embed diffs in changelog or upgrade guides
+- **Code Review Tools** - Build custom review interfaces with multiple diffs
+- **CI/CD Dashboards** - Show diff reports in build pipeline pages
+- **Static Site Generators** - Include diffs in Jekyll, Hugo, or Gatsby sites
+
+See [samples/fragment-mode/](samples/fragment-mode/) for complete examples and integration patterns.
 
 ## Examples
 

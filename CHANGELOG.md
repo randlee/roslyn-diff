@@ -7,6 +7,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-01-28
+
+### Added
+
+#### HTML Fragment Mode
+- **Embeddable HTML Output** - New `--html-mode fragment` option generates embeddable HTML fragments
+  - Outputs HTML fragment without document wrapper (`<html>`, `<head>`, `<body>` tags)
+  - Generates external CSS file instead of embedding styles
+  - Perfect for integration into existing web applications, documentation sites, and dashboards
+- **External CSS Extraction** - `--extract-css` option to specify CSS filename (default: `roslyn-diff.css`)
+  - CSS scoped to `.roslyn-diff-fragment` container
+  - Uses CSS custom properties (variables) for easy theming
+  - No external dependencies, self-contained stylesheet
+- **Data Attributes for Metadata** - Fragment root element includes data attributes for JavaScript integration
+  - File names: `data-old-file`, `data-new-file`
+  - Change statistics: `data-changes-total`, `data-changes-added`, `data-changes-removed`, `data-changes-modified`
+  - Impact statistics: `data-impact-breaking-public`, `data-impact-breaking-internal`, `data-impact-non-breaking`, `data-impact-formatting`
+  - Diff mode: `data-mode` (roslyn/line)
+- **Fragment Mode Examples** - New `samples/fragment-mode/` directory with integration examples
+  - `fragment.html` - Example generated fragment
+  - `roslyn-diff.css` - Example extracted CSS
+  - `parent.html` - Complete example showing fragment embedding in dashboard
+  - `README.md` - Comprehensive guide to fragment mode integration patterns
+
+#### CLI Enhancements
+- `--html-mode <mode>` - Select HTML generation mode: `document` (default) or `fragment`
+- `--extract-css <filename>` - Specify CSS filename for fragment mode (default: `roslyn-diff.css`)
+
+#### Documentation
+- **Fragment Mode Documentation** - Comprehensive section in `docs/output-formats.md`
+  - How fragment mode works
+  - Data attribute reference
+  - Embedding examples (PHP, Node.js, Ruby, Python, JavaScript)
+  - Multiple fragments example
+  - Styling and theming guide
+  - Use case recommendations
+  - Document vs. Fragment comparison table
+- **Fragment Mode Section in README** - Quick start guide and use cases
+- **Sample Integration Patterns** - Examples for all major integration scenarios
+  - Server-side includes (PHP, Node.js, Ruby, Python)
+  - Client-side loading (JavaScript, jQuery, React)
+  - Static site generators (Jekyll, Hugo, Gatsby)
+  - Code review dashboards
+  - CI/CD reports
+
+### Changed
+- Enhanced `OutputOptions` with `HtmlMode` and `ExtractCssPath` properties
+- Enhanced `HtmlFormatter` to support both document and fragment modes
+- Fragment mode uses external CSS instead of embedded styles for better caching and reusability
+
+### Use Cases Enabled
+- **Documentation Sites** - Embed semantic diffs in changelog pages and upgrade guides
+- **Code Review Tools** - Build custom review interfaces with multiple embedded diffs
+- **CI/CD Dashboards** - Display diff reports in build pipeline status pages
+- **Static Site Generators** - Include diffs in Jekyll, Hugo, Gatsby, or Docusaurus sites
+- **Content Management Systems** - Embed diffs in CMS-based documentation platforms
+
+## [Unreleased] - Future Features
+
 ### Added
 
 #### Performance Analysis & Benchmarking
