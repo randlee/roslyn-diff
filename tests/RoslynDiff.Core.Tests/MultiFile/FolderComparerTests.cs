@@ -468,22 +468,10 @@ public sealed class FolderComparerTests : IDisposable
         var result = comparer.Compare(_oldFolder, _newFolder, options, folderOptions);
 
         // Assert
-        // Note: On case-sensitive filesystems (Linux), these would be treated as different files
-        // On case-insensitive filesystems (Windows, macOS default), they match
-        // Check if filesystem is case-sensitive by testing if both files are the same
-        var isCaseSensitive = !File.Exists(Path.Combine(_oldFolder, "file.cs"));
-
-        if (isCaseSensitive)
-        {
-            // On case-sensitive filesystems, we should have 2 files (1 added, 1 removed)
-            Assert.Equal(2, result.Files.Count);
-        }
-        else
-        {
-            // On case-insensitive filesystems, we should have 1 modified file
-            var singleFile = Assert.Single(result.Files);
-            Assert.Equal(FileChangeStatus.Modified, singleFile.Status);
-        }
+        // FolderComparer uses case-insensitive file matching by design (StringComparer.OrdinalIgnoreCase)
+        // So File.CS and file.cs should match as the same file on all filesystems
+        var singleFile = Assert.Single(result.Files);
+        Assert.Equal(FileChangeStatus.Modified, singleFile.Status);
     }
 
     [Fact]
