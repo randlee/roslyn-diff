@@ -163,6 +163,20 @@ public record MultiFileMetadata
 
 **Deliverable**: Working `--git main..feature` with HTML/JSON output
 
+### Phase 1-QA: Mandatory Quality Assurance
+**Estimated effort**: 1-2 hours
+
+**Tasks:**
+- [ ] Run full test suite (`dotnet test`)
+- [ ] Verify 100% pass rate locally
+- [ ] Check cross-platform compatibility (test on macOS/Windows/Linux if possible)
+- [ ] Fix any test failures
+- [ ] Re-run tests until all pass
+
+**Deliverable**: All tests passing, ready to commit
+
+**IMPORTANT**: Do NOT commit, push, or create PR until Phase 1-QA is complete and all tests pass.
+
 ### Phase 2: Folder Comparison
 **Estimated effort**: 3-5 days
 
@@ -180,6 +194,20 @@ public record MultiFileMetadata
 
 **Deliverable**: Working folder-to-folder comparison with filtering
 
+### Phase 2-QA: Mandatory Quality Assurance
+**Estimated effort**: 1-2 hours
+
+**Tasks:**
+- [ ] Run full test suite (`dotnet test`)
+- [ ] Verify 100% pass rate locally
+- [ ] Check cross-platform compatibility
+- [ ] Fix any test failures
+- [ ] Re-run tests until all pass
+
+**Deliverable**: All tests passing, ready to commit
+
+**IMPORTANT**: Do NOT commit, push, or create PR until Phase 2-QA is complete and all tests pass.
+
 ### Phase 3: Polish & Documentation
 **Estimated effort**: 3-4 days
 
@@ -193,6 +221,23 @@ public record MultiFileMetadata
 - [ ] Integration tests for multi-file scenarios
 
 **Deliverable**: Complete, documented feature ready for release
+
+### Phase 3-QA: Final Quality Assurance
+**Estimated effort**: 2-3 hours
+
+**Tasks:**
+- [ ] Run full test suite (`dotnet test`)
+- [ ] Verify 100% pass rate locally
+- [ ] Run performance benchmarks
+- [ ] Test with real-world repositories (100+ files)
+- [ ] Validate all documentation links
+- [ ] Check cross-platform compatibility
+- [ ] Fix any issues found
+- [ ] Re-run tests until all pass
+
+**Deliverable**: Feature ready for PR and release
+
+**IMPORTANT**: Do NOT create final PR until Phase 3-QA is complete and all tests pass.
 
 ---
 

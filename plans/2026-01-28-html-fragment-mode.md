@@ -387,28 +387,43 @@ private string GetScopedCss()
 **Estimated effort**: 2-3 hours
 
 **Tasks**:
-- [ ] Add `HtmlMode` enum to `OutputOptions.cs`
-- [ ] Add `--html-mode` CLI option to `DiffCommand.cs`
-- [ ] Add `--extract-css` CLI option for custom CSS filename
-- [ ] Modify `HtmlOutputFormatter.FormatResult()`:
+- [x] Add `HtmlMode` enum to `OutputOptions.cs`
+- [x] Add `--html-mode` CLI option to `DiffCommand.cs`
+- [x] Add `--extract-css` CLI option for custom CSS filename
+- [x] Modify `HtmlOutputFormatter.FormatResult()`:
   - Detect `options.HtmlMode`
   - Generate fragment (no wrapper) with external CSS reference
   - Generate CSS file (default: roslyn-diff.css)
-- [ ] Add data attributes to fragment container
-- [ ] Update `DiffResult` to include summary statistics for data attributes
+- [x] Add data attributes to fragment container
+- [x] Update `DiffResult` to include summary statistics for data attributes
 
 **Output**: Working `--html-mode fragment` with external CSS file
+
+### Phase 1-QA: Quality Assurance (LESSON LEARNED)
+**Estimated effort**: 1 hour
+
+**Tasks**:
+- [x] Run full test suite (`dotnet test`)
+- [x] Verify 100% pass rate locally
+- [ ] Check cross-platform compatibility ⚠️ **SKIPPED - led to CI failures**
+- [ ] Fix test failures on macOS/Windows
+
+**Deliverable**: All tests passing on all platforms
+
+**IMPORTANT**: Do NOT commit, push, or create PR until Phase QA is complete and all tests pass.
+
+**Retrospective**: Phase 1 was committed without running tests on macOS/Windows, leading to CI failures. Future sprints MUST include cross-platform QA before commit.
 
 ### Phase 2: Testing & Documentation (v0.9.0-beta.1)
 **Estimated effort**: 2-3 hours
 
 **Tasks**:
-- [ ] Add unit tests for fragment generation
-- [ ] Add integration test: multiple fragments with shared CSS
-- [ ] Update `docs/output-formats.md` with fragment mode docs
-- [ ] Add `samples/fragment-mode/` with examples
-- [ ] Update README.md with fragment mode example
-- [ ] Update CHANGELOG.md
+- [x] Add unit tests for fragment generation
+- [x] Add integration test: multiple fragments with shared CSS
+- [x] Update `docs/output-formats.md` with fragment mode docs
+- [x] Add `samples/fragment-mode/` with examples
+- [x] Update README.md with fragment mode example
+- [x] Update CHANGELOG.md
 
 **Output**: Tested, documented feature ready for release
 
@@ -416,10 +431,24 @@ private string GetScopedCss()
 **Estimated effort**: 1 hour
 
 **Tasks**:
-- [ ] Add screenshot to `docs/images/fragment-mode-example.png`
-- [ ] Validate all documentation links
-- [ ] Final testing with real-world embedding scenarios
-- [ ] Tag and release v0.9.0
+- [x] Add screenshot to `docs/images/fragment-mode-example.png`
+- [x] Validate all documentation links
+- [x] Final testing with real-world embedding scenarios
+- [x] Tag and release v0.9.0
+
+### Phase 3-QA: Fix CI Failures (Remediation)
+**Estimated effort**: 1-2 hours
+
+**Tasks**:
+- [ ] Reproduce test failures on macOS (in progress)
+- [ ] Identify root cause (path separators, line endings, etc.)
+- [ ] Fix cross-platform issues
+- [ ] Re-run tests until all pass
+- [ ] Commit and push fix
+
+**Deliverable**: All CI checks passing (macOS, Windows, Ubuntu)
+
+**Status**: QA agent currently running to fix CI failures
 
 ---
 
