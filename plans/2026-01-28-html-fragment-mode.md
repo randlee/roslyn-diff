@@ -387,49 +387,39 @@ private string GetScopedCss()
 **Estimated effort**: 2-3 hours
 
 **Tasks**:
-1. ✅ Add `HtmlMode` enum to `OutputOptions.cs`
-2. ✅ Add `--html-mode` CLI option to `DiffCommand.cs`
-3. ✅ Modify `HtmlOutputFormatter.FormatResult()`:
-   - Detect `options.HtmlMode`
-   - Conditionally generate document vs fragment
-4. ✅ Implement CSS scoping (runtime prefix injection)
-5. ✅ Add data attributes to fragment container
-6. ✅ Update `DiffResult` to include summary statistics for data attributes
+- [ ] Add `HtmlMode` enum to `OutputOptions.cs`
+- [ ] Add `--html-mode` CLI option to `DiffCommand.cs`
+- [ ] Add `--extract-css` CLI option for custom CSS filename
+- [ ] Modify `HtmlOutputFormatter.FormatResult()`:
+  - Detect `options.HtmlMode`
+  - Generate fragment (no wrapper) with external CSS reference
+  - Generate CSS file (default: roslyn-diff.css)
+- [ ] Add data attributes to fragment container
+- [ ] Update `DiffResult` to include summary statistics for data attributes
 
-**Output**: Working `--html-mode fragment` with scoped CSS
+**Output**: Working `--html-mode fragment` with external CSS file
 
-### Phase 2: JavaScript Scoping (v0.9.0-alpha.2)
-**Estimated effort**: 1-2 hours
-
-**Tasks**:
-1. ✅ Wrap JavaScript in IIFE
-2. ✅ Scope event listeners to fragment container
-3. ✅ Test multiple fragments on same page
-4. ✅ Verify no global scope pollution
-
-**Output**: Interactive fragments with no conflicts
-
-### Phase 3: Testing & Documentation (v0.9.0-beta.1)
+### Phase 2: Testing & Documentation (v0.9.0-beta.1)
 **Estimated effort**: 2-3 hours
 
 **Tasks**:
-1. ✅ Add unit tests for fragment generation
-2. ✅ Add integration test: multiple fragments in one page
-3. ✅ Update `docs/output-formats.md` with fragment mode docs
-4. ✅ Add `samples/fragment-mode/` with examples
-5. ✅ Update README.md with fragment mode example
-6. ✅ Update CHANGELOG.md
+- [ ] Add unit tests for fragment generation
+- [ ] Add integration test: multiple fragments with shared CSS
+- [ ] Update `docs/output-formats.md` with fragment mode docs
+- [ ] Add `samples/fragment-mode/` with examples
+- [ ] Update README.md with fragment mode example
+- [ ] Update CHANGELOG.md
 
 **Output**: Tested, documented feature ready for release
 
-### Phase 4: Polish & Release (v0.9.0)
+### Phase 3: Polish & Release (v0.9.0)
 **Estimated effort**: 1 hour
 
 **Tasks**:
-1. ✅ Add screenshot to `docs/images/fragment-mode-example.png`
-2. ✅ Validate all documentation links
-3. ✅ Final testing with real-world embedding scenarios
-4. ✅ Tag and release v0.9.0
+- [ ] Add screenshot to `docs/images/fragment-mode-example.png`
+- [ ] Validate all documentation links
+- [ ] Final testing with real-world embedding scenarios
+- [ ] Tag and release v0.9.0
 
 ---
 
@@ -684,13 +674,13 @@ roslyn-diff diff old.cs new.cs --html output.html --html-mode fragment
 ### Acceptance Criteria
 
 - [ ] `--html-mode fragment` generates embeddable HTML without document wrapper
-- [ ] Fragment includes scoped CSS with `.roslyn-diff-fragment` prefix
+- [ ] Generates external CSS file (default: roslyn-diff.css) with shared styles
 - [ ] Fragment includes data attributes with summary statistics
 - [ ] Multiple fragments can coexist on same page without conflicts
-- [ ] JavaScript features work within fragments (keyboard nav, copy buttons)
+- [ ] No JavaScript in fragments (static content only)
 - [ ] Default mode remains `document` (backward compatible)
 - [ ] Documentation includes examples of embedding fragments
-- [ ] Integration test validates multi-fragment embedding
+- [ ] Integration test validates multi-fragment embedding with shared CSS
 
 ### User Validation
 
