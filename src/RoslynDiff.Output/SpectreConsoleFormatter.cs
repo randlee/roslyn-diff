@@ -1,5 +1,6 @@
 namespace RoslynDiff.Output;
 
+using System.Text;
 using RoslynDiff.Core.Models;
 using Spectre.Console;
 using Spectre.Console.Rendering;
@@ -240,5 +241,30 @@ public class SpectreConsoleFormatter : IOutputFormatter
             yield return "LineEndingChanged";
         if (issues.HasFlag(WhitespaceIssue.AmbiguousTabWidth))
             yield return "AmbiguousTabWidth";
+    }
+
+    /// <inheritdoc/>
+    public string FormatMultiFileResult(MultiFileDiffResult result, OutputOptions? options = null)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine($"Multi-File Diff: {result.Summary.TotalFiles} files, {result.Summary.TotalChanges} changes");
+        sb.AppendLine();
+
+        foreach (var file in result.Files)
+        {
+            var fileName = file.NewPath ?? file.OldPath ?? "Unknown";
+            sb.AppendLine($"=== {fileName} ({file.Status}) ===");
+            sb.AppendLine(FormatResult(file.Result, options));
+            sb.AppendLine();
+        }
+
+        return sb.ToString();
+    }
+
+    /// <inheritdoc/>
+    public async Task FormatMultiFileResultAsync(MultiFileDiffResult result, TextWriter writer, OutputOptions? options = null)
+    {
+        var text = FormatMultiFileResult(result, options);
+        await writer.WriteAsync(text);
     }
 }

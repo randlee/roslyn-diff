@@ -264,6 +264,111 @@ public class JsonFormatter : IOutputFormatter
             yield return "AmbiguousTabWidth";
     }
 
+    #region Multi-File Support
+
+    /// <summary>
+    /// Formats a multi-file diff result as JSON.
+    /// </summary>
+    public string FormatMultiFileResult(MultiFileDiffResult result, OutputOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(result);
+        options ??= new OutputOptions();
+
+        var output = CreateMultiFileOutputModel(result, options);
+        var serializerOptions = CreateSerializerOptions(options);
+
+        return JsonSerializer.Serialize(output, serializerOptions);
+    }
+
+    /// <summary>
+    /// Formats a multi-file diff result as JSON and writes to a writer.
+    /// </summary>
+    public async Task FormatMultiFileResultAsync(MultiFileDiffResult result, TextWriter writer, OutputOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(result);
+        ArgumentNullException.ThrowIfNull(writer);
+
+        var json = FormatMultiFileResult(result, options);
+        await writer.WriteAsync(json);
+    }
+
+    private static JsonMultiFileOutputModel CreateMultiFileOutputModel(MultiFileDiffResult result, OutputOptions options)
+    {
+        return new JsonMultiFileOutputModel
+        {
+            Metadata = CreateMultiFileMetadata(result, options),
+            Summary = CreateMultiFileSummary(result),
+            Files = CreateMultiFileChanges(result, options)
+        };
+    }
+
+    private static JsonMultiFileMetadata CreateMultiFileMetadata(MultiFileDiffResult result, OutputOptions options)
+    {
+        return new JsonMultiFileMetadata
+        {
+            Version = Version,
+            Timestamp = DateTimeOffset.UtcNow,
+            Mode = "multi-file",
+            ComparisonMode = result.Metadata.Mode,
+            GitRefRange = result.Metadata.GitRefRange,
+            OldRoot = result.Metadata.OldRoot,
+            NewRoot = result.Metadata.NewRoot,
+            Options = new JsonMetadataOptions
+            {
+                IncludeContent = options.IncludeContent,
+                ContextLines = options.ContextLines,
+                IncludeNonImpactful = options.IncludeNonImpactful
+            }
+        };
+    }
+
+    private static JsonMultiFileSummary CreateMultiFileSummary(MultiFileDiffResult result)
+    {
+        return new JsonMultiFileSummary
+        {
+            TotalFiles = result.Summary.TotalFiles,
+            ModifiedFiles = result.Summary.ModifiedFiles,
+            AddedFiles = result.Summary.AddedFiles,
+            RemovedFiles = result.Summary.RemovedFiles,
+            RenamedFiles = result.Summary.RenamedFiles,
+            TotalChanges = result.Summary.TotalChanges,
+            ImpactBreakdown = new JsonImpactBreakdown
+            {
+                BreakingPublicApi = result.Summary.ImpactBreakdown.BreakingPublicApi,
+                BreakingInternalApi = result.Summary.ImpactBreakdown.BreakingInternalApi,
+                NonBreaking = result.Summary.ImpactBreakdown.NonBreaking,
+                FormattingOnly = result.Summary.ImpactBreakdown.FormattingOnly
+            }
+        };
+    }
+
+    private static List<JsonMultiFileChange> CreateMultiFileChanges(MultiFileDiffResult result, OutputOptions options)
+    {
+        var fileChanges = new List<JsonMultiFileChange>();
+
+        foreach (var fileDiff in result.Files)
+        {
+            var allChanges = fileDiff.Result.FileChanges.SelectMany(fc => fc.Changes).ToList();
+            var filteredChanges = FilterChanges(allChanges, options);
+
+            fileChanges.Add(new JsonMultiFileChange
+            {
+                OldPath = fileDiff.OldPath,
+                NewPath = fileDiff.NewPath,
+                Status = fileDiff.Status.ToString().ToLowerInvariant(),
+                Result = new JsonMultiFileDiffResult
+                {
+                    Summary = CreateSummary(fileDiff.Result),
+                    Changes = filteredChanges.Select(c => CreateChange(c, options)).ToList()
+                }
+            });
+        }
+
+        return fileChanges;
+    }
+
+    #endregion
+
     #region JSON Output Models
 
     /// <summary>
@@ -428,6 +533,68 @@ public class JsonFormatter : IOutputFormatter
         public int EndLine { get; init; }
         public int StartColumn { get; init; }
         public int EndColumn { get; init; }
+    }
+
+    /// <summary>
+    /// Root output model for multi-file JSON serialization.
+    /// </summary>
+    internal sealed class JsonMultiFileOutputModel
+    {
+        [JsonPropertyName("$schema")]
+        public string Schema { get; init; } = "roslyn-diff-output-v3";
+
+        public required JsonMultiFileMetadata Metadata { get; init; }
+        public required JsonMultiFileSummary Summary { get; init; }
+        public required List<JsonMultiFileChange> Files { get; init; }
+    }
+
+    /// <summary>
+    /// Metadata for multi-file JSON output.
+    /// </summary>
+    internal sealed class JsonMultiFileMetadata
+    {
+        public required string Version { get; init; }
+        public required DateTimeOffset Timestamp { get; init; }
+        public required string Mode { get; init; }
+        public required string ComparisonMode { get; init; }
+        public string? GitRefRange { get; init; }
+        public string? OldRoot { get; init; }
+        public string? NewRoot { get; init; }
+        public required JsonMetadataOptions Options { get; init; }
+    }
+
+    /// <summary>
+    /// Summary for multi-file JSON output.
+    /// </summary>
+    internal sealed class JsonMultiFileSummary
+    {
+        public int TotalFiles { get; init; }
+        public int ModifiedFiles { get; init; }
+        public int AddedFiles { get; init; }
+        public int RemovedFiles { get; init; }
+        public int RenamedFiles { get; init; }
+        public int TotalChanges { get; init; }
+        public JsonImpactBreakdown? ImpactBreakdown { get; init; }
+    }
+
+    /// <summary>
+    /// File change in multi-file JSON output.
+    /// </summary>
+    internal sealed class JsonMultiFileChange
+    {
+        public string? OldPath { get; init; }
+        public string? NewPath { get; init; }
+        public required string Status { get; init; }
+        public required JsonMultiFileDiffResult Result { get; init; }
+    }
+
+    /// <summary>
+    /// Diff result for a single file in multi-file output.
+    /// </summary>
+    internal sealed class JsonMultiFileDiffResult
+    {
+        public required JsonSummary Summary { get; init; }
+        public required List<JsonChange> Changes { get; init; }
     }
 
     #endregion
