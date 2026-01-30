@@ -265,11 +265,29 @@ public class FragmentModeIntegrationTests : IDisposable
                         requestedFile = "parent.html";
                     }
 
-                    var filePath = Path.Combine(_tempDirectory, requestedFile);
-
-                    if (File.Exists(filePath))
+                    // Sanitize path to prevent directory traversal attacks
+                    var fileName = Path.GetFileName(requestedFile);
+                    if (string.IsNullOrEmpty(fileName))
                     {
-                        var content = File.ReadAllBytes(filePath);
+                        fileName = "parent.html";
+                    }
+
+                    var filePath = Path.Combine(_tempDirectory, fileName);
+
+                    // Ensure the resolved path is within the temp directory
+                    var fullPath = Path.GetFullPath(filePath);
+                    var fullTempDirectory = Path.GetFullPath(_tempDirectory);
+                    if (!fullPath.StartsWith(fullTempDirectory + Path.DirectorySeparatorChar) &&
+                        !fullPath.Equals(fullTempDirectory))
+                    {
+                        response.StatusCode = 403; // Forbidden
+                        response.Close();
+                        return;
+                    }
+
+                    if (File.Exists(fullPath))
+                    {
+                        var content = File.ReadAllBytes(fullPath);
                         response.ContentType = GetContentType(requestedFile);
                         response.ContentLength64 = content.Length;
                         await response.OutputStream.WriteAsync(content);
