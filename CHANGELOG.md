@@ -11,6 +11,110 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Multi-File Comparison
+- **Git Branch Comparison** - New `--git-compare` option compares files between git refs
+  - Ref range syntax: `main..feature`, `v1.0..v2.0`, `abc123..def456`
+  - Compares HEAD states of two branches, tags, or commits
+  - Only analyzes changed files for efficiency
+  - Works with LibGit2Sharp for robust git integration
+- **Folder-to-Folder Comparison** - Auto-detects directories and compares entire folder structures
+  - Matches files by relative path
+  - Detects modified, added, and removed files
+  - Supports recursive and non-recursive modes
+  - Parallel processing for optimal performance
+- **File Filtering with Glob Patterns** - Precise control over which files to compare
+  - `--include <pattern>` - Include files matching glob pattern (repeatable)
+  - `--exclude <pattern>` - Exclude files matching glob pattern (repeatable)
+  - Simplified glob syntax: `*` (any chars), `**` (recursive), `?` (single char)
+  - Common patterns: `*.cs`, `src/**/*.cs`, `**/*.g.cs`, `bin/**`
+  - Exclude takes precedence over include
+  - Case-insensitive matching
+- **Recursive Directory Traversal** - `--recursive` or `-r` flag
+  - Default: Non-recursive (top-level files only)
+  - When enabled: Traverses all subdirectories
+  - Matches files at any depth
+- **JSON Schema v3** - Enhanced schema for multi-file comparison
+  - Backward compatible with single-file mode
+  - `comparisonMode`: `"git"` or `"folder"`
+  - `files` array with per-file results
+  - File status: `modified`, `added`, `removed`, `renamed`
+  - Aggregated summary with file counts
+  - Per-file `DiffResult` embedded in `files[].result`
+- **Parallel Processing** - Multi-file comparison uses parallel processing by default
+  - Analyzes files concurrently on multiple CPU cores
+  - Automatic thread pool management
+  - Early termination for unchanged files
+  - Optimized for large repositories
+
+#### CLI Enhancements
+- `--git-compare <ref-range>` - Git comparison mode (e.g., `main..feature`)
+- `--recursive` / `-r` - Recursively traverse subdirectories
+- `--include <pattern>` - Include files matching glob pattern (repeatable)
+- `--exclude <pattern>` - Exclude files matching glob pattern (repeatable)
+- Auto-detection of folder comparison when both arguments are directories
+- Clear error messages for invalid ref ranges and patterns
+
+#### Documentation
+- **Multi-File Comparison Guide** (`docs/multi-file-comparison.md`)
+  - Complete feature documentation
+  - Git and folder comparison examples
+  - Glob pattern reference
+  - Performance tips
+  - Integration patterns for CI/CD
+- **Glob Patterns Reference** (`docs/GLOB_PATTERNS.md`)
+  - Detailed glob syntax documentation
+  - Pattern matching rules
+  - Common filter examples
+- **Multi-File Samples** (`samples/multi-file/`)
+  - Folder comparison examples
+  - Git comparison examples
+  - Filtering examples
+  - Integration patterns
+  - Sample JSON outputs (schema v3)
+
+### Changed
+- Enhanced `DiffCommand` with folder and git comparison support
+- Enhanced `DiffResult` to support both single-file and multi-file modes
+- JSON formatter updated to generate schema v3
+- Metadata structure enhanced for multi-file context
+
+### Use Cases Enabled
+- **Pull Request Reviews** - Analyze entire changesets before merging
+- **Release Comparisons** - Compare releases or tagged versions
+- **Migration Analysis** - Assess impact of large-scale refactorings
+- **Codebase Audits** - Review changes across an entire project
+- **CI/CD Integration** - Automated change analysis in build pipelines
+- **Pre-Push Validation** - Catch breaking changes before pushing
+- **Release Notes Automation** - Extract breaking changes for documentation
+
+### Performance
+- Parallel processing for multi-file comparison (leverages all CPU cores)
+- Efficient git object access via LibGit2Sharp
+- Early termination for unchanged files
+- Memory-efficient streaming for large files
+- Typical performance: 100 files in ~5 seconds
+
+### Dependencies
+- Added `LibGit2Sharp` v0.30.0 for git integration
+
+### Known Limitations
+- HTML output for multi-file is not yet implemented (JSON only)
+- No cross-file rename detection (per-file only)
+- Binary files reported but not diffed
+- No directory structure comparison (files only)
+
+### Migration from v0.9.0
+- JSON schema updated to v3 (breaking change for multi-file mode)
+- Single-file JSON output remains backward compatible with v2
+- No CLI changes for single-file comparison
+- New `--git-compare` option for git mode
+- New `--include` / `--exclude` options for filtering
+- New `--recursive` option for folder mode
+
+## [0.10.0-beta] - 2026-01-28 (Previously Released)
+
+### Added
+
 #### Inline Diff View
 - **Inline View Mode for HTML Output** - New `--inline` option displays diffs line-by-line with +/- markers
   - Similar to traditional git diff output while maintaining semantic intelligence

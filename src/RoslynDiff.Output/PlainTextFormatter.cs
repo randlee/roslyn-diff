@@ -316,4 +316,30 @@ public class PlainTextFormatter : IOutputFormatter
         if (issues.HasFlag(WhitespaceIssue.AmbiguousTabWidth))
             yield return "AmbiguousTabWidth";
     }
+
+    /// <inheritdoc/>
+    public string FormatMultiFileResult(MultiFileDiffResult result, OutputOptions? options = null)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine($"Multi-File Diff Report: {result.Summary.TotalFiles} files changed");
+        sb.AppendLine($"Total Changes: {result.Summary.TotalChanges}");
+        sb.AppendLine();
+
+        foreach (var file in result.Files)
+        {
+            var fileName = file.NewPath ?? file.OldPath ?? "Unknown";
+            sb.AppendLine($"--- File: {fileName} ({file.Status}) ---");
+            sb.AppendLine(FormatResult(file.Result, options));
+            sb.AppendLine();
+        }
+
+        return sb.ToString();
+    }
+
+    /// <inheritdoc/>
+    public async Task FormatMultiFileResultAsync(MultiFileDiffResult result, TextWriter writer, OutputOptions? options = null)
+    {
+        var text = FormatMultiFileResult(result, options);
+        await writer.WriteAsync(text);
+    }
 }

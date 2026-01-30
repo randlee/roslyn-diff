@@ -8,6 +8,7 @@ This guide provides comprehensive documentation for using roslyn-diff from the c
 - [Commands](#commands)
   - [diff Command](#diff-command)
   - [class Command](#class-command)
+  - [Multi-File Comparison](#multi-file-comparison)
 - [Output Formats](#output-formats)
 - [Advanced Usage](#advanced-usage)
 - [Tips and Best Practices](#tips-and-best-practices)
@@ -282,6 +283,153 @@ roslyn-diff class old.cs:Foo new.cs --match-by similarity --similarity 0.95
 # Generate JSON comparison
 roslyn-diff class old.cs:Service new.cs:Service -o json --out-file class-diff.json
 ```
+
+---
+
+### Multi-File Comparison
+
+Compare multiple files in a single operation using git comparison or folder comparison.
+
+**Version**: 0.10.0+
+
+#### Git Branch Comparison
+
+Compare files between two git references (branches, tags, or commits):
+
+```bash
+# Compare branches
+roslyn-diff diff --git-compare main..feature --json changes.json
+
+# Compare tags
+roslyn-diff diff --git-compare v1.0.0..v2.0.0 --json release.json
+
+# Compare commits
+roslyn-diff diff --git-compare abc123..def456 --json diff.json
+```
+
+**Ref Range Syntax**: `<old-ref>..<new-ref>`
+- `main..feature` - Compare main branch to feature branch
+- `v1.0.0..v2.0.0` - Compare two tags
+- `HEAD~5..HEAD` - Compare current HEAD to 5 commits ago
+
+#### Folder Comparison
+
+Compare all files in two directories:
+
+```bash
+# Auto-detected (both arguments are directories)
+roslyn-diff diff old/ new/ --json changes.json
+
+# Recursive comparison
+roslyn-diff diff old/ new/ --recursive --json changes.json
+```
+
+**Recursive Option**:
+- Default: Non-recursive (top-level files only)
+- `--recursive` or `-r`: Traverse all subdirectories
+
+#### File Filtering
+
+Use glob patterns to include or exclude specific files:
+
+```bash
+# Include only C# files
+roslyn-diff diff old/ new/ --include "*.cs" --json changes.json
+
+# Exclude generated files
+roslyn-diff diff old/ new/ \
+  --include "*.cs" \
+  --exclude "*.g.cs" \
+  --exclude "*.Designer.cs" \
+  --json changes.json
+
+# Multiple patterns
+roslyn-diff diff --git-compare main..feature \
+  --include "src/**/*.cs" \
+  --include "src/**/*.vb" \
+  --exclude "bin/**" \
+  --exclude "obj/**" \
+  --json changes.json
+```
+
+**Glob Pattern Syntax**:
+- `*` - Matches any characters (except directory separator)
+- `**` - Matches any number of directories recursively
+- `?` - Matches single character
+
+**Common Patterns**:
+- `*.cs` - All C# files in current directory
+- `**/*.cs` - All C# files recursively
+- `src/**/*.cs` - All C# files under src/
+- `**/bin/**` - All files in any bin directory
+- `**/*.g.cs` - All generated C# files
+
+**Filter Precedence**:
+1. Include patterns (OR logic - match any)
+2. Exclude patterns (takes precedence)
+3. If no include patterns: all files are candidates
+
+#### Multi-File Output
+
+Multi-file comparison uses JSON schema v3:
+
+```json
+{
+  "$schema": "roslyn-diff-output-v3",
+  "metadata": {
+    "mode": "multi-file",
+    "comparisonMode": "git",
+    "gitRefRange": "main..feature"
+  },
+  "summary": {
+    "totalFiles": 15,
+    "modifiedFiles": 8,
+    "addedFiles": 5,
+    "removedFiles": 2,
+    "totalChanges": 47
+  },
+  "files": [
+    {
+      "oldPath": "src/Calculator.cs",
+      "newPath": "src/Calculator.cs",
+      "status": "modified",
+      "result": { /* DiffResult */ }
+    }
+  ]
+}
+```
+
+**Note**: HTML output for multi-file is not yet implemented in v0.10.0.
+
+#### Multi-File Examples
+
+**PR Review**:
+```bash
+roslyn-diff diff --git-compare main..pr-branch \
+  --include "src/**/*.cs" \
+  --impact-level breaking-public \
+  --json pr-review.json
+```
+
+**Release Comparison**:
+```bash
+roslyn-diff diff --git-compare v1.0.0..v2.0.0 \
+  --include "src/**/*.cs" \
+  --exclude "**/*.g.cs" \
+  --json release-changes.json
+```
+
+**Folder Migration Analysis**:
+```bash
+roslyn-diff diff old-project/ new-project/ \
+  --recursive \
+  --include "*.cs" \
+  --exclude "bin/**" \
+  --exclude "obj/**" \
+  --json migration.json
+```
+
+For complete documentation, see [Multi-File Comparison Guide](./multi-file-comparison.md).
 
 ---
 
