@@ -296,20 +296,31 @@ public class FragmentModeIntegrationTests : IDisposable
 
                     // Validate file extension is in allowlist
                     var extension = Path.GetExtension(fileName).ToLowerInvariant();
-                    if (extension != ".html" && extension != ".css" && extension != ".js" && extension != ".json")
+
+                    // Allowlist of safe filenames for this test (breaks taint chain completely)
+                    var allowedFiles = new HashSet<string>
+                    {
+                        "parent.html",
+                        "fragment.html",
+                        "roslyn-diff.css"
+                    };
+
+                    var baseName = Path.GetFileNameWithoutExtension(fileName);
+                    var fullFileName = baseName + extension;
+
+                    // Only serve files from the explicit allowlist
+                    if (!allowedFiles.Contains(fullFileName))
                     {
                         response.StatusCode = 403; // Forbidden
                         response.Close();
                         return;
                     }
 
-                    // Reconstruct path from scratch using only validated filename
-                    // This breaks the CodeQL taint chain by creating a new string
-                    var baseName = Path.GetFileNameWithoutExtension(fileName);
-                    var validatedPath = Path.Combine(_tempDirectory, baseName + extension);
+                    // Construct path using only allowlisted filename (no user input)
+                    var safePath = Path.Combine(_tempDirectory, fullFileName);
 
                     // Verify the resolved path is within temp directory (defense in depth)
-                    var resolvedPath = Path.GetFullPath(validatedPath);
+                    var resolvedPath = Path.GetFullPath(safePath);
                     var tempDirPath = Path.GetFullPath(_tempDirectory) + Path.DirectorySeparatorChar;
                     if (!resolvedPath.StartsWith(tempDirPath, StringComparison.OrdinalIgnoreCase))
                     {
@@ -318,15 +329,10 @@ public class FragmentModeIntegrationTests : IDisposable
                         return;
                     }
 
-                    // CodeQL suppression: Path has been validated through multiple layers:
-                    // 1. Path.GetFileName strips directory components
-                    // 2. Extension is validated against allowlist
-                    // 3. Path is reconstructed from scratch using validated components
-                    // 4. Resolved path is verified to be within temp directory
-                    // This is test code that only serves files from an isolated temp directory.
-                    if (File.Exists(validatedPath))  // lgtm[cs/path-injection]
+                    // Path is safe: only allowlisted files from isolated temp directory
+                    if (File.Exists(safePath))
                     {
-                        var content = File.ReadAllBytes(validatedPath);  // lgtm[cs/path-injection]
+                        var content = File.ReadAllBytes(safePath);
                         response.ContentType = GetContentType(extension);
                         response.ContentLength64 = content.Length;
                         await response.OutputStream.WriteAsync(content);
