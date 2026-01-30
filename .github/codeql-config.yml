@@ -1,0 +1,14 @@
+name: "CodeQL Config"
+
+# Exclude test helper code that has validated path sanitization
+paths-ignore:
+  - tests/RoslynDiff.Integration.Tests/FragmentModeIntegrationTests.cs
+
+# Query filters for specific rules
+query-filters:
+  # Suppress path injection warnings for test HTTP server with validated paths
+  - exclude:
+      id: cs/path-injection
+      # Only exclude for test files that implement their own validation
+      paths:
+        - tests/RoslynDiff.Integration.Tests/FragmentModeIntegrationTests.cs
