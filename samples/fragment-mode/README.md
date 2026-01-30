@@ -12,20 +12,36 @@ This directory contains examples demonstrating roslyn-diff's HTML Fragment Mode,
 
 ## Quick Start
 
-### View the Example
+### ⚠️ Important: HTTP Server Required
 
-Open `parent.html` in your web browser to see the fragment embedded in a complete dashboard:
+**The `parent.html` example MUST be served via HTTP, not opened directly with `file://` protocol.**
+
+The dynamic loading example uses JavaScript's `fetch()` API to load `fragment.html`, which is blocked by browser CORS (Cross-Origin Resource Sharing) security policies when using `file://` URLs.
+
+**Quick Setup - Start Local HTTP Server:**
 
 ```bash
-# macOS
-open parent.html
+# Python 3 (built-in on macOS/Linux)
+cd samples/fragment-mode
+python3 -m http.server 8000
+# Then open http://localhost:8000/parent.html
 
-# Linux
-xdg-open parent.html
+# Python 2 (if Python 3 not available)
+cd samples/fragment-mode
+python -m SimpleHTTPServer 8000
 
-# Windows
-start parent.html
+# Node.js (if npx available)
+cd samples/fragment-mode
+npx http-server -p 8000
+# Then open http://localhost:8000/parent.html
+
+# PHP (built-in server)
+cd samples/fragment-mode
+php -S localhost:8000
+# Then open http://localhost:8000/parent.html
 ```
+
+After starting the server, open your browser to `http://localhost:8000/parent.html`.
 
 ### Generate Your Own Fragment
 
@@ -103,6 +119,29 @@ Example showing how to embed the fragment in a custom page. Demonstrates:
 
 ## Integration Patterns
 
+### Understanding CORS and HTTP Server Requirements
+
+**When HTTP Server Is Required:**
+- ✅ **Dynamic loading** (fetch, XMLHttpRequest) - MUST use HTTP server
+- ✅ **ES6 module imports** - MUST use HTTP server
+- ✅ **React/Vue/Angular development** - Already uses HTTP server (webpack-dev-server, etc.)
+
+**When HTTP Server Is NOT Required:**
+- ✅ **Server-side includes** (PHP, Node.js, Ruby) - Server handles file I/O
+- ✅ **Static site generators** (Jekyll, Hugo, 11ty) - Build process handles includes
+- ✅ **Static inline** - Fragment content copied directly into HTML
+- ✅ **iframe embedding** - Browser allows same-directory file:// iframes
+
+**Why CORS Blocks file:// URLs:**
+
+Browsers enforce same-origin policy to prevent malicious websites from reading your local files. When you open HTML with `file://` protocol:
+1. Origin is `null` (no domain)
+2. `fetch()` requires same-origin or explicit CORS headers
+3. Local files can't send CORS headers
+4. Result: All cross-file fetch() calls are blocked
+
+This is intentional browser security and cannot be disabled (except with unsafe browser flags, not recommended).
+
 ### Static Include (Server-Side)
 
 **PHP:**
@@ -126,6 +165,8 @@ Example showing how to embed the fragment in a custom page. Demonstrates:
 ```
 
 ### Dynamic Loading (Client-Side)
+
+**⚠️ Requires HTTP server** - Dynamic loading with `fetch()` does not work with `file://` URLs due to CORS restrictions. You must serve files via HTTP (see "HTTP Server Required" section).
 
 **Vanilla JavaScript:**
 ```javascript
@@ -344,11 +385,34 @@ All fragments share the same `roslyn-diff.css`, so CSS is only loaded once.
 
 ## Troubleshooting
 
+### "Failed to load diff fragment" Error
+
+**Problem**: The parent.html shows "Failed to load diff fragment" or browser console shows CORS errors like:
+```
+Access to fetch at 'file:///path/to/fragment.html' from origin 'null' has been blocked by CORS policy
+```
+
+**Cause**: Modern browsers block `fetch()` calls to local files (`file://` protocol) due to CORS security restrictions. This is intentional browser security to prevent malicious websites from reading your local files.
+
+**Solution**: Use an HTTP server (see "HTTP Server Required" section above). The examples were designed for real-world web application scenarios where files are always served via HTTP.
+
+**Why This Happens**:
+- `file://` URLs have `null` origin
+- `fetch()` API enforces same-origin policy
+- Cross-origin requests from `null` are always blocked
+- This affects ALL client-side dynamic loading (fetch, XMLHttpRequest, ES modules)
+
+**Alternatives That Work with `file://`**:
+1. **Static inline** - Copy fragment.html content directly into parent.html (no fetch needed)
+2. **iframe** - Use `<iframe src="fragment.html">` (works with file://)
+3. **Server-side includes** - Use PHP/Node.js/etc includes (requires server anyway)
+
 ### Fragment Not Displaying
 
 1. **Check CSS path**: Ensure `roslyn-diff.css` is in the same directory as the HTML
 2. **Check browser console**: Look for 404 errors or CSS loading issues
 3. **Verify fragment structure**: Should have `<div class="roslyn-diff-fragment">`
+4. **Verify HTTP server**: Make sure you're accessing via `http://` not `file://`
 
 ### Styles Conflicting
 
