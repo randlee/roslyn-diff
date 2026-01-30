@@ -240,15 +240,41 @@ public class FragmentModeIntegrationTests : IDisposable
         var parentPath = Path.Combine(_tempDirectory, "parent.html");
         File.WriteAllText(parentPath, parentHtml);
 
-        // Use unique port based on test run
-        var port = 8765 + Random.Shared.Next(1000);
-        var prefix = $"http://localhost:{port}/";
+        // Use a dynamically assigned port to avoid conflicts
+        // Try multiple times in case of port collisions
+        HttpListener? listener = null;
+        string? prefix = null;
+        var maxRetries = 5;
+        for (var attempt = 0; attempt < maxRetries; attempt++)
+        {
+            var port = 8765 + Random.Shared.Next(5000);
+            var testPrefix = $"http://localhost:{port}/";
 
-        using var listener = new HttpListener();
+            try
+            {
+                listener = new HttpListener();
+                listener.Prefixes.Add(testPrefix);
+                listener.Start();
+                prefix = testPrefix;
+                break; // Success
+            }
+            catch (HttpListenerException) when (attempt < maxRetries - 1)
+            {
+                listener?.Close();
+                listener = null;
+                continue; // Try another port
+            }
+        }
+
+        if (listener == null || prefix == null)
+        {
+            // Skip test if we can't start a listener
+            return;
+        }
+
+        using (listener)
         try
         {
-            listener.Prefixes.Add(prefix);
-            listener.Start();
 
             // Handle requests in background
             var serverTask = Task.Run(async () =>
