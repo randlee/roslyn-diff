@@ -1,0 +1,2732 @@
+<link rel="stylesheet" href="combo-fragment-inline-breaking.css">
+
+<div class="roslyn-diff-fragment"
+     data-old-file="old.cs"
+     data-new-file="new.cs"
+     data-changes-total="16"
+     data-changes-added="5"
+     data-changes-removed="5"
+     data-changes-modified="6"
+     data-impact-breaking-public="0"
+     data-impact-breaking-internal="0"
+     data-impact-non-breaking="0"
+     data-impact-formatting="0"
+     data-mode="roslyn">
+    <header>
+        <div class="header-title-row">
+            <div class="header-title-left">
+                <h1>Diff Report</h1>
+                <div class="header-stats">
+                    <span class="stat-inline">16 changes</span>
+                    <span class="stat-separator">|</span>
+                    <span class="stat-inline" style="color: var(--color-added-border);">+5 added</span>
+                    <span class="stat-separator">|</span>
+                    <span class="stat-inline" style="color: var(--color-removed-border);">-5 deleted</span>
+                    <span class="stat-separator">|</span>
+                    <span class="stat-inline" style="color: var(--color-modified-border);">~6 modified</span>
+                    <span class="stat-separator">|</span>
+                    <span class="stat-inline">Mode: Roslyn Semantic</span>
+                </div>
+            </div>
+            <span class="header-timestamp">Jan 29, 2026 12:38 PM</span>
+        </div>
+        <div class="file-info">
+            <div class="file-row">
+                <div class="file-row-left">
+                    <span class="file-path-label">Old file:</span>
+                    <span class="file-path" id="old-path" data-path="/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/old.cs">/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/old.cs</span>
+                </div>
+                <div class="file-actions">
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/old.cs')" title="Copy full path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"/><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"/></svg>
+                    </button>
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo')" title="Copy folder path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 2h5.5c.551 0 1.064.278 1.365.737l.43.645A.25.25 0 009.25 3.5h5A1.75 1.75 0 0116 5.25v8A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V3.75C0 2.784.784 2 1.75 2zm0 1.5a.25.25 0 00-.25.25v9.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25v-8a.25.25 0 00-.25-.25H9.25a1.75 1.75 0 01-1.458-.79l-.429-.644a.25.25 0 00-.208-.11z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="vscode" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/old.cs', 'vscode')" title="Open file in VS Code">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14.25 1a.74.74 0 00-.218.033L10.7 2.252l-4.5 4-3.5-2.8a.75.75 0 00-.946.086l-.75.75a.75.75 0 00.033 1.09L4.5 8l-3.463 2.622a.75.75 0 00-.033 1.09l.75.75a.75.75 0 00.946.086l3.5-2.8 4.5 4 3.332 1.22A.74.74 0 0015 14.25V1.75a.75.75 0 00-.75-.75zM11 12.12L7.28 8 11 3.88v8.24z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="rider" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/old.cs', 'rider')" title="Open file in Rider">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm13.2 2.8c.4.5.6 1 .6 1.7 0 .5-.1.9-.3 1.3-.2.4-.6.7-1 .9l1.6 2.5h-2.2l-1.4-2.2H8.8v2.2H7V2.1h3.7c.6 0 1.1.1 1.5.3.4.2.8.3 1 .4zM7 12h6v1.2H7V12z"/><path d="M8.8 3.6v2h1.3c.3 0 .6-.1.8-.3.2-.2.3-.4.3-.7s-.1-.5-.3-.7c-.2-.2-.5-.3-.8-.3H8.8z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="pycharm" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/old.cs', 'pycharm')" title="Open file in PyCharm">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm2 13h5v1H2v-1zm6.3-5.5c-.1.4-.4.7-.8.9l1.2 1.8h-1.5l-1-1.5H5v1.5H3.5V4.5h2.8c.5 0 .9.1 1.2.3.3.2.5.4.7.7.1.3.2.6.2 1 0 .4-.1.7-.1 1zm-.9-1c0-.2-.1-.4-.2-.5-.1-.2-.3-.2-.5-.2H5v1.5h1.7c.2 0 .4-.1.5-.2.1-.2.2-.4.2-.6z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="zed" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/old.cs', 'zed')" title="Open file in Zed">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 1L13 1L15 3.5L15 14.5L13 16L3 16L1 13.5L1 2.5L2.5 1ZM3.5 3L3 3.5L3 12.5L4 14L12 14L13 12.5L13 4L12 3L3.5 3ZM5 5L11 5L11 6.5L7.5 11L11 11L11 13L5 13L5 11.5L8.5 7L5 7L5 5Z"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="file-row">
+                <div class="file-row-left">
+                    <span class="file-path-label">New file:</span>
+                    <span class="file-path" id="new-path" data-path="/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/new.cs">/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/new.cs</span>
+                </div>
+                <div class="file-actions">
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/new.cs')" title="Copy full path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"/><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"/></svg>
+                    </button>
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo')" title="Copy folder path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 2h5.5c.551 0 1.064.278 1.365.737l.43.645A.25.25 0 009.25 3.5h5A1.75 1.75 0 0116 5.25v8A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V3.75C0 2.784.784 2 1.75 2zm0 1.5a.25.25 0 00-.25.25v9.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25v-8a.25.25 0 00-.25-.25H9.25a1.75 1.75 0 01-1.458-.79l-.429-.644a.25.25 0 00-.208-.11z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="vscode" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/new.cs', 'vscode')" title="Open file in VS Code">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14.25 1a.74.74 0 00-.218.033L10.7 2.252l-4.5 4-3.5-2.8a.75.75 0 00-.946.086l-.75.75a.75.75 0 00.033 1.09L4.5 8l-3.463 2.622a.75.75 0 00-.033 1.09l.75.75a.75.75 0 00.946.086l3.5-2.8 4.5 4 3.332 1.22A.74.74 0 0015 14.25V1.75a.75.75 0 00-.75-.75zM11 12.12L7.28 8 11 3.88v8.24z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="rider" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/new.cs', 'rider')" title="Open file in Rider">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm13.2 2.8c.4.5.6 1 .6 1.7 0 .5-.1.9-.3 1.3-.2.4-.6.7-1 .9l1.6 2.5h-2.2l-1.4-2.2H8.8v2.2H7V2.1h3.7c.6 0 1.1.1 1.5.3.4.2.8.3 1 .4zM7 12h6v1.2H7V12z"/><path d="M8.8 3.6v2h1.3c.3 0 .6-.1.8-.3.2-.2.3-.4.3-.7s-.1-.5-.3-.7c-.2-.2-.5-.3-.8-.3H8.8z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="pycharm" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/new.cs', 'pycharm')" title="Open file in PyCharm">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm2 13h5v1H2v-1zm6.3-5.5c-.1.4-.4.7-.8.9l1.2 1.8h-1.5l-1-1.5H5v1.5H3.5V4.5h2.8c.5 0 .9.1 1.2.3.3.2.5.4.7.7.1.3.2.6.2 1 0 .4-.1.7-.1 1zm-.9-1c0-.2-.1-.4-.2-.5-.1-.2-.3-.2-.5-.2H5v1.5h1.7c.2 0 .4-.1.5-.2.1-.2.2-.4.2-.6z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="zed" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/new.cs', 'zed')" title="Open file in Zed">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 1L13 1L15 3.5L15 14.5L13 16L3 16L1 13.5L1 2.5L2.5 1ZM3.5 3L3 3.5L3 12.5L4 14L12 14L13 12.5L13 4L12 3L3.5 3ZM5 5L11 5L11 6.5L7.5 11L11 11L11 13L5 13L5 11.5L8.5 7L5 7L5 5Z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="file-diff" id="file-new-60716169">
+            <div class="file-header">
+                <h2>new.cs</h2>
+            </div>
+            <div class="top-diff-header" onclick="toggleTopDiff('file-new-60716169-top-diff')" data-file-json="{&quot;path&quot;:&quot;/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/new.cs&quot;,&quot;changes&quot;:[{&quot;type&quot;:&quot;Modified&quot;,&quot;kind&quot;:&quot;Namespace&quot;,&quot;name&quot;:&quot;Samples.ImpactDemo&quot;,&quot;oldLine&quot;:1,&quot;newLine&quot;:1,&quot;oldContent&quot;:&quot;namespace Samples.ImpactDemo;\r\n/// &lt;summary&gt;\n/// Payment service for processing transactions.\n/// &lt;/summary&gt;\npublic class PaymentService\r\n{\r\n    private string _merchantId;\r\n    private readonly IPaymentGateway _gateway;\r\n    private int _transactionCount;\r\n    /// &lt;summary&gt;\n    /// Gets or sets the payment timeout in seconds.\n    /// &lt;/summary&gt;\n    public int TimeoutSeconds { get; set; } = 30;\r\n    /// &lt;summary&gt;\n    /// Gets the current transaction count.\n    /// &lt;/summary&gt;\n    public int TransactionCount =&gt; _transactionCount;\r\n\r\n    /// &lt;summary&gt;\n    /// Initializes a new instance of the &lt;see cref = \&quot;PaymentService\&quot;/&gt; class.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;gateway\&quot;&gt;The payment gateway.&lt;/param&gt;\n    /// &lt;param name = \&quot;merchantId\&quot;&gt;The merchant identifier.&lt;/param&gt;\n    public PaymentService(IPaymentGateway gateway, string merchantId)\r\n    {\r\n        _gateway = gateway;\r\n        _merchantId = merchantId;\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Processes a payment transaction.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;amount\&quot;&gt;The payment amount.&lt;/param&gt;\n    /// &lt;param name = \&quot;currency\&quot;&gt;The currency code.&lt;/param&gt;\n    /// &lt;returns&gt;The transaction result.&lt;/returns&gt;\n    public PaymentResult ProcessPayment(decimal amount, string currency)\r\n    {\r\n        ValidateAmount(amount);\r\n        _transactionCount++;\r\n        var request = CreatePaymentRequest(amount, currency);\r\n        return _gateway.Process(request);\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Refunds a payment transaction.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;transactionId\&quot;&gt;The transaction ID to refund.&lt;/param&gt;\n    /// &lt;returns&gt;The refund result.&lt;/returns&gt;\n    public RefundResult RefundPayment(string transactionId)\r\n    {\r\n        return _gateway.Refund(transactionId);\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Gets transaction details.\n    /// &lt;/summary&gt;\n    internal TransactionDetails GetTransactionDetails(string transactionId)\r\n    {\r\n        return _gateway.GetDetails(transactionId);\r\n    }\r\n\r\n    internal void UpdateMerchantSettings(string merchantId)\r\n    {\r\n        _merchantId = merchantId;\r\n        LogSettingsUpdate();\r\n    }\r\n\r\n    private void ValidateAmount(decimal amount)\r\n    {\r\n        if (amount &lt;= 0)\r\n            throw new ArgumentException(\&quot;Amount must be positive\&quot;, nameof(amount));\r\n    }\r\n\r\n    private PaymentRequest CreatePaymentRequest(decimal amount, string currency)\r\n    {\r\n        return new PaymentRequest\r\n        {\r\n            Amount = amount,\r\n            Currency = currency,\r\n            MerchantId = _merchantId,\r\n            Timestamp = DateTime.UtcNow\r\n        };\r\n    }\r\n\r\n    private void LogSettingsUpdate()\r\n    {\r\n        Console.WriteLine($\&quot;Settings updated for merchant: {_merchantId}\&quot;);\r\n    }\r\n}\r\n\r\ninternal class InternalHelper\r\n{\r\n    internal static string FormatCurrency(decimal amount, string code)\r\n    {\r\n        return $\&quot;{code} {amount:F2}\&quot;;\r\n    }\r\n\r\n    internal static bool ValidateCurrencyCode(string code)\r\n    {\r\n        return code?.Length == 3;\r\n    }\r\n}&quot;,&quot;newContent&quot;:&quot;namespace Samples.ImpactDemo;\r\n/// &lt;summary&gt;\n/// Payment service for processing transactions.\n/// Enhanced with comprehensive logging and validation.\n/// &lt;/summary&gt;\npublic class PaymentService\r\n{\r\n    // Renamed private field (non-breaking, but with reflection caveat)\r\n    private string _merchantIdentifier;\r\n    private readonly IPaymentGateway _gateway;\r\n    private int _transactionCount;\r\n    /// &lt;summary&gt;\n    /// Gets or sets the payment timeout in seconds.\n    /// &lt;/summary&gt;\n    public int TimeoutSeconds { get; set; } = 30;\r\n    /// &lt;summary&gt;\n    /// Gets the current transaction count.\n    /// &lt;/summary&gt;\n    public int TransactionCount =&gt; _transactionCount;\r\n\r\n    /// &lt;summary&gt;\n    /// Initializes a new instance of the &lt;see cref = \&quot;PaymentService\&quot;/&gt; class.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;gateway\&quot;&gt;The payment gateway.&lt;/param&gt;\n    /// &lt;param name = \&quot;merchantId\&quot;&gt;The merchant identifier.&lt;/param&gt;\n    public PaymentService(IPaymentGateway gateway, string merchantId)\r\n    {\r\n        _gateway = gateway;\r\n        _merchantIdentifier = merchantId;\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Processes a payment transaction with optional description.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;amount\&quot;&gt;The payment amount.&lt;/param&gt;\n    /// &lt;param name = \&quot;currency\&quot;&gt;The currency code.&lt;/param&gt;\n    /// &lt;param name = \&quot;description\&quot;&gt;Optional payment description.&lt;/param&gt;\n    /// &lt;returns&gt;The transaction result.&lt;/returns&gt;\n    public PaymentResult ProcessPayment(decimal amount, string currency, string description = \&quot;\&quot;)\r\n    {\r\n        ValidateAmount(amount);\r\n        _transactionCount++;\r\n        // Added comment for clarity\r\n        var request = CreatePaymentRequest(amount, currency, description);\r\n        return _gateway.Process(request);\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Refunds a payment transaction.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;transactionId\&quot;&gt;The transaction ID to refund.&lt;/param&gt;\n    /// &lt;returns&gt;The refund result.&lt;/returns&gt;\n    public RefundResult RefundPayment(string transactionId)\r\n    {\r\n        return _gateway.Refund(transactionId);\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Gets transaction details.\n    /// &lt;/summary&gt;\n    internal TransactionDetails GetTransactionDetails(string transactionId)\r\n    {\r\n        return _gateway.GetDetails(transactionId);\r\n    }\r\n\r\n    // Breaking: Renamed internal method\r\n    internal void ConfigureMerchantSettings(string merchantId)\r\n    {\r\n        _merchantIdentifier = merchantId;\r\n        LogSettingsUpdate();\r\n    }\r\n\r\n    // Parameter renamed (non-breaking, but with named argument caveat)\r\n    private void ValidateAmount(decimal paymentAmount)\r\n    {\r\n        if (paymentAmount &lt;= 0)\r\n            throw new ArgumentException(\&quot;Amount must be positive\&quot;, nameof(paymentAmount));\r\n    }\r\n\r\n    // Added parameter, updated to match ProcessPayment signature change\r\n    private PaymentRequest CreatePaymentRequest(decimal amount, string currency, string description)\r\n    {\r\n        return new PaymentRequest\r\n        {\r\n            Amount = amount,\r\n            Currency = currency,\r\n            MerchantId = _merchantIdentifier,\r\n            Timestamp = DateTime.UtcNow,\r\n            Description = description\r\n        };\r\n    }\r\n\r\n    private void LogSettingsUpdate()\r\n    {\r\n        // Formatting change: added blank line for readability\r\n        Console.WriteLine($\&quot;Settings updated for merchant: {_merchantIdentifier}\&quot;);\r\n    }\r\n}\r\n\r\ninternal class InternalHelper\r\n{\r\n    // Breaking internal: renamed method\r\n    internal static string FormatCurrencyDisplay(decimal amount, string code)\r\n    {\r\n        return $\&quot;{code} {amount:F2}\&quot;;\r\n    }\r\n\r\n    internal static bool ValidateCurrencyCode(string code)\r\n    {\r\n        return code?.Length == 3;\r\n    }\r\n}&quot;}]}" data-file-diff="--- /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/old.cs
++++ /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/impact-demo/new.cs
+@@ -1,102 +1,112 @@ Samples.ImpactDemo
+-namespace Samples.ImpactDemo;
+-/// &lt;summary&gt;
+-/// Payment service for processing transactions.
+-/// &lt;/summary&gt;
+-public class PaymentService
+-{
+-    private string _merchantId;
+-    private readonly IPaymentGateway _gateway;
+-    private int _transactionCount;
+-    /// &lt;summary&gt;
+-    /// Gets or sets the payment timeout in seconds.
+-    /// &lt;/summary&gt;
+-    public int TimeoutSeconds { get; set; } = 30;
+-    /// &lt;summary&gt;
+-    /// Gets the current transaction count.
+-    /// &lt;/summary&gt;
+-    public int TransactionCount =&gt; _transactionCount;
+-
+-    /// &lt;summary&gt;
+-    /// Initializes a new instance of the &lt;see cref = &quot;PaymentService&quot;/&gt; class.
+-    /// &lt;/summary&gt;
+-    /// &lt;param name = &quot;gateway&quot;&gt;The payment gateway.&lt;/param&gt;
+-    /// &lt;param name = &quot;merchantId&quot;&gt;The merchant identifier.&lt;/param&gt;
+-    public PaymentService(IPaymentGateway gateway, string merchantId)
+-    {
+-        _gateway = gateway;
+-        _merchantId = merchantId;
+-    }
+-
+-    /// &lt;summary&gt;
+-    /// Processes a payment transaction.
+-    /// &lt;/summary&gt;
+-    /// &lt;param name = &quot;amount&quot;&gt;The payment amount.&lt;/param&gt;
+-    /// &lt;param name = &quot;currency&quot;&gt;The currency code.&lt;/param&gt;
+-    /// &lt;returns&gt;The transaction result.&lt;/returns&gt;
+-    public PaymentResult ProcessPayment(decimal amount, string currency)
+-    {
+-        ValidateAmount(amount);
+-        _transactionCount++;
+-        var request = CreatePaymentRequest(amount, currency);
+-        return _gateway.Process(request);
+-    }
+-
+-    /// &lt;summary&gt;
+-    /// Refunds a payment transaction.
+-    /// &lt;/summary&gt;
+-    /// &lt;param name = &quot;transactionId&quot;&gt;The transaction ID to refund.&lt;/param&gt;
+-    /// &lt;returns&gt;The refund result.&lt;/returns&gt;
+-    public RefundResult RefundPayment(string transactionId)
+-    {
+-        return _gateway.Refund(transactionId);
+-    }
+-
+-    /// &lt;summary&gt;
+-    /// Gets transaction details.
+-    /// &lt;/summary&gt;
+-    internal TransactionDetails GetTransactionDetails(string transactionId)
+-    {
+-        return _gateway.GetDetails(transactionId);
+-    }
+-
+-    internal void UpdateMerchantSettings(string merchantId)
+-    {
+-        _merchantId = merchantId;
+-        LogSettingsUpdate();
+-    }
+-
+-    private void ValidateAmount(decimal amount)
+-    {
+-        if (amount &lt;= 0)
+-            throw new ArgumentException(&quot;Amount must be positive&quot;, nameof(amount));
+-    }
+-
+-    private PaymentRequest CreatePaymentRequest(decimal amount, string currency)
+-    {
+-        return new PaymentRequest
+-        {
+-            Amount = amount,
+-            Currency = currency,
+-            MerchantId = _merchantId,
+-            Timestamp = DateTime.UtcNow
+-        };
+-    }
+-
+-    private void LogSettingsUpdate()
+-    {
+-        Console.WriteLine($&quot;Settings updated for merchant: {_merchantId}&quot;);
+-    }
+-}
+-
+-internal class InternalHelper
+-{
+-    internal static string FormatCurrency(decimal amount, string code)
+-    {
+-        return $&quot;{code} {amount:F2}&quot;;
+-    }
+-
+-    internal static bool ValidateCurrencyCode(string code)
+-    {
+-        return code?.Length == 3;
+-    }
+-}
++namespace Samples.ImpactDemo;
++/// &lt;summary&gt;
++/// Payment service for processing transactions.
++/// Enhanced with comprehensive logging and validation.
++/// &lt;/summary&gt;
++public class PaymentService
++{
++    // Renamed private field (non-breaking, but with reflection caveat)
++    private string _merchantIdentifier;
++    private readonly IPaymentGateway _gateway;
++    private int _transactionCount;
++    /// &lt;summary&gt;
++    /// Gets or sets the payment timeout in seconds.
++    /// &lt;/summary&gt;
++    public int TimeoutSeconds { get; set; } = 30;
++    /// &lt;summary&gt;
++    /// Gets the current transaction count.
++    /// &lt;/summary&gt;
++    public int TransactionCount =&gt; _transactionCount;
++
++    /// &lt;summary&gt;
++    /// Initializes a new instance of the &lt;see cref = &quot;PaymentService&quot;/&gt; class.
++    /// &lt;/summary&gt;
++    /// &lt;param name = &quot;gateway&quot;&gt;The payment gateway.&lt;/param&gt;
++    /// &lt;param name = &quot;merchantId&quot;&gt;The merchant identifier.&lt;/param&gt;
++    public PaymentService(IPaymentGateway gateway, string merchantId)
++    {
++        _gateway = gateway;
++        _merchantIdentifier = merchantId;
++    }
++
++    /// &lt;summary&gt;
++    /// Processes a payment transaction with optional description.
++    /// &lt;/summary&gt;
++    /// &lt;param name = &quot;amount&quot;&gt;The payment amount.&lt;/param&gt;
++    /// &lt;param name = &quot;currency&quot;&gt;The currency code.&lt;/param&gt;
++    /// &lt;param name = &quot;description&quot;&gt;Optional payment description.&lt;/param&gt;
++    /// &lt;returns&gt;The transaction result.&lt;/returns&gt;
++    public PaymentResult ProcessPayment(decimal amount, string currency, string description = &quot;&quot;)
++    {
++        ValidateAmount(amount);
++        _transactionCount++;
++        // Added comment for clarity
++        var request = CreatePaymentRequest(amount, currency, description);
++        return _gateway.Process(request);
++    }
++
++    /// &lt;summary&gt;
++    /// Refunds a payment transaction.
++    /// &lt;/summary&gt;
++    /// &lt;param name = &quot;transactionId&quot;&gt;The transaction ID to refund.&lt;/param&gt;
++    /// &lt;returns&gt;The refund result.&lt;/returns&gt;
++    public RefundResult RefundPayment(string transactionId)
++    {
++        return _gateway.Refund(transactionId);
++    }
++
++    /// &lt;summary&gt;
++    /// Gets transaction details.
++    /// &lt;/summary&gt;
++    internal TransactionDetails GetTransactionDetails(string transactionId)
++    {
++        return _gateway.GetDetails(transactionId);
++    }
++
++    // Breaking: Renamed internal method
++    internal void ConfigureMerchantSettings(string merchantId)
++    {
++        _merchantIdentifier = merchantId;
++        LogSettingsUpdate();
++    }
++
++    // Parameter renamed (non-breaking, but with named argument caveat)
++    private void ValidateAmount(decimal paymentAmount)
++    {
++        if (paymentAmount &lt;= 0)
++            throw new ArgumentException(&quot;Amount must be positive&quot;, nameof(paymentAmount));
++    }
++
++    // Added parameter, updated to match ProcessPayment signature change
++    private PaymentRequest CreatePaymentRequest(decimal amount, string currency, string description)
++    {
++        return new PaymentRequest
++        {
++            Amount = amount,
++            Currency = currency,
++            MerchantId = _merchantIdentifier,
++            Timestamp = DateTime.UtcNow,
++            Description = description
++        };
++    }
++
++    private void LogSettingsUpdate()
++    {
++        // Formatting change: added blank line for readability
++        Console.WriteLine($&quot;Settings updated for merchant: {_merchantIdentifier}&quot;);
++    }
++}
++
++internal class InternalHelper
++{
++    // Breaking internal: renamed method
++    internal static string FormatCurrencyDisplay(decimal amount, string code)
++    {
++        return $&quot;{code} {amount:F2}&quot;;
++    }
++
++    internal static bool ValidateCurrencyCode(string code)
++    {
++        return code?.Length == 3;
++    }
++}
+">
+                <div class="top-diff-header-left">
+                    <span class="expand-icon">▼</span>
+                    <div class="top-diff-header-stats">
+                        <span class="stat-inline">16 changes</span>
+                        <span class="stat-added">+5 added</span>
+                        <span class="stat-removed">-5 deleted</span>
+                        <span class="stat-mode">Mode: Roslyn Semantic</span>
+                    </div>
+                </div>
+                <div class="top-diff-header-buttons" onclick="event.stopPropagation()">
+                    <button class="copy-btn" onclick="copyTopDiffAsJson(this)" title="Copy entire diff as JSON">JSON</button>
+                    <button class="copy-btn" onclick="copyTopDiffAsDiff(this)" title="Copy entire diff in unified format">Diff</button>
+                </div>
+            </div>
+            <div class="top-diff-content" id="file-new-60716169-top-diff">
+                <div class="diff-container" id="file-new-60716169-content">
+                <div class="diff-inline">
+                    <div class="diff-content">
+                        <div class="diff-line diff-line-comment">
+                            <span class="line-number"></span>
+                            <span class="line-prefix"></span>
+                            <span class="line-content line-semantic-header">// Modified: Namespace Samples.ImpactDemo</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">1</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"><span class="keyword">namespace</span> Samples.ImpactDemo;</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">2</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"><span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">3</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"><span class="comment">/// Payment service <span class="keyword">for</span> processing transactions.</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">4</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"><span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">5</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> PaymentService</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">6</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">7</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="keyword">private</span> <span class="keyword">string</span> _merchantId;</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">8</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="keyword">private</span> <span class="keyword">readonly</span> IPaymentGateway _gateway;</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">9</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="keyword">private</span> <span class="keyword">int</span> _transactionCount;</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">10</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">11</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// Gets <span class="keyword">or</span> sets the payment timeout <span class="keyword">in</span> seconds.</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">12</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">13</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">int</span> TimeoutSeconds { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="number">30</span>;</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">14</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">15</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// Gets the current transaction count.</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">16</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">17</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">int</span> TransactionCount =&gt; _transactionCount;</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">18</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">19</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">20</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// Initializes a <span class="keyword">new</span> instance of the &lt;see cref = <span class="string">&quot;PaymentService&quot;</span>/&gt; <span class="keyword">class</span>.</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">21</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">22</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;gateway&quot;</span>&gt;The payment gateway.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">23</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;merchantId&quot;</span>&gt;The merchant identifier.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">24</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="keyword">public</span> PaymentService(IPaymentGateway gateway, <span class="keyword">string</span> merchantId)</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">25</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">26</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        _gateway = gateway;</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">27</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        _merchantId = merchantId;</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">28</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">29</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">30</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">31</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// Processes a payment transaction.</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">32</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">33</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;amount&quot;</span>&gt;The payment amount.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">34</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;currency&quot;</span>&gt;The currency code.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">35</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;returns&gt;The transaction result.&lt;/returns&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">36</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="keyword">public</span> PaymentResult ProcessPayment(<span class="keyword">decimal</span> amount, <span class="keyword">string</span> currency)</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">37</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">38</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        ValidateAmount(amount);</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">39</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        _transactionCount++;</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">40</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        <span class="keyword">var</span> request = CreatePaymentRequest(amount, currency);</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">41</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        <span class="keyword">return</span> _gateway.Process(request);</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">42</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">43</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">44</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">45</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// Refunds a payment transaction.</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">46</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">47</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;transactionId&quot;</span>&gt;The transaction ID to refund.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">48</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;returns&gt;The refund result.&lt;/returns&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">49</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="keyword">public</span> RefundResult RefundPayment(<span class="keyword">string</span> transactionId)</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">50</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">51</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        <span class="keyword">return</span> _gateway.Refund(transactionId);</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">52</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">53</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">54</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">55</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// Gets transaction details.</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">56</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">57</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="keyword">internal</span> TransactionDetails GetTransactionDetails(<span class="keyword">string</span> transactionId)</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">58</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">59</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        <span class="keyword">return</span> _gateway.GetDetails(transactionId);</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">60</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">61</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">62</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="keyword">internal</span> <span class="keyword">void</span> UpdateMerchantSettings(<span class="keyword">string</span> merchantId)</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">63</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">64</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        _merchantId = merchantId;</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">65</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        LogSettingsUpdate();</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">66</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">67</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">68</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="keyword">private</span> <span class="keyword">void</span> ValidateAmount(<span class="keyword">decimal</span> amount)</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">69</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">70</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        <span class="keyword">if</span> (amount &lt;= <span class="number">0</span>)</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">71</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">ArgumentException</span>(<span class="string">&quot;Amount must be positive&quot;</span>, nameof(amount));</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">72</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">73</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">74</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="keyword">private</span> PaymentRequest CreatePaymentRequest(<span class="keyword">decimal</span> amount, <span class="keyword">string</span> currency)</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">75</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">76</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        <span class="keyword">return</span> <span class="keyword">new</span> PaymentRequest</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">77</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        {</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">78</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">            Amount = amount,</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">79</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">            Currency = currency,</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">80</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">            MerchantId = _merchantId,</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">81</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">            Timestamp = <span class="type">DateTime</span>.UtcNow</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">82</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        };</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">83</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">84</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">85</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="keyword">private</span> <span class="keyword">void</span> LogSettingsUpdate()</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">86</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">87</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        Console.WriteLine($<span class="string">&quot;Settings updated <span class="keyword">for</span> merchant: {_merchantId}&quot;</span>);</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">88</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">89</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">}</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">90</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">91</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"><span class="keyword">internal</span> <span class="keyword">class</span> InternalHelper</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">92</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">93</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">string</span> FormatCurrency(<span class="keyword">decimal</span> amount, <span class="keyword">string</span> code)</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">94</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">95</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        <span class="keyword">return</span> $<span class="string">&quot;{code} {amount:F2}&quot;</span>;</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">96</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">97</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">98</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    <span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">bool</span> ValidateCurrencyCode(<span class="keyword">string</span> code)</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">99</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">100</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">        <span class="keyword">return</span> code?.Length == <span class="number">3</span>;</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">101</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-removed">
+                            <span class="line-number">102</span>
+                            <span class="line-prefix">-</span>
+                            <span class="line-content">}</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">1</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"><span class="keyword">namespace</span> Samples.ImpactDemo;</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">2</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"><span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">3</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"><span class="comment">/// Payment service <span class="keyword">for</span> processing transactions.</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">4</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"><span class="comment">/// Enhanced <span class="keyword">with</span> comprehensive logging <span class="keyword">and</span> validation.</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">5</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"><span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">6</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> PaymentService</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">7</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">8</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">// Renamed <span class="keyword">private</span> field (non-breaking, but <span class="keyword">with</span> reflection caveat)</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">9</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="keyword">private</span> <span class="keyword">string</span> _merchantIdentifier;</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">10</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="keyword">private</span> <span class="keyword">readonly</span> IPaymentGateway _gateway;</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">11</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="keyword">private</span> <span class="keyword">int</span> _transactionCount;</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">12</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">13</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// Gets <span class="keyword">or</span> sets the payment timeout <span class="keyword">in</span> seconds.</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">14</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">15</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">int</span> TimeoutSeconds { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="number">30</span>;</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">16</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">17</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// Gets the current transaction count.</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">18</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">19</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">int</span> TransactionCount =&gt; _transactionCount;</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">20</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">21</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">22</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// Initializes a <span class="keyword">new</span> instance of the &lt;see cref = <span class="string">&quot;PaymentService&quot;</span>/&gt; <span class="keyword">class</span>.</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">23</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">24</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;gateway&quot;</span>&gt;The payment gateway.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">25</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;merchantId&quot;</span>&gt;The merchant identifier.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">26</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="keyword">public</span> PaymentService(IPaymentGateway gateway, <span class="keyword">string</span> merchantId)</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">27</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">28</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        _gateway = gateway;</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">29</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        _merchantIdentifier = merchantId;</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">30</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">31</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">32</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">33</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// Processes a payment transaction <span class="keyword">with</span> optional description.</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">34</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">35</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;amount&quot;</span>&gt;The payment amount.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">36</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;currency&quot;</span>&gt;The currency code.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">37</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;description&quot;</span>&gt;Optional payment description.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">38</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;returns&gt;The transaction result.&lt;/returns&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">39</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="keyword">public</span> PaymentResult ProcessPayment(<span class="keyword">decimal</span> amount, <span class="keyword">string</span> currency, <span class="keyword">string</span> description = <span class="string">&quot;&quot;</span>)</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">40</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">41</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        ValidateAmount(amount);</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">42</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        _transactionCount++;</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">43</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        <span class="comment">// Added comment <span class="keyword">for</span> clarity</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">44</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        <span class="keyword">var</span> request = CreatePaymentRequest(amount, currency, description);</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">45</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        <span class="keyword">return</span> _gateway.Process(request);</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">46</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">47</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">48</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">49</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// Refunds a payment transaction.</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">50</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">51</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;transactionId&quot;</span>&gt;The transaction ID to refund.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">52</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;returns&gt;The refund result.&lt;/returns&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">53</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="keyword">public</span> RefundResult RefundPayment(<span class="keyword">string</span> transactionId)</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">54</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">55</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        <span class="keyword">return</span> _gateway.Refund(transactionId);</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">56</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">57</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">58</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">59</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// Gets transaction details.</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">60</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">61</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="keyword">internal</span> TransactionDetails GetTransactionDetails(<span class="keyword">string</span> transactionId)</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">62</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">63</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        <span class="keyword">return</span> _gateway.GetDetails(transactionId);</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">64</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">65</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">66</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">// Breaking: Renamed <span class="keyword">internal</span> method</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">67</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="keyword">internal</span> <span class="keyword">void</span> ConfigureMerchantSettings(<span class="keyword">string</span> merchantId)</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">68</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">69</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        _merchantIdentifier = merchantId;</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">70</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        LogSettingsUpdate();</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">71</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">72</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">73</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">// Parameter renamed (non-breaking, but <span class="keyword">with</span> named argument caveat)</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">74</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="keyword">private</span> <span class="keyword">void</span> ValidateAmount(<span class="keyword">decimal</span> paymentAmount)</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">75</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">76</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        <span class="keyword">if</span> (paymentAmount &lt;= <span class="number">0</span>)</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">77</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">ArgumentException</span>(<span class="string">&quot;Amount must be positive&quot;</span>, nameof(paymentAmount));</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">78</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">79</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">80</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">// Added parameter, updated to match ProcessPayment signature change</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">81</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="keyword">private</span> PaymentRequest CreatePaymentRequest(<span class="keyword">decimal</span> amount, <span class="keyword">string</span> currency, <span class="keyword">string</span> description)</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">82</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">83</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        <span class="keyword">return</span> <span class="keyword">new</span> PaymentRequest</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">84</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        {</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">85</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">            Amount = amount,</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">86</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">            Currency = currency,</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">87</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">            MerchantId = _merchantIdentifier,</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">88</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">            Timestamp = <span class="type">DateTime</span>.UtcNow,</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">89</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">            Description = description</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">90</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        };</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">91</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">92</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">93</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="keyword">private</span> <span class="keyword">void</span> LogSettingsUpdate()</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">94</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">95</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        <span class="comment">// Formatting change: added blank line <span class="keyword">for</span> readability</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">96</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        Console.WriteLine($<span class="string">&quot;Settings updated <span class="keyword">for</span> merchant: {_merchantIdentifier}&quot;</span>);</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">97</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">98</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">}</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">99</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">100</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"><span class="keyword">internal</span> <span class="keyword">class</span> InternalHelper</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">101</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">102</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="comment">// Breaking <span class="keyword">internal</span>: renamed method</span></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">103</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">string</span> FormatCurrencyDisplay(<span class="keyword">decimal</span> amount, <span class="keyword">string</span> code)</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">104</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">105</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        <span class="keyword">return</span> $<span class="string">&quot;{code} {amount:F2}&quot;</span>;</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">106</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">107</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">108</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    <span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">bool</span> ValidateCurrencyCode(<span class="keyword">string</span> code)</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">109</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">110</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">        <span class="keyword">return</span> code?.Length == <span class="number">3</span>;</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">111</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-added">
+                            <span class="line-number">112</span>
+                            <span class="line-prefix">+</span>
+                            <span class="line-content">}</span>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="changes-list">
+                <div class="change-section" style="margin-left: 0px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-56278907')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-modified">Modified</span>
+                            <span class="change-kind">Namespace</span>
+                            <span class="change-name">Samples.ImpactDemo</span>
+                            <span class="change-location">line 1</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-56278907')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-56278907')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-56278907" data-type="Modified" data-kind="Namespace" data-name="Samples.ImpactDemo" data-old-line="1" data-new-line="1" data-old-content="namespace Samples.ImpactDemo;
+/// &lt;summary&gt;
+/// Payment service for processing transactions.
+/// &lt;/summary&gt;
+public class PaymentService
+{
+    private string _merchantId;
+    private readonly IPaymentGateway _gateway;
+    private int _transactionCount;
+    /// &lt;summary&gt;
+    /// Gets or sets the payment timeout in seconds.
+    /// &lt;/summary&gt;
+    public int TimeoutSeconds { get; set; } = 30;
+    /// &lt;summary&gt;
+    /// Gets the current transaction count.
+    /// &lt;/summary&gt;
+    public int TransactionCount =&gt; _transactionCount;
+
+    /// &lt;summary&gt;
+    /// Initializes a new instance of the &lt;see cref = &quot;PaymentService&quot;/&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;gateway&quot;&gt;The payment gateway.&lt;/param&gt;
+    /// &lt;param name = &quot;merchantId&quot;&gt;The merchant identifier.&lt;/param&gt;
+    public PaymentService(IPaymentGateway gateway, string merchantId)
+    {
+        _gateway = gateway;
+        _merchantId = merchantId;
+    }
+
+    /// &lt;summary&gt;
+    /// Processes a payment transaction.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;amount&quot;&gt;The payment amount.&lt;/param&gt;
+    /// &lt;param name = &quot;currency&quot;&gt;The currency code.&lt;/param&gt;
+    /// &lt;returns&gt;The transaction result.&lt;/returns&gt;
+    public PaymentResult ProcessPayment(decimal amount, string currency)
+    {
+        ValidateAmount(amount);
+        _transactionCount++;
+        var request = CreatePaymentRequest(amount, currency);
+        return _gateway.Process(request);
+    }
+
+    /// &lt;summary&gt;
+    /// Refunds a payment transaction.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;transactionId&quot;&gt;The transaction ID to refund.&lt;/param&gt;
+    /// &lt;returns&gt;The refund result.&lt;/returns&gt;
+    public RefundResult RefundPayment(string transactionId)
+    {
+        return _gateway.Refund(transactionId);
+    }
+
+    /// &lt;summary&gt;
+    /// Gets transaction details.
+    /// &lt;/summary&gt;
+    internal TransactionDetails GetTransactionDetails(string transactionId)
+    {
+        return _gateway.GetDetails(transactionId);
+    }
+
+    internal void UpdateMerchantSettings(string merchantId)
+    {
+        _merchantId = merchantId;
+        LogSettingsUpdate();
+    }
+
+    private void ValidateAmount(decimal amount)
+    {
+        if (amount &lt;= 0)
+            throw new ArgumentException(&quot;Amount must be positive&quot;, nameof(amount));
+    }
+
+    private PaymentRequest CreatePaymentRequest(decimal amount, string currency)
+    {
+        return new PaymentRequest
+        {
+            Amount = amount,
+            Currency = currency,
+            MerchantId = _merchantId,
+            Timestamp = DateTime.UtcNow
+        };
+    }
+
+    private void LogSettingsUpdate()
+    {
+        Console.WriteLine($&quot;Settings updated for merchant: {_merchantId}&quot;);
+    }
+}
+
+internal class InternalHelper
+{
+    internal static string FormatCurrency(decimal amount, string code)
+    {
+        return $&quot;{code} {amount:F2}&quot;;
+    }
+
+    internal static bool ValidateCurrencyCode(string code)
+    {
+        return code?.Length == 3;
+    }
+}" data-new-content="namespace Samples.ImpactDemo;
+/// &lt;summary&gt;
+/// Payment service for processing transactions.
+/// Enhanced with comprehensive logging and validation.
+/// &lt;/summary&gt;
+public class PaymentService
+{
+    // Renamed private field (non-breaking, but with reflection caveat)
+    private string _merchantIdentifier;
+    private readonly IPaymentGateway _gateway;
+    private int _transactionCount;
+    /// &lt;summary&gt;
+    /// Gets or sets the payment timeout in seconds.
+    /// &lt;/summary&gt;
+    public int TimeoutSeconds { get; set; } = 30;
+    /// &lt;summary&gt;
+    /// Gets the current transaction count.
+    /// &lt;/summary&gt;
+    public int TransactionCount =&gt; _transactionCount;
+
+    /// &lt;summary&gt;
+    /// Initializes a new instance of the &lt;see cref = &quot;PaymentService&quot;/&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;gateway&quot;&gt;The payment gateway.&lt;/param&gt;
+    /// &lt;param name = &quot;merchantId&quot;&gt;The merchant identifier.&lt;/param&gt;
+    public PaymentService(IPaymentGateway gateway, string merchantId)
+    {
+        _gateway = gateway;
+        _merchantIdentifier = merchantId;
+    }
+
+    /// &lt;summary&gt;
+    /// Processes a payment transaction with optional description.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;amount&quot;&gt;The payment amount.&lt;/param&gt;
+    /// &lt;param name = &quot;currency&quot;&gt;The currency code.&lt;/param&gt;
+    /// &lt;param name = &quot;description&quot;&gt;Optional payment description.&lt;/param&gt;
+    /// &lt;returns&gt;The transaction result.&lt;/returns&gt;
+    public PaymentResult ProcessPayment(decimal amount, string currency, string description = &quot;&quot;)
+    {
+        ValidateAmount(amount);
+        _transactionCount++;
+        // Added comment for clarity
+        var request = CreatePaymentRequest(amount, currency, description);
+        return _gateway.Process(request);
+    }
+
+    /// &lt;summary&gt;
+    /// Refunds a payment transaction.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;transactionId&quot;&gt;The transaction ID to refund.&lt;/param&gt;
+    /// &lt;returns&gt;The refund result.&lt;/returns&gt;
+    public RefundResult RefundPayment(string transactionId)
+    {
+        return _gateway.Refund(transactionId);
+    }
+
+    /// &lt;summary&gt;
+    /// Gets transaction details.
+    /// &lt;/summary&gt;
+    internal TransactionDetails GetTransactionDetails(string transactionId)
+    {
+        return _gateway.GetDetails(transactionId);
+    }
+
+    // Breaking: Renamed internal method
+    internal void ConfigureMerchantSettings(string merchantId)
+    {
+        _merchantIdentifier = merchantId;
+        LogSettingsUpdate();
+    }
+
+    // Parameter renamed (non-breaking, but with named argument caveat)
+    private void ValidateAmount(decimal paymentAmount)
+    {
+        if (paymentAmount &lt;= 0)
+            throw new ArgumentException(&quot;Amount must be positive&quot;, nameof(paymentAmount));
+    }
+
+    // Added parameter, updated to match ProcessPayment signature change
+    private PaymentRequest CreatePaymentRequest(decimal amount, string currency, string description)
+    {
+        return new PaymentRequest
+        {
+            Amount = amount,
+            Currency = currency,
+            MerchantId = _merchantIdentifier,
+            Timestamp = DateTime.UtcNow,
+            Description = description
+        };
+    }
+
+    private void LogSettingsUpdate()
+    {
+        // Formatting change: added blank line for readability
+        Console.WriteLine($&quot;Settings updated for merchant: {_merchantIdentifier}&quot;);
+    }
+}
+
+internal class InternalHelper
+{
+    // Breaking internal: renamed method
+    internal static string FormatCurrencyDisplay(decimal amount, string code)
+    {
+        return $&quot;{code} {amount:F2}&quot;;
+    }
+
+    internal static bool ValidateCurrencyCode(string code)
+    {
+        return code?.Length == 3;
+    }
+}">
+                        <div class="diff-line" style="padding: 8px 12px; color: #57606a; font-style: italic;">
+                            Contains 2 nested changes shown below.
+                        </div>
+                    </div>
+                <div class="change-section" style="margin-left: 20px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-3bab3f38')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-modified">Modified</span>
+                            <span class="change-kind">Class</span>
+                            <span class="change-name">PaymentService</span>
+                            <span class="change-location">line 6 → 7</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-3bab3f38')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-3bab3f38')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-3bab3f38" data-type="Modified" data-kind="Class" data-name="PaymentService" data-old-line="6" data-new-line="7" data-old-content="public class PaymentService
+{
+    private string _merchantId;
+    private readonly IPaymentGateway _gateway;
+    private int _transactionCount;
+    /// &lt;summary&gt;
+    /// Gets or sets the payment timeout in seconds.
+    /// &lt;/summary&gt;
+    public int TimeoutSeconds { get; set; } = 30;
+    /// &lt;summary&gt;
+    /// Gets the current transaction count.
+    /// &lt;/summary&gt;
+    public int TransactionCount =&gt; _transactionCount;
+
+    /// &lt;summary&gt;
+    /// Initializes a new instance of the &lt;see cref = &quot;PaymentService&quot;/&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;gateway&quot;&gt;The payment gateway.&lt;/param&gt;
+    /// &lt;param name = &quot;merchantId&quot;&gt;The merchant identifier.&lt;/param&gt;
+    public PaymentService(IPaymentGateway gateway, string merchantId)
+    {
+        _gateway = gateway;
+        _merchantId = merchantId;
+    }
+
+    /// &lt;summary&gt;
+    /// Processes a payment transaction.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;amount&quot;&gt;The payment amount.&lt;/param&gt;
+    /// &lt;param name = &quot;currency&quot;&gt;The currency code.&lt;/param&gt;
+    /// &lt;returns&gt;The transaction result.&lt;/returns&gt;
+    public PaymentResult ProcessPayment(decimal amount, string currency)
+    {
+        ValidateAmount(amount);
+        _transactionCount++;
+        var request = CreatePaymentRequest(amount, currency);
+        return _gateway.Process(request);
+    }
+
+    /// &lt;summary&gt;
+    /// Refunds a payment transaction.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;transactionId&quot;&gt;The transaction ID to refund.&lt;/param&gt;
+    /// &lt;returns&gt;The refund result.&lt;/returns&gt;
+    public RefundResult RefundPayment(string transactionId)
+    {
+        return _gateway.Refund(transactionId);
+    }
+
+    /// &lt;summary&gt;
+    /// Gets transaction details.
+    /// &lt;/summary&gt;
+    internal TransactionDetails GetTransactionDetails(string transactionId)
+    {
+        return _gateway.GetDetails(transactionId);
+    }
+
+    internal void UpdateMerchantSettings(string merchantId)
+    {
+        _merchantId = merchantId;
+        LogSettingsUpdate();
+    }
+
+    private void ValidateAmount(decimal amount)
+    {
+        if (amount &lt;= 0)
+            throw new ArgumentException(&quot;Amount must be positive&quot;, nameof(amount));
+    }
+
+    private PaymentRequest CreatePaymentRequest(decimal amount, string currency)
+    {
+        return new PaymentRequest
+        {
+            Amount = amount,
+            Currency = currency,
+            MerchantId = _merchantId,
+            Timestamp = DateTime.UtcNow
+        };
+    }
+
+    private void LogSettingsUpdate()
+    {
+        Console.WriteLine($&quot;Settings updated for merchant: {_merchantId}&quot;);
+    }
+}" data-new-content="public class PaymentService
+{
+    // Renamed private field (non-breaking, but with reflection caveat)
+    private string _merchantIdentifier;
+    private readonly IPaymentGateway _gateway;
+    private int _transactionCount;
+    /// &lt;summary&gt;
+    /// Gets or sets the payment timeout in seconds.
+    /// &lt;/summary&gt;
+    public int TimeoutSeconds { get; set; } = 30;
+    /// &lt;summary&gt;
+    /// Gets the current transaction count.
+    /// &lt;/summary&gt;
+    public int TransactionCount =&gt; _transactionCount;
+
+    /// &lt;summary&gt;
+    /// Initializes a new instance of the &lt;see cref = &quot;PaymentService&quot;/&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;gateway&quot;&gt;The payment gateway.&lt;/param&gt;
+    /// &lt;param name = &quot;merchantId&quot;&gt;The merchant identifier.&lt;/param&gt;
+    public PaymentService(IPaymentGateway gateway, string merchantId)
+    {
+        _gateway = gateway;
+        _merchantIdentifier = merchantId;
+    }
+
+    /// &lt;summary&gt;
+    /// Processes a payment transaction with optional description.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;amount&quot;&gt;The payment amount.&lt;/param&gt;
+    /// &lt;param name = &quot;currency&quot;&gt;The currency code.&lt;/param&gt;
+    /// &lt;param name = &quot;description&quot;&gt;Optional payment description.&lt;/param&gt;
+    /// &lt;returns&gt;The transaction result.&lt;/returns&gt;
+    public PaymentResult ProcessPayment(decimal amount, string currency, string description = &quot;&quot;)
+    {
+        ValidateAmount(amount);
+        _transactionCount++;
+        // Added comment for clarity
+        var request = CreatePaymentRequest(amount, currency, description);
+        return _gateway.Process(request);
+    }
+
+    /// &lt;summary&gt;
+    /// Refunds a payment transaction.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;transactionId&quot;&gt;The transaction ID to refund.&lt;/param&gt;
+    /// &lt;returns&gt;The refund result.&lt;/returns&gt;
+    public RefundResult RefundPayment(string transactionId)
+    {
+        return _gateway.Refund(transactionId);
+    }
+
+    /// &lt;summary&gt;
+    /// Gets transaction details.
+    /// &lt;/summary&gt;
+    internal TransactionDetails GetTransactionDetails(string transactionId)
+    {
+        return _gateway.GetDetails(transactionId);
+    }
+
+    // Breaking: Renamed internal method
+    internal void ConfigureMerchantSettings(string merchantId)
+    {
+        _merchantIdentifier = merchantId;
+        LogSettingsUpdate();
+    }
+
+    // Parameter renamed (non-breaking, but with named argument caveat)
+    private void ValidateAmount(decimal paymentAmount)
+    {
+        if (paymentAmount &lt;= 0)
+            throw new ArgumentException(&quot;Amount must be positive&quot;, nameof(paymentAmount));
+    }
+
+    // Added parameter, updated to match ProcessPayment signature change
+    private PaymentRequest CreatePaymentRequest(decimal amount, string currency, string description)
+    {
+        return new PaymentRequest
+        {
+            Amount = amount,
+            Currency = currency,
+            MerchantId = _merchantIdentifier,
+            Timestamp = DateTime.UtcNow,
+            Description = description
+        };
+    }
+
+    private void LogSettingsUpdate()
+    {
+        // Formatting change: added blank line for readability
+        Console.WriteLine($&quot;Settings updated for merchant: {_merchantIdentifier}&quot;);
+    }
+}">
+                        <div class="diff-line" style="padding: 8px 12px; color: #57606a; font-style: italic;">
+                            Contains 11 nested changes shown below.
+                        </div>
+                    </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-8cc31b93')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Field</span>
+                            <span class="change-name">_merchantId</span>
+                            <span class="change-location">line 8-8</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-8cc31b93')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-8cc31b93')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-8cc31b93" data-type="Removed" data-kind="Field" data-name="_merchantId" data-old-line="8" data-new-line="" data-old-content="private string _merchantId;" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">8</span>
+                                <span class="line-content"><span class="keyword">private</span> <span class="keyword">string</span> _merchantId;</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-4c88671e')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Field</span>
+                            <span class="change-name">_merchantIdentifier</span>
+                            <span class="change-location">line 10-10</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-4c88671e')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-4c88671e')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-4c88671e" data-type="Added" data-kind="Field" data-name="_merchantIdentifier" data-old-line="" data-new-line="10" data-old-content="" data-new-content="private string _merchantIdentifier;">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">10</span>
+                                <span class="line-content"><span class="keyword">private</span> <span class="keyword">string</span> _merchantIdentifier;</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-d451ae41')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-modified">Modified</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">PaymentService</span>
+                            <span class="change-location">line 27 → 29</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-d451ae41')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-d451ae41')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-d451ae41" data-type="Modified" data-kind="Method" data-name="PaymentService" data-old-line="27" data-new-line="29" data-old-content="public PaymentService(IPaymentGateway gateway, string merchantId)
+{
+    _gateway = gateway;
+    _merchantId = merchantId;
+}" data-new-content="public PaymentService(IPaymentGateway gateway, string merchantId)
+{
+    _gateway = gateway;
+    _merchantIdentifier = merchantId;
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">27</span>
+                                <span class="line-content"><span class="keyword">public</span> PaymentService(IPaymentGateway gateway, <span class="keyword">string</span> merchantId)</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">28</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">29</span>
+                                <span class="line-content">    _gateway = gateway;</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">30</span>
+                                <span class="line-content">    _merchantId = merchantId;</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">31</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">29</span>
+                                <span class="line-content"><span class="keyword">public</span> PaymentService(IPaymentGateway gateway, <span class="keyword">string</span> merchantId)</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">30</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">31</span>
+                                <span class="line-content">    _gateway = gateway;</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">32</span>
+                                <span class="line-content">    _merchantIdentifier = merchantId;</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">33</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-10a26612')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">ProcessPayment</span>
+                            <span class="change-location">line 39-46</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-10a26612')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-10a26612')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-10a26612" data-type="Removed" data-kind="Method" data-name="ProcessPayment" data-old-line="39" data-new-line="" data-old-content="public PaymentResult ProcessPayment(decimal amount, string currency)
+{
+    ValidateAmount(amount);
+    _transactionCount++;
+    var request = CreatePaymentRequest(amount, currency);
+    return _gateway.Process(request);
+}" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">39</span>
+                                <span class="line-content"><span class="keyword">public</span> PaymentResult ProcessPayment(<span class="keyword">decimal</span> amount, <span class="keyword">string</span> currency)</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">40</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">41</span>
+                                <span class="line-content">    ValidateAmount(amount);</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">42</span>
+                                <span class="line-content">    _transactionCount++;</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">43</span>
+                                <span class="line-content">    <span class="keyword">var</span> request = CreatePaymentRequest(amount, currency);</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">44</span>
+                                <span class="line-content">    <span class="keyword">return</span> _gateway.Process(request);</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">45</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-3e61472a')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">ProcessPayment</span>
+                            <span class="change-location">line 42-50</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-3e61472a')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-3e61472a')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-3e61472a" data-type="Added" data-kind="Method" data-name="ProcessPayment" data-old-line="" data-new-line="42" data-old-content="" data-new-content="public PaymentResult ProcessPayment(decimal amount, string currency, string description = &quot;&quot;)
+{
+    ValidateAmount(amount);
+    _transactionCount++;
+    // Added comment for clarity
+    var request = CreatePaymentRequest(amount, currency, description);
+    return _gateway.Process(request);
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">42</span>
+                                <span class="line-content"><span class="keyword">public</span> PaymentResult ProcessPayment(<span class="keyword">decimal</span> amount, <span class="keyword">string</span> currency, <span class="keyword">string</span> description = <span class="string">&quot;&quot;</span>)</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">43</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">44</span>
+                                <span class="line-content">    ValidateAmount(amount);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">45</span>
+                                <span class="line-content">    _transactionCount++;</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">46</span>
+                                <span class="line-content">    <span class="comment">// Added comment <span class="keyword">for</span> clarity</span></span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">47</span>
+                                <span class="line-content">    <span class="keyword">var</span> request = CreatePaymentRequest(amount, currency, description);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">48</span>
+                                <span class="line-content">    <span class="keyword">return</span> _gateway.Process(request);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">49</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-a48e2ded')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">UpdateMerchantSettings</span>
+                            <span class="change-location">line 66-70</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-a48e2ded')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-a48e2ded')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-a48e2ded" data-type="Removed" data-kind="Method" data-name="UpdateMerchantSettings" data-old-line="66" data-new-line="" data-old-content="internal void UpdateMerchantSettings(string merchantId)
+{
+    _merchantId = merchantId;
+    LogSettingsUpdate();
+}" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">66</span>
+                                <span class="line-content"><span class="keyword">internal</span> <span class="keyword">void</span> UpdateMerchantSettings(<span class="keyword">string</span> merchantId)</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">67</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">68</span>
+                                <span class="line-content">    _merchantId = merchantId;</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">69</span>
+                                <span class="line-content">    LogSettingsUpdate();</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">70</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-2703f8a8')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">ConfigureMerchantSettings</span>
+                            <span class="change-location">line 71-75</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-2703f8a8')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-2703f8a8')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-2703f8a8" data-type="Added" data-kind="Method" data-name="ConfigureMerchantSettings" data-old-line="" data-new-line="71" data-old-content="" data-new-content="internal void ConfigureMerchantSettings(string merchantId)
+{
+    _merchantIdentifier = merchantId;
+    LogSettingsUpdate();
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">71</span>
+                                <span class="line-content"><span class="keyword">internal</span> <span class="keyword">void</span> ConfigureMerchantSettings(<span class="keyword">string</span> merchantId)</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">72</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">73</span>
+                                <span class="line-content">    _merchantIdentifier = merchantId;</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">74</span>
+                                <span class="line-content">    LogSettingsUpdate();</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">75</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-1dbed731')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-modified">Modified</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">ValidateAmount</span>
+                            <span class="change-location">line 72 → 78</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-1dbed731')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-1dbed731')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-1dbed731" data-type="Modified" data-kind="Method" data-name="ValidateAmount" data-old-line="72" data-new-line="78" data-old-content="private void ValidateAmount(decimal amount)
+{
+    if (amount &lt;= 0)
+        throw new ArgumentException(&quot;Amount must be positive&quot;, nameof(amount));
+}" data-new-content="private void ValidateAmount(decimal paymentAmount)
+{
+    if (paymentAmount &lt;= 0)
+        throw new ArgumentException(&quot;Amount must be positive&quot;, nameof(paymentAmount));
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">72</span>
+                                <span class="line-content"><span class="keyword">private</span> <span class="keyword">void</span> ValidateAmount(<span class="keyword">decimal</span> amount)</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">73</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">74</span>
+                                <span class="line-content">    <span class="keyword">if</span> (amount &lt;= <span class="number">0</span>)</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">75</span>
+                                <span class="line-content">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">ArgumentException</span>(<span class="string">&quot;Amount must be positive&quot;</span>, nameof(amount));</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">76</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">78</span>
+                                <span class="line-content"><span class="keyword">private</span> <span class="keyword">void</span> ValidateAmount(<span class="keyword">decimal</span> paymentAmount)</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">79</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">80</span>
+                                <span class="line-content">    <span class="keyword">if</span> (paymentAmount &lt;= <span class="number">0</span>)</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">81</span>
+                                <span class="line-content">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">ArgumentException</span>(<span class="string">&quot;Amount must be positive&quot;</span>, nameof(paymentAmount));</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">82</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-c0ec2a66')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">CreatePaymentRequest</span>
+                            <span class="change-location">line 78-87</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-c0ec2a66')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-c0ec2a66')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-c0ec2a66" data-type="Removed" data-kind="Method" data-name="CreatePaymentRequest" data-old-line="78" data-new-line="" data-old-content="private PaymentRequest CreatePaymentRequest(decimal amount, string currency)
+{
+    return new PaymentRequest
+    {
+        Amount = amount,
+        Currency = currency,
+        MerchantId = _merchantId,
+        Timestamp = DateTime.UtcNow
+    };
+}" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">78</span>
+                                <span class="line-content"><span class="keyword">private</span> PaymentRequest CreatePaymentRequest(<span class="keyword">decimal</span> amount, <span class="keyword">string</span> currency)</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">79</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">80</span>
+                                <span class="line-content">    <span class="keyword">return</span> <span class="keyword">new</span> PaymentRequest</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">81</span>
+                                <span class="line-content">    {</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">82</span>
+                                <span class="line-content">        Amount = amount,</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">83</span>
+                                <span class="line-content">        Currency = currency,</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">84</span>
+                                <span class="line-content">        MerchantId = _merchantId,</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">85</span>
+                                <span class="line-content">        Timestamp = <span class="type">DateTime</span>.UtcNow</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">86</span>
+                                <span class="line-content">    };</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">87</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-b9f52d9b')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">CreatePaymentRequest</span>
+                            <span class="change-location">line 85-95</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-b9f52d9b')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-b9f52d9b')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-b9f52d9b" data-type="Added" data-kind="Method" data-name="CreatePaymentRequest" data-old-line="" data-new-line="85" data-old-content="" data-new-content="private PaymentRequest CreatePaymentRequest(decimal amount, string currency, string description)
+{
+    return new PaymentRequest
+    {
+        Amount = amount,
+        Currency = currency,
+        MerchantId = _merchantIdentifier,
+        Timestamp = DateTime.UtcNow,
+        Description = description
+    };
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">85</span>
+                                <span class="line-content"><span class="keyword">private</span> PaymentRequest CreatePaymentRequest(<span class="keyword">decimal</span> amount, <span class="keyword">string</span> currency, <span class="keyword">string</span> description)</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">86</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">87</span>
+                                <span class="line-content">    <span class="keyword">return</span> <span class="keyword">new</span> PaymentRequest</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">88</span>
+                                <span class="line-content">    {</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">89</span>
+                                <span class="line-content">        Amount = amount,</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">90</span>
+                                <span class="line-content">        Currency = currency,</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">91</span>
+                                <span class="line-content">        MerchantId = _merchantIdentifier,</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">92</span>
+                                <span class="line-content">        Timestamp = <span class="type">DateTime</span>.UtcNow,</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">93</span>
+                                <span class="line-content">        Description = description</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">94</span>
+                                <span class="line-content">    };</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">95</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-ddb3862c')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-modified">Modified</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">LogSettingsUpdate</span>
+                            <span class="change-location">line 89 → 97</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-ddb3862c')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-ddb3862c')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-ddb3862c" data-type="Modified" data-kind="Method" data-name="LogSettingsUpdate" data-old-line="89" data-new-line="97" data-old-content="private void LogSettingsUpdate()
+{
+    Console.WriteLine($&quot;Settings updated for merchant: {_merchantId}&quot;);
+}" data-new-content="private void LogSettingsUpdate()
+{
+    // Formatting change: added blank line for readability
+    Console.WriteLine($&quot;Settings updated for merchant: {_merchantIdentifier}&quot;);
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">89</span>
+                                <span class="line-content"><span class="keyword">private</span> <span class="keyword">void</span> LogSettingsUpdate()</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">90</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">91</span>
+                                <span class="line-content">    Console.WriteLine($<span class="string">&quot;Settings updated <span class="keyword">for</span> merchant: {_merchantId}&quot;</span>);</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">92</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">97</span>
+                                <span class="line-content"><span class="keyword">private</span> <span class="keyword">void</span> LogSettingsUpdate()</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">98</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">99</span>
+                                <span class="line-content">    <span class="comment">// Formatting change: added blank line <span class="keyword">for</span> readability</span></span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">100</span>
+                                <span class="line-content">    Console.WriteLine($<span class="string">&quot;Settings updated <span class="keyword">for</span> merchant: {_merchantIdentifier}&quot;</span>);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">101</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="change-section" style="margin-left: 20px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-f11fc928')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-modified">Modified</span>
+                            <span class="change-kind">Class</span>
+                            <span class="change-name">InternalHelper</span>
+                            <span class="change-location">line 95 → 105</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-f11fc928')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-f11fc928')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-f11fc928" data-type="Modified" data-kind="Class" data-name="InternalHelper" data-old-line="95" data-new-line="105" data-old-content="internal class InternalHelper
+{
+    internal static string FormatCurrency(decimal amount, string code)
+    {
+        return $&quot;{code} {amount:F2}&quot;;
+    }
+
+    internal static bool ValidateCurrencyCode(string code)
+    {
+        return code?.Length == 3;
+    }
+}" data-new-content="internal class InternalHelper
+{
+    // Breaking internal: renamed method
+    internal static string FormatCurrencyDisplay(decimal amount, string code)
+    {
+        return $&quot;{code} {amount:F2}&quot;;
+    }
+
+    internal static bool ValidateCurrencyCode(string code)
+    {
+        return code?.Length == 3;
+    }
+}">
+                        <div class="diff-line" style="padding: 8px 12px; color: #57606a; font-style: italic;">
+                            Contains 2 nested changes shown below.
+                        </div>
+                    </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-545b15de')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">FormatCurrency</span>
+                            <span class="change-location">line 97-100</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-545b15de')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-545b15de')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-545b15de" data-type="Removed" data-kind="Method" data-name="FormatCurrency" data-old-line="97" data-new-line="" data-old-content="internal static string FormatCurrency(decimal amount, string code)
+{
+    return $&quot;{code} {amount:F2}&quot;;
+}" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">97</span>
+                                <span class="line-content"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">string</span> FormatCurrency(<span class="keyword">decimal</span> amount, <span class="keyword">string</span> code)</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">98</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">99</span>
+                                <span class="line-content">    <span class="keyword">return</span> $<span class="string">&quot;{code} {amount:F2}&quot;</span>;</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">100</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-c2aed9a0')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">FormatCurrencyDisplay</span>
+                            <span class="change-location">line 108-111</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-c2aed9a0')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-c2aed9a0')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-c2aed9a0" data-type="Added" data-kind="Method" data-name="FormatCurrencyDisplay" data-old-line="" data-new-line="108" data-old-content="" data-new-content="internal static string FormatCurrencyDisplay(decimal amount, string code)
+{
+    return $&quot;{code} {amount:F2}&quot;;
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">108</span>
+                                <span class="line-content"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">string</span> FormatCurrencyDisplay(<span class="keyword">decimal</span> amount, <span class="keyword">string</span> code)</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">109</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">110</span>
+                                <span class="line-content">    <span class="keyword">return</span> $<span class="string">&quot;{code} {amount:F2}&quot;</span>;</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">111</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <div class="nav-container">
+        <button class="nav-btn" onclick="scrollToTop()" title="Go to top">↑</button>
+        <button class="nav-btn" onclick="prevChange()" title="Previous change">▲</button>
+        <button class="nav-btn" onclick="nextChange()" title="Next change">▼</button>
+        <button class="nav-btn" onclick="expandAll()" title="Expand all">+</button>
+        <button class="nav-btn" onclick="collapseAll()" title="Collapse all">-</button>
+    </div>
+</div>

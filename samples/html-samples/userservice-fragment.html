@@ -1,0 +1,2469 @@
+<link rel="stylesheet" href="userservice-fragment.css">
+
+<div class="roslyn-diff-fragment"
+     data-old-file="UserService.cs"
+     data-new-file="UserService.cs"
+     data-changes-total="25"
+     data-changes-added="14"
+     data-changes-removed="7"
+     data-changes-modified="4"
+     data-impact-breaking-public="0"
+     data-impact-breaking-internal="0"
+     data-impact-non-breaking="0"
+     data-impact-formatting="0"
+     data-mode="roslyn">
+    <header>
+        <div class="header-title-row">
+            <div class="header-title-left">
+                <h1>Diff Report</h1>
+                <div class="header-stats">
+                    <span class="stat-inline">25 changes</span>
+                    <span class="stat-separator">|</span>
+                    <span class="stat-inline" style="color: var(--color-added-border);">+14 added</span>
+                    <span class="stat-separator">|</span>
+                    <span class="stat-inline" style="color: var(--color-removed-border);">-7 deleted</span>
+                    <span class="stat-separator">|</span>
+                    <span class="stat-inline" style="color: var(--color-modified-border);">~4 modified</span>
+                    <span class="stat-separator">|</span>
+                    <span class="stat-inline">Mode: Roslyn Semantic</span>
+                </div>
+            </div>
+            <span class="header-timestamp">Jan 29, 2026 12:38 PM</span>
+        </div>
+        <div class="file-info">
+            <div class="file-row">
+                <div class="file-row-left">
+                    <span class="file-path-label">Old file:</span>
+                    <span class="file-path" id="old-path" data-path="/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/before/UserService.cs">/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/before/UserService.cs</span>
+                </div>
+                <div class="file-actions">
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/before/UserService.cs')" title="Copy full path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"/><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"/></svg>
+                    </button>
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/before')" title="Copy folder path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 2h5.5c.551 0 1.064.278 1.365.737l.43.645A.25.25 0 009.25 3.5h5A1.75 1.75 0 0116 5.25v8A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V3.75C0 2.784.784 2 1.75 2zm0 1.5a.25.25 0 00-.25.25v9.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25v-8a.25.25 0 00-.25-.25H9.25a1.75 1.75 0 01-1.458-.79l-.429-.644a.25.25 0 00-.208-.11z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="vscode" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/before/UserService.cs', 'vscode')" title="Open file in VS Code">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14.25 1a.74.74 0 00-.218.033L10.7 2.252l-4.5 4-3.5-2.8a.75.75 0 00-.946.086l-.75.75a.75.75 0 00.033 1.09L4.5 8l-3.463 2.622a.75.75 0 00-.033 1.09l.75.75a.75.75 0 00.946.086l3.5-2.8 4.5 4 3.332 1.22A.74.74 0 0015 14.25V1.75a.75.75 0 00-.75-.75zM11 12.12L7.28 8 11 3.88v8.24z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="rider" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/before/UserService.cs', 'rider')" title="Open file in Rider">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm13.2 2.8c.4.5.6 1 .6 1.7 0 .5-.1.9-.3 1.3-.2.4-.6.7-1 .9l1.6 2.5h-2.2l-1.4-2.2H8.8v2.2H7V2.1h3.7c.6 0 1.1.1 1.5.3.4.2.8.3 1 .4zM7 12h6v1.2H7V12z"/><path d="M8.8 3.6v2h1.3c.3 0 .6-.1.8-.3.2-.2.3-.4.3-.7s-.1-.5-.3-.7c-.2-.2-.5-.3-.8-.3H8.8z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="pycharm" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/before/UserService.cs', 'pycharm')" title="Open file in PyCharm">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm2 13h5v1H2v-1zm6.3-5.5c-.1.4-.4.7-.8.9l1.2 1.8h-1.5l-1-1.5H5v1.5H3.5V4.5h2.8c.5 0 .9.1 1.2.3.3.2.5.4.7.7.1.3.2.6.2 1 0 .4-.1.7-.1 1zm-.9-1c0-.2-.1-.4-.2-.5-.1-.2-.3-.2-.5-.2H5v1.5h1.7c.2 0 .4-.1.5-.2.1-.2.2-.4.2-.6z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="zed" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/before/UserService.cs', 'zed')" title="Open file in Zed">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 1L13 1L15 3.5L15 14.5L13 16L3 16L1 13.5L1 2.5L2.5 1ZM3.5 3L3 3.5L3 12.5L4 14L12 14L13 12.5L13 4L12 3L3.5 3ZM5 5L11 5L11 6.5L7.5 11L11 11L11 13L5 13L5 11.5L8.5 7L5 7L5 5Z"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="file-row">
+                <div class="file-row-left">
+                    <span class="file-path-label">New file:</span>
+                    <span class="file-path" id="new-path" data-path="/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/after/UserService.cs">/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/after/UserService.cs</span>
+                </div>
+                <div class="file-actions">
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/after/UserService.cs')" title="Copy full path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"/><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"/></svg>
+                    </button>
+                    <button class="action-btn icon-only" onclick="copyPathWithNotification(this, '/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/after')" title="Copy folder path to clipboard">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 2h5.5c.551 0 1.064.278 1.365.737l.43.645A.25.25 0 009.25 3.5h5A1.75 1.75 0 0116 5.25v8A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V3.75C0 2.784.784 2 1.75 2zm0 1.5a.25.25 0 00-.25.25v9.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25v-8a.25.25 0 00-.25-.25H9.25a1.75 1.75 0 01-1.458-.79l-.429-.644a.25.25 0 00-.208-.11z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="vscode" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/after/UserService.cs', 'vscode')" title="Open file in VS Code">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14.25 1a.74.74 0 00-.218.033L10.7 2.252l-4.5 4-3.5-2.8a.75.75 0 00-.946.086l-.75.75a.75.75 0 00.033 1.09L4.5 8l-3.463 2.622a.75.75 0 00-.033 1.09l.75.75a.75.75 0 00.946.086l3.5-2.8 4.5 4 3.332 1.22A.74.74 0 0015 14.25V1.75a.75.75 0 00-.75-.75zM11 12.12L7.28 8 11 3.88v8.24z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="rider" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/after/UserService.cs', 'rider')" title="Open file in Rider">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm13.2 2.8c.4.5.6 1 .6 1.7 0 .5-.1.9-.3 1.3-.2.4-.6.7-1 .9l1.6 2.5h-2.2l-1.4-2.2H8.8v2.2H7V2.1h3.7c.6 0 1.1.1 1.5.3.4.2.8.3 1 .4zM7 12h6v1.2H7V12z"/><path d="M8.8 3.6v2h1.3c.3 0 .6-.1.8-.3.2-.2.3-.4.3-.7s-.1-.5-.3-.7c-.2-.2-.5-.3-.8-.3H8.8z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="pycharm" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/after/UserService.cs', 'pycharm')" title="Open file in PyCharm">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm2 13h5v1H2v-1zm6.3-5.5c-.1.4-.4.7-.8.9l1.2 1.8h-1.5l-1-1.5H5v1.5H3.5V4.5h2.8c.5 0 .9.1 1.2.3.3.2.5.4.7.7.1.3.2.6.2 1 0 .4-.1.7-.1 1zm-.9-1c0-.2-.1-.4-.2-.5-.1-.2-.3-.2-.5-.2H5v1.5h1.7c.2 0 .4-.1.5-.2.1-.2.2-.4.2-.6z"/></svg>
+                    </button>
+                    <button class="action-btn editor-btn icon-only" data-editor="zed" onclick="openInEditor('/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/after/UserService.cs', 'zed')" title="Open file in Zed">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 1L13 1L15 3.5L15 14.5L13 16L3 16L1 13.5L1 2.5L2.5 1ZM3.5 3L3 3.5L3 12.5L4 14L12 14L13 12.5L13 4L12 3L3.5 3ZM5 5L11 5L11 6.5L7.5 11L11 11L11 13L5 13L5 11.5L8.5 7L5 7L5 5Z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="file-diff" id="file-UserService-915f7617">
+            <div class="file-header">
+                <h2>UserService.cs</h2>
+            </div>
+            <div class="top-diff-header" onclick="toggleTopDiff('file-UserService-915f7617-top-diff')" data-file-json="{&quot;path&quot;:&quot;/Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/after/UserService.cs&quot;,&quot;changes&quot;:[{&quot;type&quot;:&quot;Modified&quot;,&quot;kind&quot;:&quot;Namespace&quot;,&quot;name&quot;:&quot;Samples&quot;,&quot;oldLine&quot;:1,&quot;newLine&quot;:1,&quot;oldContent&quot;:&quot;namespace Samples;\r\n/// &lt;summary&gt;\n/// Service for managing user operations.\n/// &lt;/summary&gt;\npublic class UserService\r\n{\r\n    private readonly IUserRepository _repository;\r\n    /// &lt;summary&gt;\n    /// Initializes a new instance of the &lt;see cref = \&quot;UserService\&quot;/&gt; class.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;repository\&quot;&gt;The user repository.&lt;/param&gt;\n    public UserService(IUserRepository repository)\r\n    {\r\n        _repository = repository;\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Gets a user by their ID.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;id\&quot;&gt;The user ID.&lt;/param&gt;\n    /// &lt;returns&gt;The user if found; otherwise, null.&lt;/returns&gt;\n    public User? GetUser(int id)\r\n    {\r\n        return _repository.FindById(id);\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Creates a new user.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;name\&quot;&gt;The user&#39;s name.&lt;/param&gt;\n    /// &lt;param name = \&quot;email\&quot;&gt;The user&#39;s email.&lt;/param&gt;\n    /// &lt;returns&gt;The created user.&lt;/returns&gt;\n    public User CreateUser(string name, string email)\r\n    {\r\n        var user = new User\r\n        {\r\n            Name = name,\r\n            Email = email\r\n        };\r\n        return _repository.Add(user);\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Deletes a user by ID.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;id\&quot;&gt;The user ID.&lt;/param&gt;\n    public void DeleteUser(int id)\r\n    {\r\n        _repository.Delete(id);\r\n    }\r\n}\r\n\r\npublic interface IUserRepository\r\n{\r\n    User? FindById(int id);\r\n    User Add(User user);\r\n    void Delete(int id);\r\n}\r\n\r\npublic class User\r\n{\r\n    public int Id { get; set; }\r\n    public string Name { get; set; } = string.Empty;\r\n    public string Email { get; set; } = string.Empty;\r\n}&quot;,&quot;newContent&quot;:&quot;namespace Samples;\r\n/// &lt;summary&gt;\n/// Service for managing user operations with async support.\n/// &lt;/summary&gt;\npublic class UserService : IUserService\r\n{\r\n    private readonly IUserRepository _repository;\r\n    private readonly ILogger&lt;UserService&gt; _logger;\r\n    /// &lt;summary&gt;\n    /// Initializes a new instance of the &lt;see cref = \&quot;UserService\&quot;/&gt; class.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;repository\&quot;&gt;The user repository.&lt;/param&gt;\n    /// &lt;param name = \&quot;logger\&quot;&gt;The logger instance.&lt;/param&gt;\n    public UserService(IUserRepository repository, ILogger&lt;UserService&gt; logger)\r\n    {\r\n        _repository = repository ?? throw new ArgumentNullException(nameof(repository));\r\n        _logger = logger ?? throw new ArgumentNullException(nameof(logger));\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Gets a user by their ID asynchronously.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;id\&quot;&gt;The user ID.&lt;/param&gt;\n    /// &lt;param name = \&quot;cancellationToken\&quot;&gt;Cancellation token.&lt;/param&gt;\n    /// &lt;returns&gt;The user if found; otherwise, null.&lt;/returns&gt;\n    public async Task&lt;User?&gt; GetUserAsync(int id, CancellationToken cancellationToken = default)\r\n    {\r\n        _logger.LogInformation(\&quot;Getting user with ID {UserId}\&quot;, id);\r\n        return await _repository.FindByIdAsync(id, cancellationToken);\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Creates a new user asynchronously.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;name\&quot;&gt;The user&#39;s name.&lt;/param&gt;\n    /// &lt;param name = \&quot;email\&quot;&gt;The user&#39;s email.&lt;/param&gt;\n    /// &lt;param name = \&quot;cancellationToken\&quot;&gt;Cancellation token.&lt;/param&gt;\n    /// &lt;returns&gt;The created user.&lt;/returns&gt;\n    public async Task&lt;User&gt; CreateUserAsync(string name, string email, CancellationToken cancellationToken = default)\r\n    {\r\n        ArgumentException.ThrowIfNullOrWhiteSpace(name);\r\n        ArgumentException.ThrowIfNullOrWhiteSpace(email);\r\n        _logger.LogInformation(\&quot;Creating user with name {Name}\&quot;, name);\r\n        var user = new User\r\n        {\r\n            Name = name,\r\n            Email = email,\r\n            CreatedAt = DateTime.UtcNow\r\n        };\r\n        return await _repository.AddAsync(user, cancellationToken);\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Updates an existing user.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;user\&quot;&gt;The user to update.&lt;/param&gt;\n    /// &lt;param name = \&quot;cancellationToken\&quot;&gt;Cancellation token.&lt;/param&gt;\n    /// &lt;returns&gt;The updated user.&lt;/returns&gt;\n    public async Task&lt;User&gt; UpdateUserAsync(User user, CancellationToken cancellationToken = default)\r\n    {\r\n        ArgumentNullException.ThrowIfNull(user);\r\n        _logger.LogInformation(\&quot;Updating user with ID {UserId}\&quot;, user.Id);\r\n        user.UpdatedAt = DateTime.UtcNow;\r\n        return await _repository.UpdateAsync(user, cancellationToken);\r\n    }\r\n\r\n    /// &lt;summary&gt;\n    /// Deletes a user by ID asynchronously.\n    /// &lt;/summary&gt;\n    /// &lt;param name = \&quot;id\&quot;&gt;The user ID.&lt;/param&gt;\n    /// &lt;param name = \&quot;cancellationToken\&quot;&gt;Cancellation token.&lt;/param&gt;\n    public async Task DeleteUserAsync(int id, CancellationToken cancellationToken = default)\r\n    {\r\n        _logger.LogInformation(\&quot;Deleting user with ID {UserId}\&quot;, id);\r\n        await _repository.DeleteAsync(id, cancellationToken);\r\n    }\r\n}\r\n\r\npublic interface IUserService\r\n{\r\n    Task&lt;User?&gt; GetUserAsync(int id, CancellationToken cancellationToken = default);\r\n    Task&lt;User&gt; CreateUserAsync(string name, string email, CancellationToken cancellationToken = default);\r\n    Task&lt;User&gt; UpdateUserAsync(User user, CancellationToken cancellationToken = default);\r\n    Task DeleteUserAsync(int id, CancellationToken cancellationToken = default);\r\n}\r\n\r\npublic interface IUserRepository\r\n{\r\n    Task&lt;User?&gt; FindByIdAsync(int id, CancellationToken cancellationToken = default);\r\n    Task&lt;User&gt; AddAsync(User user, CancellationToken cancellationToken = default);\r\n    Task&lt;User&gt; UpdateAsync(User user, CancellationToken cancellationToken = default);\r\n    Task DeleteAsync(int id, CancellationToken cancellationToken = default);\r\n}\r\n\r\npublic interface ILogger&lt;T&gt;\r\n{\r\n    void LogInformation(string message, params object[] args);\r\n}\r\n\r\npublic class User\r\n{\r\n    public int Id { get; set; }\r\n    public string Name { get; set; } = string.Empty;\r\n    public string Email { get; set; } = string.Empty;\r\n    public DateTime CreatedAt { get; set; }\r\n    public DateTime? UpdatedAt { get; set; }\r\n}&quot;}]}" data-file-diff="--- /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/before/UserService.cs
++++ /Users/randlee/Documents/github/roslyn-diff-worktrees/feature/html-samples-generation/samples/after/UserService.cs
+@@ -1,65 +1,107 @@ Samples
+-namespace Samples;
+-/// &lt;summary&gt;
+-/// Service for managing user operations.
+-/// &lt;/summary&gt;
+-public class UserService
+-{
+-    private readonly IUserRepository _repository;
+-    /// &lt;summary&gt;
+-    /// Initializes a new instance of the &lt;see cref = &quot;UserService&quot;/&gt; class.
+-    /// &lt;/summary&gt;
+-    /// &lt;param name = &quot;repository&quot;&gt;The user repository.&lt;/param&gt;
+-    public UserService(IUserRepository repository)
+-    {
+-        _repository = repository;
+-    }
+-
+-    /// &lt;summary&gt;
+-    /// Gets a user by their ID.
+-    /// &lt;/summary&gt;
+-    /// &lt;param name = &quot;id&quot;&gt;The user ID.&lt;/param&gt;
+-    /// &lt;returns&gt;The user if found; otherwise, null.&lt;/returns&gt;
+-    public User? GetUser(int id)
+-    {
+-        return _repository.FindById(id);
+-    }
+-
+-    /// &lt;summary&gt;
+-    /// Creates a new user.
+-    /// &lt;/summary&gt;
+-    /// &lt;param name = &quot;name&quot;&gt;The user&#39;s name.&lt;/param&gt;
+-    /// &lt;param name = &quot;email&quot;&gt;The user&#39;s email.&lt;/param&gt;
+-    /// &lt;returns&gt;The created user.&lt;/returns&gt;
+-    public User CreateUser(string name, string email)
+-    {
+-        var user = new User
+-        {
+-            Name = name,
+-            Email = email
+-        };
+-        return _repository.Add(user);
+-    }
+-
+-    /// &lt;summary&gt;
+-    /// Deletes a user by ID.
+-    /// &lt;/summary&gt;
+-    /// &lt;param name = &quot;id&quot;&gt;The user ID.&lt;/param&gt;
+-    public void DeleteUser(int id)
+-    {
+-        _repository.Delete(id);
+-    }
+-}
+-
+-public interface IUserRepository
+-{
+-    User? FindById(int id);
+-    User Add(User user);
+-    void Delete(int id);
+-}
+-
+-public class User
+-{
+-    public int Id { get; set; }
+-    public string Name { get; set; } = string.Empty;
+-    public string Email { get; set; } = string.Empty;
+-}
++namespace Samples;
++/// &lt;summary&gt;
++/// Service for managing user operations with async support.
++/// &lt;/summary&gt;
++public class UserService : IUserService
++{
++    private readonly IUserRepository _repository;
++    private readonly ILogger&lt;UserService&gt; _logger;
++    /// &lt;summary&gt;
++    /// Initializes a new instance of the &lt;see cref = &quot;UserService&quot;/&gt; class.
++    /// &lt;/summary&gt;
++    /// &lt;param name = &quot;repository&quot;&gt;The user repository.&lt;/param&gt;
++    /// &lt;param name = &quot;logger&quot;&gt;The logger instance.&lt;/param&gt;
++    public UserService(IUserRepository repository, ILogger&lt;UserService&gt; logger)
++    {
++        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
++        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
++    }
++
++    /// &lt;summary&gt;
++    /// Gets a user by their ID asynchronously.
++    /// &lt;/summary&gt;
++    /// &lt;param name = &quot;id&quot;&gt;The user ID.&lt;/param&gt;
++    /// &lt;param name = &quot;cancellationToken&quot;&gt;Cancellation token.&lt;/param&gt;
++    /// &lt;returns&gt;The user if found; otherwise, null.&lt;/returns&gt;
++    public async Task&lt;User?&gt; GetUserAsync(int id, CancellationToken cancellationToken = default)
++    {
++        _logger.LogInformation(&quot;Getting user with ID {UserId}&quot;, id);
++        return await _repository.FindByIdAsync(id, cancellationToken);
++    }
++
++    /// &lt;summary&gt;
++    /// Creates a new user asynchronously.
++    /// &lt;/summary&gt;
++    /// &lt;param name = &quot;name&quot;&gt;The user&#39;s name.&lt;/param&gt;
++    /// &lt;param name = &quot;email&quot;&gt;The user&#39;s email.&lt;/param&gt;
++    /// &lt;param name = &quot;cancellationToken&quot;&gt;Cancellation token.&lt;/param&gt;
++    /// &lt;returns&gt;The created user.&lt;/returns&gt;
++    public async Task&lt;User&gt; CreateUserAsync(string name, string email, CancellationToken cancellationToken = default)
++    {
++        ArgumentException.ThrowIfNullOrWhiteSpace(name);
++        ArgumentException.ThrowIfNullOrWhiteSpace(email);
++        _logger.LogInformation(&quot;Creating user with name {Name}&quot;, name);
++        var user = new User
++        {
++            Name = name,
++            Email = email,
++            CreatedAt = DateTime.UtcNow
++        };
++        return await _repository.AddAsync(user, cancellationToken);
++    }
++
++    /// &lt;summary&gt;
++    /// Updates an existing user.
++    /// &lt;/summary&gt;
++    /// &lt;param name = &quot;user&quot;&gt;The user to update.&lt;/param&gt;
++    /// &lt;param name = &quot;cancellationToken&quot;&gt;Cancellation token.&lt;/param&gt;
++    /// &lt;returns&gt;The updated user.&lt;/returns&gt;
++    public async Task&lt;User&gt; UpdateUserAsync(User user, CancellationToken cancellationToken = default)
++    {
++        ArgumentNullException.ThrowIfNull(user);
++        _logger.LogInformation(&quot;Updating user with ID {UserId}&quot;, user.Id);
++        user.UpdatedAt = DateTime.UtcNow;
++        return await _repository.UpdateAsync(user, cancellationToken);
++    }
++
++    /// &lt;summary&gt;
++    /// Deletes a user by ID asynchronously.
++    /// &lt;/summary&gt;
++    /// &lt;param name = &quot;id&quot;&gt;The user ID.&lt;/param&gt;
++    /// &lt;param name = &quot;cancellationToken&quot;&gt;Cancellation token.&lt;/param&gt;
++    public async Task DeleteUserAsync(int id, CancellationToken cancellationToken = default)
++    {
++        _logger.LogInformation(&quot;Deleting user with ID {UserId}&quot;, id);
++        await _repository.DeleteAsync(id, cancellationToken);
++    }
++}
++
++public interface IUserService
++{
++    Task&lt;User?&gt; GetUserAsync(int id, CancellationToken cancellationToken = default);
++    Task&lt;User&gt; CreateUserAsync(string name, string email, CancellationToken cancellationToken = default);
++    Task&lt;User&gt; UpdateUserAsync(User user, CancellationToken cancellationToken = default);
++    Task DeleteUserAsync(int id, CancellationToken cancellationToken = default);
++}
++
++public interface IUserRepository
++{
++    Task&lt;User?&gt; FindByIdAsync(int id, CancellationToken cancellationToken = default);
++    Task&lt;User&gt; AddAsync(User user, CancellationToken cancellationToken = default);
++    Task&lt;User&gt; UpdateAsync(User user, CancellationToken cancellationToken = default);
++    Task DeleteAsync(int id, CancellationToken cancellationToken = default);
++}
++
++public interface ILogger&lt;T&gt;
++{
++    void LogInformation(string message, params object[] args);
++}
++
++public class User
++{
++    public int Id { get; set; }
++    public string Name { get; set; } = string.Empty;
++    public string Email { get; set; } = string.Empty;
++    public DateTime CreatedAt { get; set; }
++    public DateTime? UpdatedAt { get; set; }
++}
+">
+                <div class="top-diff-header-left">
+                    <span class="expand-icon">▼</span>
+                    <div class="top-diff-header-stats">
+                        <span class="stat-inline">25 changes</span>
+                        <span class="stat-added">+14 added</span>
+                        <span class="stat-removed">-7 deleted</span>
+                        <span class="stat-mode">Mode: Roslyn Semantic</span>
+                    </div>
+                </div>
+                <div class="top-diff-header-buttons" onclick="event.stopPropagation()">
+                    <button class="copy-btn" onclick="copyTopDiffAsJson(this)" title="Copy entire diff as JSON">JSON</button>
+                    <button class="copy-btn" onclick="copyTopDiffAsDiff(this)" title="Copy entire diff in unified format">Diff</button>
+                </div>
+            </div>
+            <div class="top-diff-content" id="file-UserService-915f7617-top-diff">
+                <div class="diff-container" id="file-UserService-915f7617-content">
+                <div class="diff-side diff-old">
+                    <div class="diff-side-header">Old Version</div>
+                    <div class="diff-content">
+                        <div class="diff-line line-modified">
+                            <span class="line-number">1</span>
+                            <span class="line-content"><span class="keyword">namespace</span> Samples;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">2</span>
+                            <span class="line-content"><span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">3</span>
+                            <span class="line-content"><span class="comment">/// Service <span class="keyword">for</span> managing user operations.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">4</span>
+                            <span class="line-content"><span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">5</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> UserService</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">6</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">7</span>
+                            <span class="line-content">    <span class="keyword">private</span> <span class="keyword">readonly</span> IUserRepository _repository;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">8</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">9</span>
+                            <span class="line-content">    <span class="comment">/// Initializes a <span class="keyword">new</span> instance of the &lt;see cref = <span class="string">&quot;UserService&quot;</span>/&gt; <span class="keyword">class</span>.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">10</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">11</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;repository&quot;</span>&gt;The user repository.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">12</span>
+                            <span class="line-content">    <span class="keyword">public</span> UserService(IUserRepository repository)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">13</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">14</span>
+                            <span class="line-content">        _repository = repository;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">15</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">16</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">17</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">18</span>
+                            <span class="line-content">    <span class="comment">/// Gets a user by their ID.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">19</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">20</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;id&quot;</span>&gt;The user ID.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">21</span>
+                            <span class="line-content">    <span class="comment">/// &lt;returns&gt;The user <span class="keyword">if</span> found; otherwise, <span class="keyword">null</span>.&lt;/returns&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">22</span>
+                            <span class="line-content">    <span class="keyword">public</span> User? GetUser(<span class="keyword">int</span> id)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">23</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">24</span>
+                            <span class="line-content">        <span class="keyword">return</span> _repository.FindById(id);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">25</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">26</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">27</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">28</span>
+                            <span class="line-content">    <span class="comment">/// Creates a <span class="keyword">new</span> user.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">29</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">30</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;name&quot;</span>&gt;The user&#<span class="number">39</span>;s name.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">31</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;email&quot;</span>&gt;The user&#<span class="number">39</span>;s email.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">32</span>
+                            <span class="line-content">    <span class="comment">/// &lt;returns&gt;The created user.&lt;/returns&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">33</span>
+                            <span class="line-content">    <span class="keyword">public</span> User CreateUser(<span class="keyword">string</span> name, <span class="keyword">string</span> email)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">34</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">35</span>
+                            <span class="line-content">        <span class="keyword">var</span> user = <span class="keyword">new</span> User</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">36</span>
+                            <span class="line-content">        {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">37</span>
+                            <span class="line-content">            Name = name,</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">38</span>
+                            <span class="line-content">            Email = email</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">39</span>
+                            <span class="line-content">        };</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">40</span>
+                            <span class="line-content">        <span class="keyword">return</span> _repository.Add(user);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">41</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">42</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">43</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">44</span>
+                            <span class="line-content">    <span class="comment">/// Deletes a user by ID.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">45</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">46</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;id&quot;</span>&gt;The user ID.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">47</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">void</span> DeleteUser(<span class="keyword">int</span> id)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">48</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">49</span>
+                            <span class="line-content">        _repository.Delete(id);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">50</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">51</span>
+                            <span class="line-content">}</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">52</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">53</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">interface</span> IUserRepository</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">54</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">55</span>
+                            <span class="line-content">    User? FindById(<span class="keyword">int</span> id);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">56</span>
+                            <span class="line-content">    User Add(User user);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">57</span>
+                            <span class="line-content">    <span class="keyword">void</span> Delete(<span class="keyword">int</span> id);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">58</span>
+                            <span class="line-content">}</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">59</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">60</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> User</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">61</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">62</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">63</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keyword">string</span>.Empty;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">64</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">string</span> Email { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keyword">string</span>.Empty;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">65</span>
+                            <span class="line-content">}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="diff-side diff-new">
+                    <div class="diff-side-header">New Version</div>
+                    <div class="diff-content">
+                        <div class="diff-line line-modified">
+                            <span class="line-number">1</span>
+                            <span class="line-content"><span class="keyword">namespace</span> Samples;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">2</span>
+                            <span class="line-content"><span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">3</span>
+                            <span class="line-content"><span class="comment">/// Service <span class="keyword">for</span> managing user operations <span class="keyword">with</span> <span class="keyword">async</span> support.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">4</span>
+                            <span class="line-content"><span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">5</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> UserService : IUserService</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">6</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">7</span>
+                            <span class="line-content">    <span class="keyword">private</span> <span class="keyword">readonly</span> IUserRepository _repository;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">8</span>
+                            <span class="line-content">    <span class="keyword">private</span> <span class="keyword">readonly</span> ILogger&lt;UserService&gt; _logger;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">9</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">10</span>
+                            <span class="line-content">    <span class="comment">/// Initializes a <span class="keyword">new</span> instance of the &lt;see cref = <span class="string">&quot;UserService&quot;</span>/&gt; <span class="keyword">class</span>.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">11</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">12</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;repository&quot;</span>&gt;The user repository.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">13</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;logger&quot;</span>&gt;The logger instance.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">14</span>
+                            <span class="line-content">    <span class="keyword">public</span> UserService(IUserRepository repository, ILogger&lt;UserService&gt; logger)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">15</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">16</span>
+                            <span class="line-content">        _repository = repository ?? <span class="keyword">throw</span> <span class="keyword">new</span> ArgumentNullException(nameof(repository));</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">17</span>
+                            <span class="line-content">        _logger = logger ?? <span class="keyword">throw</span> <span class="keyword">new</span> ArgumentNullException(nameof(logger));</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">18</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">19</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">20</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">21</span>
+                            <span class="line-content">    <span class="comment">/// Gets a user by their ID asynchronously.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">22</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">23</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;id&quot;</span>&gt;The user ID.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">24</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;cancellationToken&quot;</span>&gt;Cancellation token.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">25</span>
+                            <span class="line-content">    <span class="comment">/// &lt;returns&gt;The user <span class="keyword">if</span> found; otherwise, <span class="keyword">null</span>.&lt;/returns&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">26</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">async</span> <span class="type">Task</span>&lt;User?&gt; GetUserAsync(<span class="keyword">int</span> id, CancellationToken cancellationToken = <span class="keyword">default</span>)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">27</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">28</span>
+                            <span class="line-content">        _logger.LogInformation(<span class="string">&quot;Getting user <span class="keyword">with</span> ID {UserId}&quot;</span>, id);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">29</span>
+                            <span class="line-content">        <span class="keyword">return</span> <span class="keyword">await</span> _repository.FindByIdAsync(id, cancellationToken);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">30</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">31</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">32</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">33</span>
+                            <span class="line-content">    <span class="comment">/// Creates a <span class="keyword">new</span> user asynchronously.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">34</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">35</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;name&quot;</span>&gt;The user&#<span class="number">39</span>;s name.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">36</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;email&quot;</span>&gt;The user&#<span class="number">39</span>;s email.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">37</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;cancellationToken&quot;</span>&gt;Cancellation token.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">38</span>
+                            <span class="line-content">    <span class="comment">/// &lt;returns&gt;The created user.&lt;/returns&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">39</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">async</span> <span class="type">Task</span>&lt;User&gt; CreateUserAsync(<span class="keyword">string</span> name, <span class="keyword">string</span> email, CancellationToken cancellationToken = <span class="keyword">default</span>)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">40</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">41</span>
+                            <span class="line-content">        <span class="type">ArgumentException</span>.ThrowIfNullOrWhiteSpace(name);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">42</span>
+                            <span class="line-content">        <span class="type">ArgumentException</span>.ThrowIfNullOrWhiteSpace(email);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">43</span>
+                            <span class="line-content">        _logger.LogInformation(<span class="string">&quot;Creating user <span class="keyword">with</span> name {Name}&quot;</span>, name);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">44</span>
+                            <span class="line-content">        <span class="keyword">var</span> user = <span class="keyword">new</span> User</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">45</span>
+                            <span class="line-content">        {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">46</span>
+                            <span class="line-content">            Name = name,</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">47</span>
+                            <span class="line-content">            Email = email,</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">48</span>
+                            <span class="line-content">            CreatedAt = <span class="type">DateTime</span>.UtcNow</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">49</span>
+                            <span class="line-content">        };</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">50</span>
+                            <span class="line-content">        <span class="keyword">return</span> <span class="keyword">await</span> _repository.AddAsync(user, cancellationToken);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">51</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">52</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">53</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">54</span>
+                            <span class="line-content">    <span class="comment">/// Updates an existing user.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">55</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">56</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;user&quot;</span>&gt;The user to update.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">57</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;cancellationToken&quot;</span>&gt;Cancellation token.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">58</span>
+                            <span class="line-content">    <span class="comment">/// &lt;returns&gt;The updated user.&lt;/returns&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">59</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">async</span> <span class="type">Task</span>&lt;User&gt; UpdateUserAsync(User user, CancellationToken cancellationToken = <span class="keyword">default</span>)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">60</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">61</span>
+                            <span class="line-content">        ArgumentNullException.ThrowIfNull(user);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">62</span>
+                            <span class="line-content">        _logger.LogInformation(<span class="string">&quot;Updating user <span class="keyword">with</span> ID {UserId}&quot;</span>, user.Id);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">63</span>
+                            <span class="line-content">        user.UpdatedAt = <span class="type">DateTime</span>.UtcNow;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">64</span>
+                            <span class="line-content">        <span class="keyword">return</span> <span class="keyword">await</span> _repository.UpdateAsync(user, cancellationToken);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">65</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">66</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">67</span>
+                            <span class="line-content">    <span class="comment">/// &lt;summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">68</span>
+                            <span class="line-content">    <span class="comment">/// Deletes a user by ID asynchronously.</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">69</span>
+                            <span class="line-content">    <span class="comment">/// &lt;/summary&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">70</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;id&quot;</span>&gt;The user ID.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">71</span>
+                            <span class="line-content">    <span class="comment">/// &lt;param name = <span class="string">&quot;cancellationToken&quot;</span>&gt;Cancellation token.&lt;/param&gt;</span></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">72</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">async</span> <span class="type">Task</span> DeleteUserAsync(<span class="keyword">int</span> id, CancellationToken cancellationToken = <span class="keyword">default</span>)</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">73</span>
+                            <span class="line-content">    {</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">74</span>
+                            <span class="line-content">        _logger.LogInformation(<span class="string">&quot;Deleting user <span class="keyword">with</span> ID {UserId}&quot;</span>, id);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">75</span>
+                            <span class="line-content">        <span class="keyword">await</span> _repository.DeleteAsync(id, cancellationToken);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">76</span>
+                            <span class="line-content">    }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">77</span>
+                            <span class="line-content">}</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">78</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">79</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">interface</span> IUserService</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">80</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">81</span>
+                            <span class="line-content">    <span class="type">Task</span>&lt;User?&gt; GetUserAsync(<span class="keyword">int</span> id, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">82</span>
+                            <span class="line-content">    <span class="type">Task</span>&lt;User&gt; CreateUserAsync(<span class="keyword">string</span> name, <span class="keyword">string</span> email, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">83</span>
+                            <span class="line-content">    <span class="type">Task</span>&lt;User&gt; UpdateUserAsync(User user, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">84</span>
+                            <span class="line-content">    <span class="type">Task</span> DeleteUserAsync(<span class="keyword">int</span> id, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">85</span>
+                            <span class="line-content">}</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">86</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">87</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">interface</span> IUserRepository</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">88</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">89</span>
+                            <span class="line-content">    <span class="type">Task</span>&lt;User?&gt; FindByIdAsync(<span class="keyword">int</span> id, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">90</span>
+                            <span class="line-content">    <span class="type">Task</span>&lt;User&gt; AddAsync(User user, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">91</span>
+                            <span class="line-content">    <span class="type">Task</span>&lt;User&gt; UpdateAsync(User user, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">92</span>
+                            <span class="line-content">    <span class="type">Task</span> DeleteAsync(<span class="keyword">int</span> id, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">93</span>
+                            <span class="line-content">}</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">94</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">95</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">interface</span> ILogger&lt;T&gt;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">96</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">97</span>
+                            <span class="line-content">    <span class="keyword">void</span> LogInformation(<span class="keyword">string</span> message, <span class="keyword">params</span> <span class="keyword">object</span>[] args);</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">98</span>
+                            <span class="line-content">}</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">99</span>
+                            <span class="line-content"></span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">100</span>
+                            <span class="line-content"><span class="keyword">public</span> <span class="keyword">class</span> User</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">101</span>
+                            <span class="line-content">{</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">102</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">103</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keyword">string</span>.Empty;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">104</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="keyword">string</span> Email { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keyword">string</span>.Empty;</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">105</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="type">DateTime</span> CreatedAt { <span class="keyword">get</span>; <span class="keyword">set</span>; }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">106</span>
+                            <span class="line-content">    <span class="keyword">public</span> <span class="type">DateTime</span>? UpdatedAt { <span class="keyword">get</span>; <span class="keyword">set</span>; }</span>
+                        </div>
+                        <div class="diff-line line-modified">
+                            <span class="line-number">107</span>
+                            <span class="line-content">}</span>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="changes-list">
+                <div class="change-section" style="margin-left: 0px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-618905f1')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-modified">Modified</span>
+                            <span class="change-kind">Namespace</span>
+                            <span class="change-name">Samples</span>
+                            <span class="change-location">line 1</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-618905f1')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-618905f1')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-618905f1" data-type="Modified" data-kind="Namespace" data-name="Samples" data-old-line="1" data-new-line="1" data-old-content="namespace Samples;
+/// &lt;summary&gt;
+/// Service for managing user operations.
+/// &lt;/summary&gt;
+public class UserService
+{
+    private readonly IUserRepository _repository;
+    /// &lt;summary&gt;
+    /// Initializes a new instance of the &lt;see cref = &quot;UserService&quot;/&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;repository&quot;&gt;The user repository.&lt;/param&gt;
+    public UserService(IUserRepository repository)
+    {
+        _repository = repository;
+    }
+
+    /// &lt;summary&gt;
+    /// Gets a user by their ID.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;id&quot;&gt;The user ID.&lt;/param&gt;
+    /// &lt;returns&gt;The user if found; otherwise, null.&lt;/returns&gt;
+    public User? GetUser(int id)
+    {
+        return _repository.FindById(id);
+    }
+
+    /// &lt;summary&gt;
+    /// Creates a new user.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;name&quot;&gt;The user&#39;s name.&lt;/param&gt;
+    /// &lt;param name = &quot;email&quot;&gt;The user&#39;s email.&lt;/param&gt;
+    /// &lt;returns&gt;The created user.&lt;/returns&gt;
+    public User CreateUser(string name, string email)
+    {
+        var user = new User
+        {
+            Name = name,
+            Email = email
+        };
+        return _repository.Add(user);
+    }
+
+    /// &lt;summary&gt;
+    /// Deletes a user by ID.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;id&quot;&gt;The user ID.&lt;/param&gt;
+    public void DeleteUser(int id)
+    {
+        _repository.Delete(id);
+    }
+}
+
+public interface IUserRepository
+{
+    User? FindById(int id);
+    User Add(User user);
+    void Delete(int id);
+}
+
+public class User
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+}" data-new-content="namespace Samples;
+/// &lt;summary&gt;
+/// Service for managing user operations with async support.
+/// &lt;/summary&gt;
+public class UserService : IUserService
+{
+    private readonly IUserRepository _repository;
+    private readonly ILogger&lt;UserService&gt; _logger;
+    /// &lt;summary&gt;
+    /// Initializes a new instance of the &lt;see cref = &quot;UserService&quot;/&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;repository&quot;&gt;The user repository.&lt;/param&gt;
+    /// &lt;param name = &quot;logger&quot;&gt;The logger instance.&lt;/param&gt;
+    public UserService(IUserRepository repository, ILogger&lt;UserService&gt; logger)
+    {
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
+
+    /// &lt;summary&gt;
+    /// Gets a user by their ID asynchronously.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;id&quot;&gt;The user ID.&lt;/param&gt;
+    /// &lt;param name = &quot;cancellationToken&quot;&gt;Cancellation token.&lt;/param&gt;
+    /// &lt;returns&gt;The user if found; otherwise, null.&lt;/returns&gt;
+    public async Task&lt;User?&gt; GetUserAsync(int id, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation(&quot;Getting user with ID {UserId}&quot;, id);
+        return await _repository.FindByIdAsync(id, cancellationToken);
+    }
+
+    /// &lt;summary&gt;
+    /// Creates a new user asynchronously.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;name&quot;&gt;The user&#39;s name.&lt;/param&gt;
+    /// &lt;param name = &quot;email&quot;&gt;The user&#39;s email.&lt;/param&gt;
+    /// &lt;param name = &quot;cancellationToken&quot;&gt;Cancellation token.&lt;/param&gt;
+    /// &lt;returns&gt;The created user.&lt;/returns&gt;
+    public async Task&lt;User&gt; CreateUserAsync(string name, string email, CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentException.ThrowIfNullOrWhiteSpace(email);
+        _logger.LogInformation(&quot;Creating user with name {Name}&quot;, name);
+        var user = new User
+        {
+            Name = name,
+            Email = email,
+            CreatedAt = DateTime.UtcNow
+        };
+        return await _repository.AddAsync(user, cancellationToken);
+    }
+
+    /// &lt;summary&gt;
+    /// Updates an existing user.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;user&quot;&gt;The user to update.&lt;/param&gt;
+    /// &lt;param name = &quot;cancellationToken&quot;&gt;Cancellation token.&lt;/param&gt;
+    /// &lt;returns&gt;The updated user.&lt;/returns&gt;
+    public async Task&lt;User&gt; UpdateUserAsync(User user, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        _logger.LogInformation(&quot;Updating user with ID {UserId}&quot;, user.Id);
+        user.UpdatedAt = DateTime.UtcNow;
+        return await _repository.UpdateAsync(user, cancellationToken);
+    }
+
+    /// &lt;summary&gt;
+    /// Deletes a user by ID asynchronously.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;id&quot;&gt;The user ID.&lt;/param&gt;
+    /// &lt;param name = &quot;cancellationToken&quot;&gt;Cancellation token.&lt;/param&gt;
+    public async Task DeleteUserAsync(int id, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation(&quot;Deleting user with ID {UserId}&quot;, id);
+        await _repository.DeleteAsync(id, cancellationToken);
+    }
+}
+
+public interface IUserService
+{
+    Task&lt;User?&gt; GetUserAsync(int id, CancellationToken cancellationToken = default);
+    Task&lt;User&gt; CreateUserAsync(string name, string email, CancellationToken cancellationToken = default);
+    Task&lt;User&gt; UpdateUserAsync(User user, CancellationToken cancellationToken = default);
+    Task DeleteUserAsync(int id, CancellationToken cancellationToken = default);
+}
+
+public interface IUserRepository
+{
+    Task&lt;User?&gt; FindByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task&lt;User&gt; AddAsync(User user, CancellationToken cancellationToken = default);
+    Task&lt;User&gt; UpdateAsync(User user, CancellationToken cancellationToken = default);
+    Task DeleteAsync(int id, CancellationToken cancellationToken = default);
+}
+
+public interface ILogger&lt;T&gt;
+{
+    void LogInformation(string message, params object[] args);
+}
+
+public class User
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+}">
+                        <div class="diff-line" style="padding: 8px 12px; color: #57606a; font-style: italic;">
+                            Contains 5 nested changes shown below.
+                        </div>
+                    </div>
+                <div class="change-section" style="margin-left: 20px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-b63588a0')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-modified">Modified</span>
+                            <span class="change-kind">Class</span>
+                            <span class="change-name">UserService</span>
+                            <span class="change-location">line 6</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-b63588a0')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-b63588a0')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-b63588a0" data-type="Modified" data-kind="Class" data-name="UserService" data-old-line="6" data-new-line="6" data-old-content="public class UserService
+{
+    private readonly IUserRepository _repository;
+    /// &lt;summary&gt;
+    /// Initializes a new instance of the &lt;see cref = &quot;UserService&quot;/&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;repository&quot;&gt;The user repository.&lt;/param&gt;
+    public UserService(IUserRepository repository)
+    {
+        _repository = repository;
+    }
+
+    /// &lt;summary&gt;
+    /// Gets a user by their ID.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;id&quot;&gt;The user ID.&lt;/param&gt;
+    /// &lt;returns&gt;The user if found; otherwise, null.&lt;/returns&gt;
+    public User? GetUser(int id)
+    {
+        return _repository.FindById(id);
+    }
+
+    /// &lt;summary&gt;
+    /// Creates a new user.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;name&quot;&gt;The user&#39;s name.&lt;/param&gt;
+    /// &lt;param name = &quot;email&quot;&gt;The user&#39;s email.&lt;/param&gt;
+    /// &lt;returns&gt;The created user.&lt;/returns&gt;
+    public User CreateUser(string name, string email)
+    {
+        var user = new User
+        {
+            Name = name,
+            Email = email
+        };
+        return _repository.Add(user);
+    }
+
+    /// &lt;summary&gt;
+    /// Deletes a user by ID.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;id&quot;&gt;The user ID.&lt;/param&gt;
+    public void DeleteUser(int id)
+    {
+        _repository.Delete(id);
+    }
+}" data-new-content="public class UserService : IUserService
+{
+    private readonly IUserRepository _repository;
+    private readonly ILogger&lt;UserService&gt; _logger;
+    /// &lt;summary&gt;
+    /// Initializes a new instance of the &lt;see cref = &quot;UserService&quot;/&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;repository&quot;&gt;The user repository.&lt;/param&gt;
+    /// &lt;param name = &quot;logger&quot;&gt;The logger instance.&lt;/param&gt;
+    public UserService(IUserRepository repository, ILogger&lt;UserService&gt; logger)
+    {
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
+
+    /// &lt;summary&gt;
+    /// Gets a user by their ID asynchronously.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;id&quot;&gt;The user ID.&lt;/param&gt;
+    /// &lt;param name = &quot;cancellationToken&quot;&gt;Cancellation token.&lt;/param&gt;
+    /// &lt;returns&gt;The user if found; otherwise, null.&lt;/returns&gt;
+    public async Task&lt;User?&gt; GetUserAsync(int id, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation(&quot;Getting user with ID {UserId}&quot;, id);
+        return await _repository.FindByIdAsync(id, cancellationToken);
+    }
+
+    /// &lt;summary&gt;
+    /// Creates a new user asynchronously.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;name&quot;&gt;The user&#39;s name.&lt;/param&gt;
+    /// &lt;param name = &quot;email&quot;&gt;The user&#39;s email.&lt;/param&gt;
+    /// &lt;param name = &quot;cancellationToken&quot;&gt;Cancellation token.&lt;/param&gt;
+    /// &lt;returns&gt;The created user.&lt;/returns&gt;
+    public async Task&lt;User&gt; CreateUserAsync(string name, string email, CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentException.ThrowIfNullOrWhiteSpace(email);
+        _logger.LogInformation(&quot;Creating user with name {Name}&quot;, name);
+        var user = new User
+        {
+            Name = name,
+            Email = email,
+            CreatedAt = DateTime.UtcNow
+        };
+        return await _repository.AddAsync(user, cancellationToken);
+    }
+
+    /// &lt;summary&gt;
+    /// Updates an existing user.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;user&quot;&gt;The user to update.&lt;/param&gt;
+    /// &lt;param name = &quot;cancellationToken&quot;&gt;Cancellation token.&lt;/param&gt;
+    /// &lt;returns&gt;The updated user.&lt;/returns&gt;
+    public async Task&lt;User&gt; UpdateUserAsync(User user, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        _logger.LogInformation(&quot;Updating user with ID {UserId}&quot;, user.Id);
+        user.UpdatedAt = DateTime.UtcNow;
+        return await _repository.UpdateAsync(user, cancellationToken);
+    }
+
+    /// &lt;summary&gt;
+    /// Deletes a user by ID asynchronously.
+    /// &lt;/summary&gt;
+    /// &lt;param name = &quot;id&quot;&gt;The user ID.&lt;/param&gt;
+    /// &lt;param name = &quot;cancellationToken&quot;&gt;Cancellation token.&lt;/param&gt;
+    public async Task DeleteUserAsync(int id, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation(&quot;Deleting user with ID {UserId}&quot;, id);
+        await _repository.DeleteAsync(id, cancellationToken);
+    }
+}">
+                        <div class="diff-line" style="padding: 8px 12px; color: #57606a; font-style: italic;">
+                            Contains 10 nested changes shown below.
+                        </div>
+                    </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-8c777fed')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Field</span>
+                            <span class="change-name">_logger</span>
+                            <span class="change-location">line 9-9</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-8c777fed')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-8c777fed')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-8c777fed" data-type="Added" data-kind="Field" data-name="_logger" data-old-line="" data-new-line="9" data-old-content="" data-new-content="private readonly ILogger&lt;UserService&gt; _logger;">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">9</span>
+                                <span class="line-content"><span class="keyword">private</span> <span class="keyword">readonly</span> ILogger&lt;UserService&gt; _logger;</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-ab6ed785')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">UserService</span>
+                            <span class="change-location">line 14-17</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-ab6ed785')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-ab6ed785')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-ab6ed785" data-type="Removed" data-kind="Method" data-name="UserService" data-old-line="14" data-new-line="" data-old-content="public UserService(IUserRepository repository)
+{
+    _repository = repository;
+}" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">14</span>
+                                <span class="line-content"><span class="keyword">public</span> UserService(IUserRepository repository)</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">15</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">16</span>
+                                <span class="line-content">    _repository = repository;</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">17</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-c1415022')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">UserService</span>
+                            <span class="change-location">line 16-20</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-c1415022')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-c1415022')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-c1415022" data-type="Added" data-kind="Method" data-name="UserService" data-old-line="" data-new-line="16" data-old-content="" data-new-content="public UserService(IUserRepository repository, ILogger&lt;UserService&gt; logger)
+{
+    _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+    _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">16</span>
+                                <span class="line-content"><span class="keyword">public</span> UserService(IUserRepository repository, ILogger&lt;UserService&gt; logger)</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">17</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">18</span>
+                                <span class="line-content">    _repository = repository ?? <span class="keyword">throw</span> <span class="keyword">new</span> ArgumentNullException(nameof(repository));</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">19</span>
+                                <span class="line-content">    _logger = logger ?? <span class="keyword">throw</span> <span class="keyword">new</span> ArgumentNullException(nameof(logger));</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">20</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-10716b7d')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">GetUser</span>
+                            <span class="change-location">line 24-27</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-10716b7d')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-10716b7d')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-10716b7d" data-type="Removed" data-kind="Method" data-name="GetUser" data-old-line="24" data-new-line="" data-old-content="public User? GetUser(int id)
+{
+    return _repository.FindById(id);
+}" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">24</span>
+                                <span class="line-content"><span class="keyword">public</span> User? GetUser(<span class="keyword">int</span> id)</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">25</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">26</span>
+                                <span class="line-content">    <span class="keyword">return</span> _repository.FindById(id);</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">27</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-98bb0a51')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">GetUserAsync</span>
+                            <span class="change-location">line 28-32</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-98bb0a51')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-98bb0a51')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-98bb0a51" data-type="Added" data-kind="Method" data-name="GetUserAsync" data-old-line="" data-new-line="28" data-old-content="" data-new-content="public async Task&lt;User?&gt; GetUserAsync(int id, CancellationToken cancellationToken = default)
+{
+    _logger.LogInformation(&quot;Getting user with ID {UserId}&quot;, id);
+    return await _repository.FindByIdAsync(id, cancellationToken);
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">28</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="keyword">async</span> <span class="type">Task</span>&lt;User?&gt; GetUserAsync(<span class="keyword">int</span> id, CancellationToken cancellationToken = <span class="keyword">default</span>)</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">29</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">30</span>
+                                <span class="line-content">    _logger.LogInformation(<span class="string">&quot;Getting user <span class="keyword">with</span> ID {UserId}&quot;</span>, id);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">31</span>
+                                <span class="line-content">    <span class="keyword">return</span> <span class="keyword">await</span> _repository.FindByIdAsync(id, cancellationToken);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">32</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-8d842b02')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">CreateUser</span>
+                            <span class="change-location">line 35-43</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-8d842b02')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-8d842b02')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-8d842b02" data-type="Removed" data-kind="Method" data-name="CreateUser" data-old-line="35" data-new-line="" data-old-content="public User CreateUser(string name, string email)
+{
+    var user = new User
+    {
+        Name = name,
+        Email = email
+    };
+    return _repository.Add(user);
+}" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">35</span>
+                                <span class="line-content"><span class="keyword">public</span> User CreateUser(<span class="keyword">string</span> name, <span class="keyword">string</span> email)</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">36</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">37</span>
+                                <span class="line-content">    <span class="keyword">var</span> user = <span class="keyword">new</span> User</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">38</span>
+                                <span class="line-content">    {</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">39</span>
+                                <span class="line-content">        Name = name,</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">40</span>
+                                <span class="line-content">        Email = email</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">41</span>
+                                <span class="line-content">    };</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">42</span>
+                                <span class="line-content">    <span class="keyword">return</span> _repository.Add(user);</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">43</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-30d64319')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">CreateUserAsync</span>
+                            <span class="change-location">line 41-55</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-30d64319')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-30d64319')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-30d64319" data-type="Added" data-kind="Method" data-name="CreateUserAsync" data-old-line="" data-new-line="41" data-old-content="" data-new-content="public async Task&lt;User&gt; CreateUserAsync(string name, string email, CancellationToken cancellationToken = default)
+{
+    ArgumentException.ThrowIfNullOrWhiteSpace(name);
+    ArgumentException.ThrowIfNullOrWhiteSpace(email);
+    _logger.LogInformation(&quot;Creating user with name {Name}&quot;, name);
+    var user = new User
+    {
+        Name = name,
+        Email = email,
+        CreatedAt = DateTime.UtcNow
+    };
+    return await _repository.AddAsync(user, cancellationToken);
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">41</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="keyword">async</span> <span class="type">Task</span>&lt;User&gt; CreateUserAsync(<span class="keyword">string</span> name, <span class="keyword">string</span> email, CancellationToken cancellationToken = <span class="keyword">default</span>)</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">42</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">43</span>
+                                <span class="line-content">    <span class="type">ArgumentException</span>.ThrowIfNullOrWhiteSpace(name);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">44</span>
+                                <span class="line-content">    <span class="type">ArgumentException</span>.ThrowIfNullOrWhiteSpace(email);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">45</span>
+                                <span class="line-content">    _logger.LogInformation(<span class="string">&quot;Creating user <span class="keyword">with</span> name {Name}&quot;</span>, name);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">46</span>
+                                <span class="line-content">    <span class="keyword">var</span> user = <span class="keyword">new</span> User</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">47</span>
+                                <span class="line-content">    {</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">48</span>
+                                <span class="line-content">        Name = name,</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">49</span>
+                                <span class="line-content">        Email = email,</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">50</span>
+                                <span class="line-content">        CreatedAt = <span class="type">DateTime</span>.UtcNow</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">51</span>
+                                <span class="line-content">    };</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">52</span>
+                                <span class="line-content">    <span class="keyword">return</span> <span class="keyword">await</span> _repository.AddAsync(user, cancellationToken);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">53</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-1f449c41')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">DeleteUser</span>
+                            <span class="change-location">line 49-52</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-1f449c41')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-1f449c41')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-1f449c41" data-type="Removed" data-kind="Method" data-name="DeleteUser" data-old-line="49" data-new-line="" data-old-content="public void DeleteUser(int id)
+{
+    _repository.Delete(id);
+}" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">49</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="keyword">void</span> DeleteUser(<span class="keyword">int</span> id)</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">50</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">51</span>
+                                <span class="line-content">    _repository.Delete(id);</span>
+                            </div>
+                            <div class="diff-line line-removed">
+                                <span class="line-number">52</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-61ead792')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">UpdateUserAsync</span>
+                            <span class="change-location">line 63-70</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-61ead792')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-61ead792')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-61ead792" data-type="Added" data-kind="Method" data-name="UpdateUserAsync" data-old-line="" data-new-line="63" data-old-content="" data-new-content="public async Task&lt;User&gt; UpdateUserAsync(User user, CancellationToken cancellationToken = default)
+{
+    ArgumentNullException.ThrowIfNull(user);
+    _logger.LogInformation(&quot;Updating user with ID {UserId}&quot;, user.Id);
+    user.UpdatedAt = DateTime.UtcNow;
+    return await _repository.UpdateAsync(user, cancellationToken);
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">63</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="keyword">async</span> <span class="type">Task</span>&lt;User&gt; UpdateUserAsync(User user, CancellationToken cancellationToken = <span class="keyword">default</span>)</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">64</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">65</span>
+                                <span class="line-content">    ArgumentNullException.ThrowIfNull(user);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">66</span>
+                                <span class="line-content">    _logger.LogInformation(<span class="string">&quot;Updating user <span class="keyword">with</span> ID {UserId}&quot;</span>, user.Id);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">67</span>
+                                <span class="line-content">    user.UpdatedAt = <span class="type">DateTime</span>.UtcNow;</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">68</span>
+                                <span class="line-content">    <span class="keyword">return</span> <span class="keyword">await</span> _repository.UpdateAsync(user, cancellationToken);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">69</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-73280a7d')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">DeleteUserAsync</span>
+                            <span class="change-location">line 77-81</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-73280a7d')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-73280a7d')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-73280a7d" data-type="Added" data-kind="Method" data-name="DeleteUserAsync" data-old-line="" data-new-line="77" data-old-content="" data-new-content="public async Task DeleteUserAsync(int id, CancellationToken cancellationToken = default)
+{
+    _logger.LogInformation(&quot;Deleting user with ID {UserId}&quot;, id);
+    await _repository.DeleteAsync(id, cancellationToken);
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">77</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="keyword">async</span> <span class="type">Task</span> DeleteUserAsync(<span class="keyword">int</span> id, CancellationToken cancellationToken = <span class="keyword">default</span>)</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">78</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">79</span>
+                                <span class="line-content">    _logger.LogInformation(<span class="string">&quot;Deleting user <span class="keyword">with</span> ID {UserId}&quot;</span>, id);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">80</span>
+                                <span class="line-content">    <span class="keyword">await</span> _repository.DeleteAsync(id, cancellationToken);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">81</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="change-section" style="margin-left: 20px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-577edb3b')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Class</span>
+                            <span class="change-name">IUserService</span>
+                            <span class="change-location">line 84-90</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-577edb3b')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-577edb3b')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-577edb3b" data-type="Added" data-kind="Class" data-name="IUserService" data-old-line="" data-new-line="84" data-old-content="" data-new-content="public interface IUserService
+{
+    Task&lt;User?&gt; GetUserAsync(int id, CancellationToken cancellationToken = default);
+    Task&lt;User&gt; CreateUserAsync(string name, string email, CancellationToken cancellationToken = default);
+    Task&lt;User&gt; UpdateUserAsync(User user, CancellationToken cancellationToken = default);
+    Task DeleteUserAsync(int id, CancellationToken cancellationToken = default);
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">84</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="keyword">interface</span> IUserService</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">85</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">86</span>
+                                <span class="line-content">    <span class="type">Task</span>&lt;User?&gt; GetUserAsync(<span class="keyword">int</span> id, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">87</span>
+                                <span class="line-content">    <span class="type">Task</span>&lt;User&gt; CreateUserAsync(<span class="keyword">string</span> name, <span class="keyword">string</span> email, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">88</span>
+                                <span class="line-content">    <span class="type">Task</span>&lt;User&gt; UpdateUserAsync(User user, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">89</span>
+                                <span class="line-content">    <span class="type">Task</span> DeleteUserAsync(<span class="keyword">int</span> id, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">90</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 20px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-63277270')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-modified">Modified</span>
+                            <span class="change-kind">Class</span>
+                            <span class="change-name">IUserRepository</span>
+                            <span class="change-location">line 55 → 92</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-63277270')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-63277270')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-63277270" data-type="Modified" data-kind="Class" data-name="IUserRepository" data-old-line="55" data-new-line="92" data-old-content="public interface IUserRepository
+{
+    User? FindById(int id);
+    User Add(User user);
+    void Delete(int id);
+}" data-new-content="public interface IUserRepository
+{
+    Task&lt;User?&gt; FindByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task&lt;User&gt; AddAsync(User user, CancellationToken cancellationToken = default);
+    Task&lt;User&gt; UpdateAsync(User user, CancellationToken cancellationToken = default);
+    Task DeleteAsync(int id, CancellationToken cancellationToken = default);
+}">
+                        <div class="diff-line" style="padding: 8px 12px; color: #57606a; font-style: italic;">
+                            Contains 7 nested changes shown below.
+                        </div>
+                    </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-adbb1e3d')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">FindById</span>
+                            <span class="change-location">line 57-57</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-adbb1e3d')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-adbb1e3d')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-adbb1e3d" data-type="Removed" data-kind="Method" data-name="FindById" data-old-line="57" data-new-line="" data-old-content="User? FindById(int id);" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">57</span>
+                                <span class="line-content">User? FindById(<span class="keyword">int</span> id);</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-d0ccf8b8')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">Add</span>
+                            <span class="change-location">line 58-58</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-d0ccf8b8')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-d0ccf8b8')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-d0ccf8b8" data-type="Removed" data-kind="Method" data-name="Add" data-old-line="58" data-new-line="" data-old-content="User Add(User user);" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">58</span>
+                                <span class="line-content">User Add(User user);</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-355904e4')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-removed">Removed</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">Delete</span>
+                            <span class="change-location">line 59-59</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-355904e4')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-355904e4')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-355904e4" data-type="Removed" data-kind="Method" data-name="Delete" data-old-line="59" data-new-line="" data-old-content="void Delete(int id);" data-new-content="">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-removed">
+                                <span class="line-number">59</span>
+                                <span class="line-content"><span class="keyword">void</span> Delete(<span class="keyword">int</span> id);</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-056ba0b7')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">FindByIdAsync</span>
+                            <span class="change-location">line 94-94</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-056ba0b7')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-056ba0b7')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-056ba0b7" data-type="Added" data-kind="Method" data-name="FindByIdAsync" data-old-line="" data-new-line="94" data-old-content="" data-new-content="Task&lt;User?&gt; FindByIdAsync(int id, CancellationToken cancellationToken = default);">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">94</span>
+                                <span class="line-content"><span class="type">Task</span>&lt;User?&gt; FindByIdAsync(<span class="keyword">int</span> id, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-5bf0b3de')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">AddAsync</span>
+                            <span class="change-location">line 95-95</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-5bf0b3de')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-5bf0b3de')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-5bf0b3de" data-type="Added" data-kind="Method" data-name="AddAsync" data-old-line="" data-new-line="95" data-old-content="" data-new-content="Task&lt;User&gt; AddAsync(User user, CancellationToken cancellationToken = default);">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">95</span>
+                                <span class="line-content"><span class="type">Task</span>&lt;User&gt; AddAsync(User user, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-78c0b8b8')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">UpdateAsync</span>
+                            <span class="change-location">line 96-96</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-78c0b8b8')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-78c0b8b8')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-78c0b8b8" data-type="Added" data-kind="Method" data-name="UpdateAsync" data-old-line="" data-new-line="96" data-old-content="" data-new-content="Task&lt;User&gt; UpdateAsync(User user, CancellationToken cancellationToken = default);">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">96</span>
+                                <span class="line-content"><span class="type">Task</span>&lt;User&gt; UpdateAsync(User user, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-c2f962a6')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Method</span>
+                            <span class="change-name">DeleteAsync</span>
+                            <span class="change-location">line 97-97</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-c2f962a6')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-c2f962a6')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-c2f962a6" data-type="Added" data-kind="Method" data-name="DeleteAsync" data-old-line="" data-new-line="97" data-old-content="" data-new-content="Task DeleteAsync(int id, CancellationToken cancellationToken = default);">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">97</span>
+                                <span class="line-content"><span class="type">Task</span> DeleteAsync(<span class="keyword">int</span> id, CancellationToken cancellationToken = <span class="keyword">default</span>);</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="change-section" style="margin-left: 20px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-58e1c941')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Class</span>
+                            <span class="change-name">ILogger</span>
+                            <span class="change-location">line 100-103</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-58e1c941')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-58e1c941')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-58e1c941" data-type="Added" data-kind="Class" data-name="ILogger" data-old-line="" data-new-line="100" data-old-content="" data-new-content="public interface ILogger&lt;T&gt;
+{
+    void LogInformation(string message, params object[] args);
+}">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">100</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="keyword">interface</span> ILogger&lt;T&gt;</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">101</span>
+                                <span class="line-content">{</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">102</span>
+                                <span class="line-content">    <span class="keyword">void</span> LogInformation(<span class="keyword">string</span> message, <span class="keyword">params</span> <span class="keyword">object</span>[] args);</span>
+                            </div>
+                            <div class="diff-line line-added">
+                                <span class="line-number">103</span>
+                                <span class="line-content">}</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 20px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-9074915b')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-modified">Modified</span>
+                            <span class="change-kind">Class</span>
+                            <span class="change-name">User</span>
+                            <span class="change-location">line 62 → 105</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-9074915b')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-9074915b')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-9074915b" data-type="Modified" data-kind="Class" data-name="User" data-old-line="62" data-new-line="105" data-old-content="public class User
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+}" data-new-content="public class User
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+}">
+                        <div class="diff-line" style="padding: 8px 12px; color: #57606a; font-style: italic;">
+                            Contains 2 nested changes shown below.
+                        </div>
+                    </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-deb80476')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Property</span>
+                            <span class="change-name">CreatedAt</span>
+                            <span class="change-location">line 110-110</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-deb80476')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-deb80476')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-deb80476" data-type="Added" data-kind="Property" data-name="CreatedAt" data-old-line="" data-new-line="110" data-old-content="" data-new-content="public DateTime CreatedAt { get; set; }">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">110</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="type">DateTime</span> CreatedAt { <span class="keyword">get</span>; <span class="keyword">set</span>; }</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="change-section" style="margin-left: 40px">
+                    <div class="change-header">
+                        <div class="change-title" onclick="toggleChange('change-8d046b17')">
+                            <span class="expand-icon">▼</span>
+                            <span class="change-badge badge-added">Added</span>
+                            <span class="change-kind">Property</span>
+                            <span class="change-name">UpdatedAt</span>
+                            <span class="change-location">line 111-111</span>
+                            <span class="impact-indicator impact-breaking-public">BREAKING PUBLIC API</span>
+                        </div>
+                        <div class="copy-buttons" onclick="event.stopPropagation()">
+                            <button class="copy-btn" onclick="copyAsJson('change-8d046b17')" title="Copy as JSON">JSON</button>
+                            <button class="copy-btn" onclick="copyAsDiff('change-8d046b17')" title="Copy as diff">Diff</button>
+                        </div>
+                    </div>
+                    <div class="change-body" id="change-8d046b17" data-type="Added" data-kind="Property" data-name="UpdatedAt" data-old-line="" data-new-line="111" data-old-content="" data-new-content="public DateTime? UpdatedAt { get; set; }">
+                        <div class="diff-container">
+                            <div class="diff-side diff-old">
+                                <div class="diff-side-header">Before</div>
+                                <div class="diff-content">
+                            <div class="diff-line">
+                                <span class="line-number">-</span>
+                                <span class="line-content">(none)</span>
+                            </div>
+                                </div>
+                            </div>
+                            <div class="diff-side diff-new">
+                                <div class="diff-side-header">After</div>
+                                <div class="diff-content">
+                            <div class="diff-line line-added">
+                                <span class="line-number">111</span>
+                                <span class="line-content"><span class="keyword">public</span> <span class="type">DateTime</span>? UpdatedAt { <span class="keyword">get</span>; <span class="keyword">set</span>; }</span>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <div class="nav-container">
+        <button class="nav-btn" onclick="scrollToTop()" title="Go to top">↑</button>
+        <button class="nav-btn" onclick="prevChange()" title="Previous change">▲</button>
+        <button class="nav-btn" onclick="nextChange()" title="Next change">▼</button>
+        <button class="nav-btn" onclick="expandAll()" title="Expand all">+</button>
+        <button class="nav-btn" onclick="collapseAll()" title="Collapse all">-</button>
+    </div>
+</div>

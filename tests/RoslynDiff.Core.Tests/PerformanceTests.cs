@@ -30,9 +30,9 @@ public class PerformanceTests
         // Act
         var result = _differ.Compare(oldCode, newCode, options);
 
-        // Assert: Should complete within 60 seconds (increased to account for slower CI runners like macOS and Windows)
+        // Assert: Should complete within 55 seconds (increased to account for slower CI runners like macOS and Windows)
         stopwatch.Stop();
-        stopwatch.ElapsedMilliseconds.Should().BeLessThan(60000, "large file diff should complete within 60 seconds");
+        stopwatch.ElapsedMilliseconds.Should().BeLessThan(55000, "large file diff should complete within 55 seconds");
         result.Should().NotBeNull();
         result.Stats.TotalChanges.Should().BeGreaterThan(0);
     }
